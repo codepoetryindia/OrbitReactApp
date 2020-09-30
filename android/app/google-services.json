@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "936406978696",
+    "firebase_url": "https://orbit-money.firebaseio.com",
+    "project_id": "orbit-money",
+    "storage_bucket": "orbit-money.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936406978696:android:27e2c5e962ab8cf7574f3d",
+        "android_client_info": {
+          "package_name": "com.orbit.money"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "936406978696-p48ncv25cde8nhj29g8r81c46biskchk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUwLSoys3NnKSE5dLYeXtZjnRazHan5k4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "936406978696-p48ncv25cde8nhj29g8r81c46biskchk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
