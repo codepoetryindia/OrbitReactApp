@@ -632,7 +632,7 @@ export default class ItemDetailComponent extends Component {
                                                 </View>
                                             </View>
                                             
-                                            <View style={styles.border_line}></View>
+                                            {/* <View style={styles.border_line}></View>
                                             <View style={{marginTop : 14 * metrics}}></View>
                                             
                                             <View style={{flexDirection : 'row', width : '90%', alignSelf : 'center'}}>
@@ -642,7 +642,7 @@ export default class ItemDetailComponent extends Component {
                                                 <View style={{flex : 0.85, justifyContent : 'center'}}>
                                                     <Text style={{fontSize : 17 * metrics, fontFamily : Fonts.adobe_clean}}>United Kingdom, {this.props.origin_data.intermediary_psp_address_postcode}</Text>
                                                 </View>
-                                            </View>
+                                            </View> */}
 
                                             <View style={{marginTop : 15 * metrics}}></View>
                                             <View style={styles.border_line}></View>
@@ -675,9 +675,9 @@ export default class ItemDetailComponent extends Component {
                                                 <View style={{flex : 0.5}}>
                                                     <Text style={{fontSize : 15 * metrics,fontFamily : Fonts.adobe_clean, color : Colors.gray_color, textAlign : 'left'}}>Something not right?</Text>
                                                 </View>
-                                                <TouchableOpacity style={{flex : 0.3}} onPress={()=> this.contactUS()}>
+                                                {/* <TouchableOpacity style={{flex : 0.3}} onPress={()=> this.contactUS()}>
                                                     <Text style={{fontSize : 15 * metrics ,fontFamily : Fonts.adobe_clean, color : Colors.main_color,textAlign : 'right'}}>Contact Us</Text>
-                                                </TouchableOpacity>
+                                                </TouchableOpacity> */}
                                                 <TouchableOpacity style={{flex : 0.2}} onPress={() => this.props.navigation.navigate('HelpScreen')}>
                                                     <Text style={{fontSize : 15 * metrics ,fontFamily : Fonts.adobe_clean,textAlign : 'right'}}>Help</Text>
                                                 </TouchableOpacity>

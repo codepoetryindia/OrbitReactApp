@@ -6,141 +6,184 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {SafeAreaView, View,Text, TouchableOpacity,ActivityIndicator,StyleSheet, Image,Alert} from 'react-native';
-import global_style , { metrics } from '../../constants/GlobalStyle'
-import * as Colors from '../../constants/Colors'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import DetailHeaderComponent from '../../components/DetailHeaderComponent'
-import TextComponent from '../../components/TextComponent'
-import HelpService from '../../service/HelpService';
-import {Fonts} from '../../constants/Fonts'
-import { ScrollView } from 'react-native-gesture-handler';
-import ImagePicker from 'react-native-image-picker';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import Mailer from 'react-native-mail';
-import { alertMessage } from '../../utils/utils';
+import React, { Component } from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+  Linking,
+  Image,
+  Alert,
+} from "react-native";
+import global_style, { metrics } from "../../constants/GlobalStyle";
+import * as Colors from "../../constants/Colors";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import DetailHeaderComponent from "../../components/DetailHeaderComponent";
+import TextComponent from "../../components/TextComponent";
+import HelpService from "../../service/HelpService";
+import { Fonts } from "../../constants/Fonts";
+import { ScrollView } from "react-native-gesture-handler";
+import ImagePicker from "react-native-image-picker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Mailer from "react-native-mail";
+import { alertMessage } from "../../utils/utils";
 
 export default class IssueScreen extends Component {
-    constructor(props) {
-        super(props);
-    }
-    static navigationOptions = ({ navigation }) => {
-        const { state } = navigation;
-        return {
-            header: null,
-        }
+  constructor(props) {
+    super(props);
+  }
+  static navigationOptions = ({ navigation }) => {
+    const { state } = navigation;
+    return {
+      header: null,
     };
+  };
 
-    state = {
-        issue : '',
-        isReady : false,
-        isLoading : false,
-        description : '',
-        receipt_files : [],
+  state = {
+    issue: "",
+    isReady: false,
+    isLoading: false,
+    description: "",
+    receipt_files: [],
+  };
+  setInitState() {
+    this.setState({
+      issue: "",
+      isReady: false,
+      isLoading: false,
+      description: "",
+      receipt_files: [],
+    });
+  }
+  checkReady = () => {
+    if (
+      this.state.issue != "" &&
+      this.state.description &&
+      this.state.receipt_files.length > 0
+    ) {
+      this.setState({ isReady: true });
+    } else {
+      this.setState({ isReady: false });
     }
-    setInitState () {
-        this.setState({
-            issue : '',
-            isReady : false,
-            isLoading : false,
-            description : '',
-            receipt_files : [],
-        })
-    }
-    checkReady = () => {
-        if (this.state.issue != '' && this.state.description && this.state.receipt_files.length > 0) {
-            this.setState({isReady : true})
-        } else {
-            this.setState({isReady : false})
-        }
-    }
+  };
 
-    onSubmit = () => {
-        if (!this.state.isReady)
-            return
-        var result = []
-        if (this.state.receipt_files.length > 0) {
-            for (var i = 0 ;i < this.state.receipt_files.length; i++) {
-                var obj = {
-                    attachment_name : "Attachment " + (i + 1),
-                    attachment : this.state.receipt_files[i]
-                }
-                result.push(obj)
-            }
-        }
+  onSubmit = () => {
+    if (!this.state.isReady) return;
+    var result = [];
+    if (this.state.receipt_files.length > 0) {
+      for (var i = 0; i < this.state.receipt_files.length; i++) {
         var obj = {
-            issue_title : this.state.issue,
-            message : this.state.description,
-            attachment_ids : result
-        }
-        this.setState({isLoading : true})
-        HelpService.sendSupportTicket(global.token, obj).then(res => {
-            var data = res.data.result
-            console.log('data = ' , data)
-            if (data.success) {
-                this.setInitState()
-                alertMessage(data.message)
-            } else {
-                alertMessage(data.message)
-            }
-            this.setState({isLoading : false})
-        }).catch(error => {
-            console.log('error = ' , error.message)
-            this.setState({isLoading : false})
-        })
-    }
-    removeAttach (idx) {
-        console.log('idx = ', idx)
-        var result = []
-        var resources = []
-        for (var i = 0 ; i < this.state.receipt_files.length; i++) {
-            if (idx != i) {
-                resources.push(this.state.receipt_files[i])
-            }
-        }
-        this.setState({receipt_files : resources})
-    }
-    onAttachFile = () => {
-        var options = {
-            title: '',
-            takePhotoButtonTitle: 'Camera',
-            chooseFromLibraryButtonTitle: 'Photo Gallery',
-            tintColor: '#57C0FD',
-            noData: false,
-            quality: 0.1,
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
+          attachment_name: "Attachment " + (i + 1),
+          attachment: this.state.receipt_files[i],
         };
-        ImagePicker.showImagePicker(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            } else {
-                var res = this.state.receipt_files
-                res.push(response.data)
-
-                this.setState({receipt_files : res}, () => this.checkReady())
-            }
-        });
+        result.push(obj);
+      }
     }
+    var obj = {
+      issue_title: this.state.issue,
+      message: this.state.description,
+      attachment_ids: result,
+    };
+    this.setState({ isLoading: true });
+    HelpService.sendSupportTicket(global.token, obj)
+      .then((res) => {
+        var data = res.data.result;
+        console.log("data = ", data);
+        if (data.success) {
+          this.setInitState();
+          alertMessage(data.message);
+        } else {
+          alertMessage(data.message);
+        }
+        this.setState({ isLoading: false });
+      })
+      .catch((error) => {
+        console.log("error = ", error.message);
+        this.setState({ isLoading: false });
+      });
+  };
+  removeAttach(idx) {
+    console.log("idx = ", idx);
+    var result = [];
+    var resources = [];
+    for (var i = 0; i < this.state.receipt_files.length; i++) {
+      if (idx != i) {
+        resources.push(this.state.receipt_files[i]);
+      }
+    }
+    this.setState({ receipt_files: resources });
+  }
+  onAttachFile = () => {
+    var options = {
+      title: "",
+      takePhotoButtonTitle: "Camera",
+      chooseFromLibraryButtonTitle: "Photo Gallery",
+      tintColor: "#57C0FD",
+      noData: false,
+      quality: 0.1,
+      storageOptions: {
+        skipBackup: true,
+        path: "images",
+      },
+    };
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+        console.log("User cancelled image picker");
+      } else if (response.error) {
+        console.log("ImagePicker Error: ", response.error);
+      } else if (response.customButton) {
+        console.log("User tapped custom button: ", response.customButton);
+      } else {
+        var res = this.state.receipt_files;
+        res.push(response.data);
 
-    render() {
-        return (
-            <SafeAreaView style={{flex : 1}}>
-                <KeyboardAwareScrollView
-                    resetScrollToCoords={{ x: 0, y: 0 }}
-                    contentContainerStyle={{flex : 1}}
-                    scrollEnabled={false}
-                >
-                <View style={{width : '100%' , height : '100%'}}>
-                    <DetailHeaderComponent navigation={this.props.navigation}  title="Back" goBack ={() => this.props.navigation.goBack()}></DetailHeaderComponent>
-                    <View style={global_style.help_body}>
+        this.setState({ receipt_files: res }, () => this.checkReady());
+      }
+    });
+  };
+
+  render() {
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAwareScrollView
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={{ flex: 1 }}
+          scrollEnabled={false}
+        >
+          <View style={{ width: "100%", height: "100%" }}>
+            <DetailHeaderComponent
+              navigation={this.props.navigation}
+              title="Back"
+              goBack={() => this.props.navigation.goBack()}
+            />
+
+            <View
+              style={{ flex: 1, paddingHorizontal: 20, paddingVertical: 10 }}
+            >
+              <Text style={[styles.attach_text]}>
+                For any queries on your account or our services, please email
+              </Text>
+
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL("mailto:support@orbit.money");
+                }}
+                style={{ marginTop: 0 }}
+              >
+                <Text style={[styles.attach_text, { color: "#3498db" }]}>
+                  support@orbit.money
+                </Text>
+              </TouchableOpacity>
+
+              <Text style={[styles.attach_text, { marginTop: 25 }]}>
+                Orbit customer support team is available Monday to Friday from
+              </Text>
+            </View>
+
+            {/* <View style={global_style.help_body}>
                         <ScrollView style={{flex : 0.45}}>
                             <View style={{width : '85%', alignSelf : 'center'}}>
                                 <TextComponent
@@ -198,59 +241,62 @@ export default class IssueScreen extends Component {
                                 </View>
                             </TouchableOpacity>
                         </View>
-                    </View>
-                </View>
-                {
-                    this.state.isLoading && 
-                    <View style={global_style.loading_body}>
-                        <ActivityIndicator size={100} color={Colors.main_color} style={global_style.activityIndicator}></ActivityIndicator>
-                    </View>
-                }
-                </KeyboardAwareScrollView>
-            </SafeAreaView>
-        );
-    }
+                    </View> */}
+          </View>
+          {this.state.isLoading && (
+            <View style={global_style.loading_body}>
+              <ActivityIndicator
+                size={100}
+                color={Colors.main_color}
+                style={global_style.activityIndicator}
+              />
+            </View>
+          )}
+        </KeyboardAwareScrollView>
+      </SafeAreaView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    attach_text : {
-        fontFamily : Fonts.adobe_clean,
-        fontSize : 20 * metrics,
-        color : Colors.dark_gray,
-        fontWeight : 'bold',
-        marginTop : 15 * metrics,
-        marginLeft : 10 * metrics
-    },
-    attach_body : {
-        width : '90%',
-        alignSelf : 'center',
-        marginTop : 15 * metrics,
-        minHeight : 65 * metrics,
-    },
-    new_receipt : {
-        width : 65 * metrics,
-        height : 65 * metrics,
-        borderWidth : 1,
-        borderRadius : 8 * metrics,
-        borderColor : Colors.white_gray_color,
-        justifyContent : 'center',
-        marginRight : 8 * metrics
-    },
-    img_item : {
-        width : 65 * metrics,
-        height : 65 * metrics,
-        borderWidth : 1,
-        borderRadius : 8 * metrics,
-        borderColor : Colors.white_gray_color,
-        justifyContent : 'center',
-        marginLeft : 8 * metrics
-    },
-    close_icon : {
-        position : 'absolute',
-        top : -10,
-        right : 0,
-        zIndex : 9999,
-        backgroundColor : 'white',
-        borderRadius : 50
-    },
-})
+  attach_text: {
+    fontFamily: Fonts.adobe_clean,
+    fontSize: 20 * metrics,
+    color: Colors.dark_gray,
+    fontWeight: "bold",
+    marginTop: 15 * metrics,
+    marginLeft: 10 * metrics,
+  },
+  attach_body: {
+    width: "90%",
+    alignSelf: "center",
+    marginTop: 15 * metrics,
+    minHeight: 65 * metrics,
+  },
+  new_receipt: {
+    width: 65 * metrics,
+    height: 65 * metrics,
+    borderWidth: 1,
+    borderRadius: 8 * metrics,
+    borderColor: Colors.white_gray_color,
+    justifyContent: "center",
+    marginRight: 8 * metrics,
+  },
+  img_item: {
+    width: 65 * metrics,
+    height: 65 * metrics,
+    borderWidth: 1,
+    borderRadius: 8 * metrics,
+    borderColor: Colors.white_gray_color,
+    justifyContent: "center",
+    marginLeft: 8 * metrics,
+  },
+  close_icon: {
+    position: "absolute",
+    top: -10,
+    right: 0,
+    zIndex: 9999,
+    backgroundColor: "white",
+    borderRadius: 50,
+  },
+});

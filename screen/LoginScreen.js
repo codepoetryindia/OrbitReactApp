@@ -31,6 +31,7 @@ import global_style, { metrics } from "../constants/GlobalStyle";
 import * as Images from "../constants/Image";
 import UserService from "../service/UserService";
 import { alertMessage, validEmail } from "../utils/utils";
+import messaging from "@react-native-firebase/messaging";
 
 const resetAction = (routeName) =>
   StackActions.reset({
@@ -58,9 +59,27 @@ export default class LoginScreen extends Component {
       invalid_email: false,
       isLoading: false,
       isShowFinger: false,
+      fcm_key: "",
     };
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
+    this.getFcmToken = this.getFcmToken.bind(this);
+    this.getFcmToken();
   }
+
+  getFcmToken = async () => {
+    try {
+      const fcmToken = await messaging().getToken();
+      if (fcmToken) {
+        this.setState({ fcm_key: fcmToken });
+        console.log("Your Firebase Token is:", fcmToken);
+      } else {
+        console.log("Failed", "No token received");
+      }
+    } catch (error) {
+      console.log("firebase error", error);
+    }
+  };
+
   componentWillReceiveProps() {
     this.componentDidMount();
   }
@@ -184,6 +203,7 @@ export default class LoginScreen extends Component {
     var obj = {
       login: this.state.email.trim(),
       password: this.state.password,
+      fcm_key: this.state.fcm_key,
     };
     // var obj = {
     //   login : "snippetbucket@gmail.com",
@@ -193,6 +213,9 @@ export default class LoginScreen extends Component {
     //   login : "syamspuli@gmail.com",
     //   password : "Testacc7799"
     // }
+
+    console.log(obj);
+
     global.header_info.nxid = new Date().getTime();
     this.setState({ isLoading: true });
     UserService.loginUser(obj)

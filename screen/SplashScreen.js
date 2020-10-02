@@ -65,12 +65,16 @@ export default class SplashScreen extends Component {
   };
 
   getFcmToken = async () => {
-    const fcmToken = await messaging().getToken();
-    if (fcmToken) {
-      console.log(fcmToken);
-      console.log("Your Firebase Token is:", fcmToken);
-    } else {
-      console.log("Failed", "No token received");
+    try {
+      const fcmToken = await messaging().getToken();
+      if (fcmToken) {
+        console.log(fcmToken);
+        console.log("Your Firebase Token is:", fcmToken);
+      } else {
+        console.log("Failed", "No token received");
+      }
+    } catch (error) {
+      console.log("firebase error", error);
     }
   };
 
@@ -419,8 +423,8 @@ export default class SplashScreen extends Component {
             <Image source={Images.splash_logo2} style={global_style.mgLogo} />
 
             <View style={global_style.mgHuge} />
-            <Text style={[global_style.spHint, , { color: "#444" }]}>
-              Smarter & Better Banking
+            <Text style={[global_style.spHint, { color: "#444" }]}>
+              Banking to Accounting Delivered
             </Text>
             <TouchableOpacity
               style={global_style.spButton1}
