@@ -41,6 +41,7 @@ import {
   validEmail,
 } from "../utils/utils";
 import messaging from "@react-native-firebase/messaging";
+import { validPassword } from "../utils/utils";
 
 export default class SignUpScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -357,9 +358,15 @@ export default class SignUpScreen extends Component {
         else this.setState({ valid_birth: false });
         break;
       case "password":
-        if (this.state.password.length < 6)
+        if (this.state.password.length < 8)
           this.setState({ valid_password: false });
         else this.setState({ valid_password: true });
+
+        if (validPassword(this.state.password)) {
+          this.setState({ valid_password: true });
+        } else {
+          this.setState({ valid_password: false });
+        }
         break;
     }
   }
@@ -616,9 +623,18 @@ export default class SignUpScreen extends Component {
                     </TextComponent>
                     {!this.state.valid_password && (
                       <Text style={global_style.error}>
-                        {ErrorMessage.error_password_max_length}
+                        {/* {ErrorMessage.error_password_max_length}
+                         */}
+                        {ErrorMessage.error_password_pattern_match}
                       </Text>
                     )}
+
+                    {/* {!this.state.patternMatch && (
+                      <Text style={global_style.error}>
+                        {ErrorMessage.error_password_pattern_match}
+                      </Text>
+                    )} */}
+
                     <View style={{ marginTop: 30 * metrics }} />
                     <View
                       style={{

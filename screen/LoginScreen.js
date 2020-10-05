@@ -32,6 +32,7 @@ import * as Images from "../constants/Image";
 import UserService from "../service/UserService";
 import { alertMessage, validEmail } from "../utils/utils";
 import messaging from "@react-native-firebase/messaging";
+import Toast from "react-native-simple-toast";
 
 const resetAction = (routeName) =>
   StackActions.reset({
@@ -124,8 +125,8 @@ export default class LoginScreen extends Component {
     this.initLocalStorage();
     this.setState({
       url: "",
-      //email : '',
-      //password : '',
+      email: "",
+      password: "",
       //email : 'snippetbucket@gmail.com',
       //password : 'prj@7799',
       email: "priyankaac@gmail.com",
@@ -232,6 +233,27 @@ export default class LoginScreen extends Component {
                 global.user_info = data.response;
 
                 this.changePhoneNumber();
+                /*
+                if (
+                  !data.response.step3formobile ||
+                  !data.response.step4formobile ||
+                  !data.response.step5formobile ||
+                  !data.response.step6formobile
+                ) {
+                  // global.user_info = params;
+                  global.user_id = data.user_id;
+                  global.applicant_id = data.applicant_id;
+                  global.verify_step = 3;
+
+                  this.setStateVerification(data.response);
+                  this.props.navigation.navigate("WelcomeScreen");
+                  this.setState({ isLoading: false });
+
+                  return;
+                }
+
+                */
+
                 if (!global.user_info.is_emailvalidated) {
                   global.user_id = data.user_id;
                   global.applicant_id = data.applicant_id;
@@ -290,6 +312,8 @@ export default class LoginScreen extends Component {
               this.setState({ isLoading: false });
             })
             .catch((error) => {
+              console.log(error);
+
               global.user_info = "";
               this.setState({ isLoading: false });
             });
@@ -308,6 +332,42 @@ export default class LoginScreen extends Component {
         this.setState({ isLoading: false });
       });
   }
+
+  async setStateVerification(data) {
+    console.log(data);
+
+    global.business_status = false;
+    global.personal_status = false;
+    global.proof_status = false;
+    global.verification_state = false;
+
+    // await AsyncStorage.setItem("steps", "WelcomeScreen");
+    // await AsyncStorage.setItem("accountType", global.accountType.toString());
+    await AsyncStorage.setItem("accountType", "1"); //Business type
+
+    if (data.step3formobile) {
+      await AsyncStorage.setItem("personal_status", "1");
+      global.personal_status = true;
+    } else {
+      global.personal_status = false;
+    }
+
+    if (data.step4formobile) {
+      await AsyncStorage.setItem("proof_status", "1");
+      global.proof_status = true;
+    }
+
+    if (data.step5formobile) {
+      await AsyncStorage.setItem("verification_state", "1");
+      global.verification_state = true;
+    }
+
+    if (data.step6formobile) {
+      await AsyncStorage.setItem("business_status", "1");
+      global.business_status = true;
+    }
+  }
+
   checkReady = (value) => {
     switch (value) {
       case "email":

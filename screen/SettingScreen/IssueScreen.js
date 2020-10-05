@@ -164,7 +164,7 @@ export default class IssueScreen extends Component {
               style={{ flex: 1, paddingHorizontal: 20, paddingVertical: 10 }}
             >
               <Text style={[styles.attach_text]}>
-                For any queries on your account or our services, please email
+                For any queries on your account or our services, please email:
               </Text>
 
               <TouchableOpacity
@@ -180,6 +180,11 @@ export default class IssueScreen extends Component {
 
               <Text style={[styles.attach_text, { marginTop: 25 }]}>
                 Orbit customer support team is available Monday to Friday from
+                8am to 6pm and Saturday from 9am to midday.
+              </Text>
+              <Text style={[styles.attach_text, { marginTop: 25 }]}>
+                If you are having any problems with the app, it may be helpful
+                to attach a screenshot of the relevant screen.
               </Text>
             </View>
 

@@ -18,6 +18,15 @@ export function validEmail(text) {
   }
 }
 
+export function validPassword(text) {
+  let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (reg.test(text) === false) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
 export function replaceString(text) {
   if (text.length > 15) {
     return text.substring(0, 15) + " ...";

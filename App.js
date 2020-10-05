@@ -13,6 +13,8 @@ import SplashScreen from "react-native-splash-screen";
 import * as Colors from "./constants/Colors";
 import Router from "./router/Router";
 import PropTypes from "prop-types";
+import messaging from "@react-native-firebase/messaging";
+import Toast from "react-native-simple-toast";
 
 export default class App extends Component {
   componentDidMount() {
@@ -28,6 +30,18 @@ export default class App extends Component {
     global.file_path = "";
     global.init_account = "false";
     this.getStorageData();
+
+    messaging().onMessage(async (remoteMessage) => {
+      console.log(remoteMessage);
+      Toast.showWithGravity(
+        "You have a new Notification",
+        Toast.LONG,
+        Toast.TOP
+      );
+      // console.log(
+      //   "A new FCM message arrived!" + JSON.stringify(remoteMessage)
+      // );
+    });
   }
 
   async getStorageData() {
