@@ -2,7 +2,6 @@ import analytics from "@react-native-firebase/analytics";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import {
-  AsyncStorage,
   Image,
   Platform,
   StyleSheet,
@@ -21,6 +20,7 @@ import * as Images from "../constants/Image";
 import UserService from "../service/UserService";
 import { APP_VERSION } from "../utils/keyInfo";
 import { alertMessage } from "../utils/utils";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const resetAction = (routeName) =>
   StackActions.reset({
@@ -75,7 +75,9 @@ export default class SideMenuComponent extends Component {
   }
   onCRM() {
     //this.props.navigation.navigate('CRMListScreen')
-    this.props.navigation.navigate("ComingSoonScreen");
+    this.props.navigation.navigate("ComingSoonScreen", {
+      msg:"Your mobile CRM experience is coming soon.  In the meantime, experience CRM features on our website at orbit.money.  Login in with your usual mobile login credentials."
+    });
     this.closeDrawer();
   }
   onPurchase() {
@@ -99,7 +101,9 @@ export default class SideMenuComponent extends Component {
     global.other_title = "Accounting";
     global.tab_name = "Reports";
     //this.props.navigation.navigate('AccountTabScreen')
-    this.props.navigation.navigate("ComingSoonScreen");
+    this.props.navigation.navigate("ComingSoonScreen", {
+      msg:"Your mobile Accounting experience is coming soon.  In the meantime, experience Accounting features on our website at orbit.money.  Login in with your usual mobile login credentials."
+    });
     this.closeDrawer();
   }
 

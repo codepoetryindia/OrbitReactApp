@@ -14,8 +14,19 @@ import { metrics } from '../constants/GlobalStyle';
 // import { WebView } from 'react-native-webview';
 
 export default class ComingSoonScreen extends Component {
+
+
+    state={
+        msg:""
+    }
+
+    constructor(props) {
+        super(props);
+      }
+
     componentDidMount() {
-        console.log(global.web_url)
+        console.log(global.web_url);
+        this.setState({msg:this.props.navigation.getParam('msg', "")});
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -32,6 +43,7 @@ export default class ComingSoonScreen extends Component {
     onComingSoon() {
         this.props.navigation.navigate('TabScreen')
     }
+
     render() {
         return (
             <SafeAreaView style={{ width: '100%', height: '100%' }}>
@@ -42,7 +54,17 @@ export default class ComingSoonScreen extends Component {
                     justifyContent: 'center',
                 }}>
                     <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 20 }}>
-                        Comming Soon !</Text>
+                    Coming Soon!</Text>
+
+
+                    {
+                        this.state.msg != '' ? (
+                        <Text style={{ color: 'black',  fontSize: 16, textAlign:'center', marginTop:15, width:'95%' }}>
+                            {this.state.msg}
+                        </Text>
+                        ):null
+                    }
+
                 </View>
             </SafeAreaView>
         );

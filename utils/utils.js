@@ -1,4 +1,5 @@
-import { Alert, AsyncStorage } from "react-native";
+import { Alert } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export function alertMessage(message) {
   Alert.alert(
@@ -11,6 +12,15 @@ export function alertMessage(message) {
 
 export function validEmail(text) {
   let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+\s*$/;
+  if (reg.test(text) === false) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+export function validCharacter(text) {
+  let reg = /^[a-zA-Z]+$/;
   if (reg.test(text) === false) {
     return false;
   } else {

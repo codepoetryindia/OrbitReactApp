@@ -10,7 +10,6 @@ import analytics from "@react-native-firebase/analytics";
 import React, { Component } from "react";
 import {
   ActivityIndicator,
-  AsyncStorage,
   DatePickerAndroid,
   Platform,
   SafeAreaView,
@@ -39,9 +38,11 @@ import {
   paramDate,
   removePlusCharacter,
   validEmail,
+  validCharacter,
 } from "../utils/utils";
 import messaging from "@react-native-firebase/messaging";
 import { validPassword } from "../utils/utils";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default class SignUpScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -76,6 +77,7 @@ export default class SignUpScreen extends Component {
     isValidPhone: true,
     valid_birth: true,
     valid_password: true,
+    valid_terms: true,
     duplicate_f_name: false,
     duplicate_l_name: false,
     duplicate_m_name: false,
@@ -184,6 +186,7 @@ export default class SignUpScreen extends Component {
 
   checkReady = (value) => {
     this.showErrorMessage(value);
+
     if (value == "t&c" && this.state.term_condition) {
       this.props.navigation.navigate("TermScreen");
     }
@@ -196,6 +199,7 @@ export default class SignUpScreen extends Component {
       this.state.isValidPhone &&
       this.state.password != "" &&
       this.state.password.length > 5 &&
+      this.state.term_condition &&
       this.state.first_name != this.state.middle_name &&
       this.state.first_name != this.state.last_name &&
       this.state.middle_name != this.state.last_name
@@ -233,6 +237,7 @@ export default class SignUpScreen extends Component {
       isValidPhone: true,
       valid_birth: true,
       valid_password: true,
+      valid_terms: true,
     });
 
     analytics().setCurrentScreen("Signup", "Signup Screen");
@@ -248,7 +253,11 @@ export default class SignUpScreen extends Component {
   showErrorMessage(value) {
     switch (value) {
       case "f_name":
-        if (this.state.first_name != "") {
+        if (
+          this.state.first_name != "" &&
+          this.state.first_name.length > 2 &&
+          validCharacter(this.state.first_name)
+        ) {
           if (
             this.state.first_name != this.state.middle_name &&
             this.state.first_name != this.state.last_name
@@ -279,7 +288,11 @@ export default class SignUpScreen extends Component {
         } else this.setState({ valid_f_name: false });
         break;
       case "l_name":
-        if (this.state.last_name != "") {
+        if (
+          this.state.last_name != "" &&
+          this.state.last_name.length > 2 &&
+          validCharacter(this.state.last_name)
+        ) {
           if (
             this.state.last_name != this.state.middle_name &&
             this.state.last_name != this.state.first_name
@@ -310,7 +323,10 @@ export default class SignUpScreen extends Component {
         } else this.setState({ valid_l_name: false });
         break;
       case "m_name":
-        if (this.state.middle_name != "") {
+        if (
+          this.state.middle_name != "" &&
+          validCharacter(this.state.middle_name)
+        ) {
           if (
             this.state.middle_name != this.state.first_name &&
             this.state.middle_name != this.state.last_name
@@ -366,6 +382,14 @@ export default class SignUpScreen extends Component {
           this.setState({ valid_password: true });
         } else {
           this.setState({ valid_password: false });
+        }
+        break;
+
+      case "t&c":
+        if (this.state.term_condition) {
+          this.setState({ valid_terms: true });
+        } else {
+          this.setState({ valid_terms: false });
         }
         break;
     }
@@ -635,7 +659,7 @@ export default class SignUpScreen extends Component {
                       </Text>
                     )} */}
 
-                    <View style={{ marginTop: 30 * metrics }} />
+                    <View style={{ marginTop: 10 * metrics }} />
                     <View
                       style={{
                         flexDirection: "row",
@@ -665,6 +689,14 @@ export default class SignUpScreen extends Component {
                         }}
                       />
                     </View>
+
+                    {!this.state.valid_terms && (
+                      <Text style={global_style.error}>
+                        {/* {ErrorMessage.error_password_max_length}
+                         */}
+                        {ErrorMessage.termsError}
+                      </Text>
+                    )}
 
                     <View style={{ marginTop: 40 * metrics }} />
                   </View>

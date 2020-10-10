@@ -8,13 +8,14 @@
 
 import { firebase } from "@react-native-firebase/analytics";
 import React, { Component } from "react";
-import { AsyncStorage, Platform, Text, TextInput, View } from "react-native";
+import { Platform, Text, TextInput, View } from "react-native";
 import SplashScreen from "react-native-splash-screen";
 import * as Colors from "./constants/Colors";
 import Router from "./router/Router";
 import PropTypes from "prop-types";
 import messaging from "@react-native-firebase/messaging";
 import Toast from "react-native-simple-toast";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default class App extends Component {
   componentDidMount() {

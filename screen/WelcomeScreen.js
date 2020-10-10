@@ -15,7 +15,6 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
-  AsyncStorage,
   StatusBar,
   SafeAreaView,
 } from "react-native";
@@ -26,6 +25,7 @@ import global_style, { metrics } from "../constants/GlobalStyle";
 import { alertMessage } from "../utils/utils";
 import UserService from "../service/UserService";
 import { Fonts } from "../constants/Fonts";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default class WelcomeScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -385,8 +385,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   img: {
-    width: 170 * metrics,
-    height: 50 * metrics,
+    // width: 170 * metrics,
+    // height: 50 * metrics,
+    width: 140,
+    height: 62,
     resizeMode: "stretch",
     alignSelf: "center",
     marginTop: 40 * metrics,

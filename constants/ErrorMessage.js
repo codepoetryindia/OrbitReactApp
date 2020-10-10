@@ -9,9 +9,10 @@ export const error_password_pattern_match =
 export const mismatch_password = "Mismatch password. Please check it.";
 export const error_url_required = "URL is required.";
 
-export const error_first_name_required = "First Name is required.";
+export const error_first_name_required =
+  "First Name Must Be 3 Characters Long.";
 export const error_duplicate_first_name = "First Name is duplicated other name";
-export const error_last_name_required = "Last Name is required.";
+export const error_last_name_required = "Last Name Must Be 3 Characters Long";
 export const error_duplicate_last_name = "Last Name is duplicated other name";
 export const error_middle_name_required = "Middle Name is required.";
 export const error_duplicate_middle_name =
@@ -43,8 +44,9 @@ export const error_find_not_user = "Can't find user information. Try again.";
 export const error_onfido_verify = "Verification failed. Please try again.";
 
 //not error message
-
 export const success_add_beneficiary =
   "Your beneficiary has been added successfully. You can now transfer funds with ease.";
 export const error_new_password =
   "New Password must be at least 6 characters long.";
+
+export const termsError = "Please agree to our terms and conditions.";

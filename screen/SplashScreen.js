@@ -10,7 +10,6 @@ import messaging from "@react-native-firebase/messaging";
 import React, { Component } from "react";
 import {
   ActivityIndicator,
-  AsyncStorage,
   BackHandler,
   Image,
   SafeAreaView,
@@ -31,6 +30,7 @@ import global_style, { metrics } from "../constants/GlobalStyle";
 import * as Images from "../constants/Image";
 import UserService from "../service/UserService";
 import { alertMessage } from "../utils/utils";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const resetAction = (routeName) =>
   StackActions.reset({

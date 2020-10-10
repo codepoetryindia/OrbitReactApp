@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {
   ActivityIndicator,
-  AsyncStorage,
   Image,
   SafeAreaView,
   StatusBar,
@@ -18,6 +17,7 @@ import * as Colors from "../constants/Colors";
 import { Fonts } from "../constants/Fonts";
 import global_style, { metrics } from "../constants/GlobalStyle";
 import * as Images from "../constants/Image";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default class VerifyScreen extends Component {
   static navigationOptions = ({ navigation }) => {

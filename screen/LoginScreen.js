@@ -11,7 +11,6 @@ import crashlytics from "@react-native-firebase/crashlytics";
 import React, { Component } from "react";
 import {
   ActivityIndicator,
-  AsyncStorage,
   BackHandler,
   Image,
   SafeAreaView,
@@ -33,6 +32,7 @@ import UserService from "../service/UserService";
 import { alertMessage, validEmail } from "../utils/utils";
 import messaging from "@react-native-firebase/messaging";
 import Toast from "react-native-simple-toast";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const resetAction = (routeName) =>
   StackActions.reset({
@@ -129,8 +129,8 @@ export default class LoginScreen extends Component {
       password: "",
       //email : 'snippetbucket@gmail.com',
       //password : 'prj@7799',
-      email: "priyankaac@gmail.com",
-      password: "sb@123",
+      // email: "priyankaac@gmail.com",
+      // password: "sb@123",
       isReady: false,
       valid_url: true,
       valid_email: true,
@@ -164,7 +164,7 @@ export default class LoginScreen extends Component {
   async getSignUpStep() {
     var obj = JSON.parse(await AsyncStorage.getItem("signup_step"));
     console.log("obj = ", obj);
-    if (obj != "") {
+    if (obj) {
       if (obj.user.email == global.user_info.email) {
         if (obj.personal_status == "1") {
           await AsyncStorage.setItem("personal_status", "1");
@@ -184,6 +184,50 @@ export default class LoginScreen extends Component {
       await AsyncStorage.setItem("accountType", "1");
     else await AsyncStorage.setItem("accountType", "0");
 
+    this.props.navigation.navigate("WelcomeScreen");
+  }
+
+  async setStateVerification(data) {
+    await AsyncStorage.setItem("accountType", "1"); //Business type
+    if (data.step3) {
+      await AsyncStorage.setItem("personal_status", "1");
+      global.personal_status = true;
+    } else if (data.step3formobile) {
+      await AsyncStorage.setItem("personal_status", "1");
+      global.personal_status = true;
+    } else {
+      global.personal_status = false;
+    }
+
+    if (data.step4) {
+      await AsyncStorage.setItem("proof_status", "1");
+      global.proof_status = true;
+    } else if (data.step4formobile) {
+      await AsyncStorage.setItem("proof_status", "1");
+      global.proof_status = true;
+    } else {
+      global.proof_status = false;
+    }
+
+    if (data.step5) {
+      await AsyncStorage.setItem("verification_state", "1");
+      global.verification_state = true;
+    } else if (data.step5formobile) {
+      await AsyncStorage.setItem("verification_state", "1");
+      global.verification_state = true;
+    } else {
+      global.verification_state = false;
+    }
+
+    if (data.step6) {
+      await AsyncStorage.setItem("business_status", "1");
+      global.business_status = true;
+    } else if (data.step6formobile) {
+      await AsyncStorage.setItem("business_status", "1");
+      global.business_status = true;
+    } else {
+      global.business_status = false;
+    }
     this.props.navigation.navigate("WelcomeScreen");
   }
 
@@ -221,18 +265,23 @@ export default class LoginScreen extends Component {
     this.setState({ isLoading: true });
     UserService.loginUser(obj)
       .then((result) => {
+        console.log(result);
+
         var data = result.data.result;
         if (data.success) {
           global.token = data.token;
           global.time = new Date().getTime();
+
           UserService.getUserInfo(data.token)
             .then((res) => {
               var data = res.data.result;
               console.log("data = ", data);
+
               if (data.success) {
                 global.user_info = data.response;
 
                 this.changePhoneNumber();
+
                 /*
                 if (
                   !data.response.step3formobile ||
@@ -279,6 +328,9 @@ export default class LoginScreen extends Component {
                   this.props.navigation.navigate("VerifyScreen");
                   //}
                 } else if (
+                  /*                
+                //Commented this block 
+                else if (
                   global.user_info.account_type == "Business" &&
                   global.user_info.business_type == false &&
                   global.user_info.sort_code == false &&
@@ -287,8 +339,11 @@ export default class LoginScreen extends Component {
                   //step is not working
                   global.user_id = data.user_id;
                   global.user_info.password = obj.password;
+
                   this.getSignUpStep();
-                } else if (
+                } 
+                
+                */
                   global.user_info.account_type != "Business" &&
                   global.user_info.sort_code == false &&
                   global.user_info.iban == false
@@ -297,6 +352,39 @@ export default class LoginScreen extends Component {
                   global.user_id = data.user_id;
                   global.user_info.password = obj.password;
                   this.getSignUpStep();
+                } else if (
+                  data.response.step3 &&
+                  data.response.step4 &&
+                  data.response.step5 &&
+                  data.response.step6
+                ) {
+                  global.tabIdx = 1;
+                  global.verify_type = "";
+                  global.time = new Date().getTime();
+                  global.user_info.password = obj.password;
+                  global.user_info.email = obj.login;
+                  this.setLocalStorage();
+                  this.props.navigation.dispatch(resetAction("TabScreen"));
+                } else if (
+                  !data.response.step3 ||
+                  !data.response.step4 ||
+                  !data.response.step5 ||
+                  !data.response.step6
+                ) {
+                  global.user_id = data.user_id;
+                  global.applicant_id = data.applicant_id;
+                  global.verify_step = 3;
+                  this.setStateVerification(data.response);
+                } else if (
+                  !data.response.step3formobile ||
+                  !data.response.step4formobile ||
+                  !data.response.step5formobile ||
+                  !data.response.step6formobile
+                ) {
+                  global.user_id = data.user_id;
+                  global.applicant_id = data.applicant_id;
+                  global.verify_step = 3;
+                  this.setStateVerification(data.response);
                 } else {
                   global.tabIdx = 1;
                   global.verify_type = "";
@@ -331,41 +419,6 @@ export default class LoginScreen extends Component {
         alertMessage(ErrorMessage.network_error);
         this.setState({ isLoading: false });
       });
-  }
-
-  async setStateVerification(data) {
-    console.log(data);
-
-    global.business_status = false;
-    global.personal_status = false;
-    global.proof_status = false;
-    global.verification_state = false;
-
-    // await AsyncStorage.setItem("steps", "WelcomeScreen");
-    // await AsyncStorage.setItem("accountType", global.accountType.toString());
-    await AsyncStorage.setItem("accountType", "1"); //Business type
-
-    if (data.step3formobile) {
-      await AsyncStorage.setItem("personal_status", "1");
-      global.personal_status = true;
-    } else {
-      global.personal_status = false;
-    }
-
-    if (data.step4formobile) {
-      await AsyncStorage.setItem("proof_status", "1");
-      global.proof_status = true;
-    }
-
-    if (data.step5formobile) {
-      await AsyncStorage.setItem("verification_state", "1");
-      global.verification_state = true;
-    }
-
-    if (data.step6formobile) {
-      await AsyncStorage.setItem("business_status", "1");
-      global.business_status = true;
-    }
   }
 
   checkReady = (value) => {

@@ -9,7 +9,6 @@ import analytics from "@react-native-firebase/analytics";
 import React, { Component } from "react";
 import {
   ActivityIndicator,
-  AsyncStorage,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -29,6 +28,7 @@ import { Fonts } from "../constants/Fonts";
 import global_style, { metrics } from "../constants/GlobalStyle";
 import UserService from "../service/UserService";
 import { alertMessage } from "../utils/utils";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const address_placholder = {
   label: "Select Address",
