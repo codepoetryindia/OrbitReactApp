@@ -164,8 +164,8 @@ export default class VerifyScreen extends Component {
                   </Text>
                 </View>
               </View>
-              <View style={{ flex: 0.6 }}>
-                <View style={{ flex: 0.02 }} />
+              <View style={{ flex: 0.8 }}>
+                <View style={{ flex: 0.01 }} />
                 <View style={styles.verify_step}>
                   <View style={{ flex: 0.1 }} />
                   <View style={{ flex: 0.25 }}>
@@ -231,7 +231,7 @@ export default class VerifyScreen extends Component {
                       textPhoneNumber={global.user_info.phone}
                       changeVerifyStep={() => this.gotoNextStep()}
                     />
-                  )}
+                   )} 
                   {/*
                                     this.state.verify_step == 3 && 
                                     <AccountTypeComponent activeButton={() => this.activeButton()}></AccountTypeComponent>

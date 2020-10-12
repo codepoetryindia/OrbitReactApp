@@ -63,13 +63,13 @@ export default class UploadProofScreen extends Component {
   };
   state = {
     document_type: [
+      // {
+      //   label: "Nationality ID Card",
+      //   value: 0,
+      //   color: "black",
+      // },
       {
-        label: "Nationality ID Card",
-        value: 0,
-        color: "black",
-      },
-      {
-        label: "Driving License",
+        label: "Driving Licence",
         value: 1,
         color: "black",
       },
@@ -240,12 +240,12 @@ export default class UploadProofScreen extends Component {
       });
     } else {
       if (value != 1) {
-        //driving license
+        //driving licence
         var arr = this.state.address_type;
         var result = this.state.address_type1;
 
         var obj = {
-          label: "Driving License",
+          label: "Driving Licence",
           value: 3,
           color: "black",
         };

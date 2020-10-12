@@ -303,19 +303,19 @@ export default class LoginScreen extends Component {
 
                 */
 
-                if (!global.user_info.is_emailvalidated) {
+               if (!global.user_info.is_phonevalidated) {
                   global.user_id = data.user_id;
                   global.applicant_id = data.applicant_id;
                   global.verify_step = 1;
-                  global.user_info.password = obj.password;
+                  global.user_info.password = obj.password;                
                   this.props.navigation.navigate("VerifyScreen");
-                } else if (!global.user_info.is_phonevalidated) {
+                } else if (!global.user_info.is_emailvalidated) {
                   global.user_id = data.user_id;
                   global.applicant_id = data.applicant_id;
                   global.verify_step = 2;
                   global.user_info.password = obj.password;
                   this.props.navigation.navigate("VerifyScreen");
-                } else if (
+                }  else if (
                   !global.user_info.account_type &&
                   global.user_info.is_phonevalidated &&
                   global.user_info.is_emailvalidated

@@ -53,7 +53,7 @@ export default class CustomOfficer extends Component {
                     </View>
                     <View style={styles.item}>
                         <Text style={styles.sub_text}>Role</Text>
-                        <Text style={styles.value}>{this.props.textRole}</Text>
+                        <Text style={[styles.value, {textTransform:"capitalize"}]}>{this.props.textRole}</Text>
                     </View>
                     <View style={styles.item}>
                         <Text style={styles.sub_text}>Date of Birth</Text>

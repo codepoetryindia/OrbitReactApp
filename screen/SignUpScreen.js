@@ -39,6 +39,7 @@ import {
   removePlusCharacter,
   validEmail,
   validCharacter,
+  validPhoneNumber
 } from "../utils/utils";
 import messaging from "@react-native-firebase/messaging";
 import { validPassword } from "../utils/utils";
@@ -244,7 +245,12 @@ export default class SignUpScreen extends Component {
   }
 
   changeMobileNumber = (value) => {
-    this.setState({ isValidPhone: this.phone.isValidNumber() });
+
+    if(validPhoneNumber(value) && this.phone.isValidNumber()){
+      this.setState({ isValidPhone: true });
+    }else{
+      this.setState({ isValidPhone: false });
+    }    
     this.setState({ country_code: "+" + this.phone.getCountryCode() });
     this.setState({ phone_number: value });
     this.checkReady("phone");

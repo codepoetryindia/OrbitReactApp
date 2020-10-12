@@ -378,7 +378,7 @@ export default class AccountScreen extends Component {
                             <TouchableOpacity style={{flex : 0.35 , justifyContent :'center', alignItems : 'center'}} onPress={() => this.sortByDate()}>
                                 <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 16 * metrics}}>My Transactions</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={{flex :0.2, justifyContent : 'center', alignItems : 'center'}} onPress={() => this.sortByShow()}>
+                            {/* <TouchableOpacity style={{flex :0.2, justifyContent : 'center', alignItems : 'center'}} onPress={() => this.sortByShow()}>
                                 <Text style={{fontSize : 13 * metrics, fontFamily : Fonts.adobe_clean}}>Show Hide</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={{flex :0.25, justifyContent : 'center', alignItems : 'center'}} onPress={() => this.sortByCategory()}>
@@ -386,7 +386,7 @@ export default class AccountScreen extends Component {
                             </TouchableOpacity>
                             <TouchableOpacity style={{flex : 0.2, alignItems : 'flex-end'}} onPress={() => this.gotoAnalytics()}>
                                 <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 16 * metrics, color:Colors.main_blue_color}}>View all</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                         <ScrollView style={{flex : 1}}
                                 onScroll={({nativeEvent}) => {

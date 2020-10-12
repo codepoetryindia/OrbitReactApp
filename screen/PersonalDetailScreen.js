@@ -97,7 +97,6 @@ export default class PersonalDetailScreen extends Component {
     this.setState({ isLoading: true });
     this.getCountryList();
     this.getNationalityList();
-
     analytics().setCurrentScreen("Personal Details", "Personal Details Screen");
   }
 
@@ -509,6 +508,12 @@ export default class PersonalDetailScreen extends Component {
                       </Text>
                     )}
 
+                      {this.state.address_arr.length > 0  ? (
+                      <View>
+
+                    
+
+
                     <View style={{ marginTop: 15 * metrics }} />
                     <View
                       style={
@@ -544,6 +549,10 @@ export default class PersonalDetailScreen extends Component {
                         disabled={
                           this.state.address_arr.length > 0 ? false : true
                         }
+                        Icon={() => {
+                          return <MaterialIcon size={30} color="gray" name="menu-down"/>;
+                        }}
+
                       />
                     </View>
                     {!this.state.valid_address && (
@@ -747,6 +756,8 @@ export default class PersonalDetailScreen extends Component {
                         }}
                       />
                     </View>
+                    </View>
+                      ):null}
                     <View style={{ marginTop: 60 * metrics }} />
                   </View>
                 </ScrollView>

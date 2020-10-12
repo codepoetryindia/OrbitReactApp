@@ -19,6 +19,17 @@ export function validEmail(text) {
   }
 }
 
+export function validPhoneNumber(text) {
+  let reg = /^(07[\d]{8,12}|(\+447[\d]{7,11})|0044[\d]{10}|7[\d]{6,10})$/;
+  if (reg.test(text) === false) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+
+
 export function validCharacter(text) {
   let reg = /^[a-zA-Z]+$/;
   if (reg.test(text) === false) {

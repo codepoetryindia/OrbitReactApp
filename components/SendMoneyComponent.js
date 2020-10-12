@@ -52,7 +52,7 @@ export default class SendMoneyComponent extends Component {
                                 <View style={global_style.roundIcon}>
                                     <MaterialIcon name="home-outline" size={23 * metrics} style={global_style.icon_style}></MaterialIcon>
                                 </View>
-                                <Text style={global_style.btn_text}>Bank Account</Text>
+                                <Text style={global_style.btn_text}>Send Money</Text>
                             </TouchableOpacity>
                             {/* <TouchableOpacity style={styles.item} onPress={() => this.props.navigation.navigate('BankAccount')}>
                                 <View style={global_style.roundIcon}>
@@ -74,7 +74,7 @@ export default class SendMoneyComponent extends Component {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={styles.recent_body}>
+                    {/* <View style={styles.recent_body}>
                         {
                             this.state.user_arr.length > 0 &&
                             <Text style={styles.recent_title}>Recent</Text>
@@ -96,7 +96,7 @@ export default class SendMoneyComponent extends Component {
                                 })
                             }
                         </View>
-                    </View>
+                    </View> */}
                 </View>
             </ScrollView>
         )
