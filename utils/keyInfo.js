@@ -3,6 +3,8 @@ import VersionNumber from "react-native-version-number";
 //export const OnfidoToken = "sdk_sandbox.BbyMtAwp9tT.lHipby5La4G-xcUo5bArgLwsu4YsYV0Q"
 export const APP_VERSION = VersionNumber.appVersion;
 //export const WEB_API = "https://dev.naxetra.com/api/"
+
+
 export const WEB_API = "https://dev.orbit.money/api/" //Debug Api
 // export const WEB_API = "https://api.orbit.money/api/"; //Production Api
 
