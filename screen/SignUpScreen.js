@@ -44,7 +44,7 @@ import {
 import messaging from "@react-native-firebase/messaging";
 import { validPassword } from "../utils/utils";
 import AsyncStorage from "@react-native-community/async-storage";
-
+// import Moment from 'react-moment';
 export default class SignUpScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const { state } = navigation;
@@ -77,11 +77,15 @@ export default class SignUpScreen extends Component {
     valid_phone: true,
     isValidPhone: true,
     valid_birth: true,
+    valid_birth_greater:true,
     valid_password: true,
     valid_terms: true,
     duplicate_f_name: false,
     duplicate_l_name: false,
     duplicate_m_name: false,
+    length_f_name: false,
+    length_l_name: false,
+
     //showIOS
     date: new Date(1970, 1, 1),
     fcm_key: "",
@@ -90,6 +94,7 @@ export default class SignUpScreen extends Component {
   constructor(props) {
     super(props);
     this.getFcmToken = this.getFcmToken.bind(this);
+    this.ValidBirthday = this.ValidBirthday.bind(this);
     this.getFcmToken();
   }
 
@@ -187,7 +192,6 @@ export default class SignUpScreen extends Component {
 
   checkReady = (value) => {
     this.showErrorMessage(value);
-
     if (value == "t&c" && this.state.term_condition) {
       this.props.navigation.navigate("TermScreen");
     }
@@ -203,7 +207,8 @@ export default class SignUpScreen extends Component {
       this.state.term_condition &&
       this.state.first_name != this.state.middle_name &&
       this.state.first_name != this.state.last_name &&
-      this.state.middle_name != this.state.last_name
+      this.state.middle_name != this.state.last_name&& 
+      this.ValidBirthday()
     ) {
       this.setState({ isReady: true });
     } else {
@@ -287,11 +292,13 @@ export default class SignUpScreen extends Component {
             ) {
               this.setState({ duplicate_m_name: true });
             }
-            this.setState({ valid_f_name: true, duplicate_f_name: false });
+            this.setState({ valid_f_name: true, duplicate_f_name: false, length_f_name: false });
           } else {
-            this.setState({ valid_f_name: true, duplicate_f_name: true });
+            this.setState({ valid_f_name: true, duplicate_f_name: true, length_f_name: false });
           }
-        } else this.setState({ valid_f_name: false });
+        }else if (!(this.state.first_name.length > 2) ){          
+          this.setState({length_f_name: true, valid_f_name: true});
+        }else this.setState({ valid_f_name: false , length_f_name: false});
         break;
       case "l_name":
         if (
@@ -322,11 +329,13 @@ export default class SignUpScreen extends Component {
             ) {
               this.setState({ duplicate_m_name: true });
             }
-            this.setState({ valid_l_name: true, duplicate_l_name: false });
+            this.setState({ valid_l_name: true, duplicate_l_name: false , length_l_name: false});
           } else {
-            this.setState({ valid_l_name: true, duplicate_l_name: true });
+            this.setState({ valid_l_name: true, duplicate_l_name: true , length_l_name: false});
           }
-        } else this.setState({ valid_l_name: false });
+        }else if(!(this.state.last_name.length > 2)){
+          this.setState({length_l_name: true, valid_l_name: true});
+        } else this.setState({ valid_l_name: false, length_l_name: false });
         break;
       case "m_name":
         if (
@@ -376,8 +385,20 @@ export default class SignUpScreen extends Component {
 
         break;
       case "birth":
-        if (this.state.birthDay != "") this.setState({ valid_birth: true });
+        if (this.state.birthDay != "") {
+          this.setState({ valid_birth: true })
+        }
         else this.setState({ valid_birth: false });
+
+        // valid_birth_greater
+          let diff =(new Date().getTime() - date.getTime()) / 1000;
+          diff /= (60 * 60 * 24);
+          let yearDiff = Math.abs(Math.round(diff/365.25));
+          if( yearDiff >= 18){
+            this.setState({valid_birth_greater :true});
+          }else{
+            this.setState({valid_birth_greater :false});
+          }
         break;
       case "password":
         if (this.state.password.length < 8)
@@ -435,13 +456,46 @@ export default class SignUpScreen extends Component {
     this.setState({ isDateTimePickerVisible: false });
   };
 
+  ValidBirthday =()=>{
+    let slectedDate; 
+    if(!this.state.birthDay){
+      return false;
+    }else{
+      slectedDate = new Date(this.state.birthDay);
+    }
+
+
+    let diff =(new Date().getTime() - slectedDate.getTime()) / 1000;
+    diff /= (60 * 60 * 24);
+    let yearDiff = Math.abs(Math.round(diff/365.25));
+
+    if(yearDiff >= 18){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   handleDatePicked = (date) => {
+    // valid_birth_greater
+    let diff =(new Date().getTime() - date.getTime()) / 1000;
+    diff /= (60 * 60 * 24);
+    let yearDiff = Math.abs(Math.round(diff/365.25));
+
+    if( yearDiff >= 18){
+      this.setState({valid_birth_greater :true});
+    }else{
+      this.setState({valid_birth_greater :false});
+    }
+
     this.setState({
       birthDay: convertDate(date),
       dob: paramDate(date),
       date: date,
     });
     this.hideDateTimePicker();
+    this.checkReady();
+
   };
 
   render() {
@@ -484,9 +538,16 @@ export default class SignUpScreen extends Component {
                     </TextComponent>
                     {!this.state.valid_f_name && (
                       <Text style={global_style.error}>
+                        {ErrorMessage.error_valid_first_name}
+                      </Text>
+                    )}
+
+                    {this.state.length_f_name && (
+                      <Text style={global_style.error}>
                         {ErrorMessage.error_first_name_required}
                       </Text>
                     )}
+
                     {this.state.valid_f_name && this.state.duplicate_f_name && (
                       <Text style={global_style.error}>
                         {ErrorMessage.error_duplicate_first_name}
@@ -530,9 +591,16 @@ export default class SignUpScreen extends Component {
                     </TextComponent>
                     {!this.state.valid_l_name && (
                       <Text style={global_style.error}>
+                        {ErrorMessage.error_valid_last_name}
+                      </Text>
+                    )}
+
+                    {this.state.length_l_name && (
+                      <Text style={global_style.error}>
                         {ErrorMessage.error_last_name_required}
                       </Text>
                     )}
+
                     {this.state.valid_l_name && this.state.duplicate_l_name && (
                       <Text style={global_style.error}>
                         {ErrorMessage.error_duplicate_last_name}
@@ -635,6 +703,12 @@ export default class SignUpScreen extends Component {
                     {!this.state.valid_birth && (
                       <Text style={global_style.error}>
                         {ErrorMessage.error_birthday_required}
+                      </Text>
+                    )}
+
+                  {!this.state.valid_birth_greater && (
+                      <Text style={global_style.error}>
+                        {ErrorMessage.error_birthday_greater}
                       </Text>
                     )}
 

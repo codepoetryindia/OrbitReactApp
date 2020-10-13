@@ -60,7 +60,10 @@ export default class AccountScreen extends Component {
         }
         
         TransactionService.getAllTransactions(global.token, this.state.offset, this.state.limit).then(res => {
-            var data = res.data.result
+            var data = res.data.result;
+
+            console.log(data);
+
             if (data.success) {
                 if (Number(data.response.records.length) < 20) {
                     this.setState({is_limit : true})

@@ -135,7 +135,7 @@ export default class VerifyScreen extends Component {
           <View style={{ flex: 1, flexDirection: "column" }}>
             <View style={{ flex: 0.05 }} />
             <View style={{ flex: 1 }}>
-              <View style={{ flex: 0.4 }}>
+              <View style={{ flex: 0.35 }}>
                 <Image
                   source={Images.person_verify_icon}
                   style={styles.verify_img}
@@ -164,7 +164,7 @@ export default class VerifyScreen extends Component {
                   </Text>
                 </View>
               </View>
-              <View style={{ flex: 0.8 }}>
+              <View style={{ flex: 0.65 }}>
                 <View style={{ flex: 0.01 }} />
                 <View style={styles.verify_step}>
                   <View style={{ flex: 0.1 }} />

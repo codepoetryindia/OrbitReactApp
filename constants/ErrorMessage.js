@@ -12,14 +12,19 @@ export const error_url_required = "URL is required.";
 export const error_first_name_required =
   "First Name Must Be 3 Characters Long.";
 export const error_duplicate_first_name = "First Name is duplicated other name";
+export const error_valid_first_name= "Please enter valid name";
 export const error_last_name_required = "Last Name Must Be 3 Characters Long";
 export const error_duplicate_last_name = "Last Name is duplicated other name";
+export const error_valid_last_name= "Please enter valid last name";
+
 export const error_middle_name_required = "Middle Name is required.";
 export const error_duplicate_middle_name =
   "Middle Name is duplicated other name";
 export const error_phone_number_required = "Phone Number is required.";
-export const error_phone_number_invalid = "Please enter a valid phone number.";
+export const error_phone_number_invalid = "Please enter a valid UK phone number";
 export const error_birthday_required = "Your Birthday is required.";
+export const error_birthday_greater = "Age must be 18+";
+
 
 export const error_post_code_required = "Post Code is required.";
 export const error_address_required = "Address is required.";

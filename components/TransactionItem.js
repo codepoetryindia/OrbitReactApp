@@ -13,6 +13,7 @@ import * as Images from "../constants/Image";
 import * as Colors from "../constants/Colors";
 import { Avatar } from "react-native-elements";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import {
   getHoursAndMinsFromStr,
   paramDate2,
@@ -99,17 +100,21 @@ export default class TransactionItem extends Component {
                     style={styles.l_img}
                   />
                 ) : (
-                  <Avatar
-                    rounded
-                    overlayContainerStyle={{ backgroundColor: "#dfdfdf" }}
-                    size="xlarge"
-                    source={{
-                      uri: "data:image/png;base64," + item.category_image,
-                    }}
-                    resizeMode={"stretch"}
-                    containerStyle={{ borderColor: 1, borderColor: "gray" }}
-                    style={styles.l_img}
-                  />
+                  // <Avatar
+                  //   rounded
+                  //   overlayContainerStyle={{ backgroundColor: "#dfdfdf" }}
+                  //   size="xlarge"
+                  //   source={{
+                  //     uri: "data:image/png;base64," + item.category_image,
+                  //   }}
+                  //   resizeMode={"stretch"}
+                  //   containerStyle={{ borderColor: 1, borderColor: "gray" }}
+                  //   style={styles.l_img}
+                  // />
+                  <View style={[styles.l_img, {borderColor: 1, borderColor: "gray", backgroundColor: "#dfdfdf", justifyContent:'center', alignItems:'center'}]}>
+                  <Icon name={item.category_image} size={22}></Icon>
+                  </View>
+
                 )}
 
                 <TouchableOpacity
