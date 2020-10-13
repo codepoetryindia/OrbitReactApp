@@ -153,7 +153,7 @@ const AppNavigator = createStackNavigator(
     CompanyDetail: { screen: CompanyDetail },
   },
   {
-    initialRouteName: "SplashScreen",
+    initialRouteName: "BiometricScreen",
     navigationOptions: {
       headerLeft: null,
     },

@@ -30,6 +30,7 @@ import global_style, { metrics } from "../constants/GlobalStyle";
 import UserService from "../service/UserService";
 import { alertMessage } from "../utils/utils";
 import AsyncStorage from "@react-native-community/async-storage";
+import VideoRecorder from 'react-native-beautiful-video-recorder';
 
 const options = {
   title: "Select Avatar",

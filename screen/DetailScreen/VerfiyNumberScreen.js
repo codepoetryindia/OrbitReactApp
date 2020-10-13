@@ -30,6 +30,7 @@ import SuccessComponent from "../../components/SuccessComponent";
 import FingerprintScanner from "react-native-fingerprint-scanner";
 import OtherService from "../../service/OtherService";
 import AsyncStorage from "@react-native-community/async-storage";
+import Toast from 'react-native-simple-toast';
 
 export default class VerfiyNumberScreen extends Component {
   state = {
@@ -109,6 +110,7 @@ export default class VerfiyNumberScreen extends Component {
   onSkipFingerPrint() {}
   getCodeFromSMS() {}
   gotoScreen = () => {
+    this.setState({ isLoading: false });
     this.setState({ success: false });
     if (global.isManager) {
       this.props.navigation.navigate("ManageBeneficiary", { refresh: true });
@@ -138,14 +140,19 @@ export default class VerfiyNumberScreen extends Component {
       )
         .then((res) => {
           var data = res.data.result;
-          if (data.response.sucess) {
+          console.log(data);
+          if (data.response.success) {
             this.setState({ success: true });
+            Toast.show('Beneficiary added successfully, you can transfer after 10 minutes', Toast.LONG);
+            this.gotoScreen();
           } else {
+            Toast.show('Wrong OTP or Already Verified', Toast.LONG);
             this.setState({ success: false });
           }
           this.setState({ isLoading: false });
         })
         .catch((error) => {
+          Toast.show('Wrong OTP or Already Verified', Toast.LONG);
           this.setState({ isLoading: false });
         });
     } else if (global.verify_type == "payment_link") {

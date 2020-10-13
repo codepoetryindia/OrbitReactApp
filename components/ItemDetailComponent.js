@@ -41,6 +41,8 @@ import {
   getHoursAndMinsFromStr,
   paramDate2,
 } from "../utils/utils";
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
+
 
 const { config } = RNFetchBlob;
 const DocumentDir = RNFetchBlob.fs.dirs.SDCardApplicationDir;
@@ -489,19 +491,23 @@ export default class ItemDetailComponent extends Component {
                       style={styles.item_img}
                     />
                   ) : (
-                    <Avatar
-                      rounded
-                      overlayContainerStyle={{ backgroundColor: "#dfdfdf" }}
-                      size="xlarge"
-                      source={{
-                        uri:
-                          "data:image/png;base64," +
-                          this.props.item.category_image,
-                      }}
-                      resizeMode={"stretch"}
-                      containerStyle={{ borderColor: 1, borderColor: "gray" }}
-                      style={styles.item_img}
-                    />
+
+                    <View style={[styles.item_img , { borderColor: "gray", backgroundColor: "#dfdfdf", justifyContent:'center', alignItems:'center', borderRadius:180}]}>
+                    <Icon name={this.props.item.category_image} size={25}></Icon>
+                    </View>
+                    // <Avatar
+                    //   rounded
+                    //   overlayContainerStyle={{ backgroundColor: "#dfdfdf" }}
+                    //   size="xlarge"
+                    //   source={{
+                    //     uri:
+                    //       "data:image/png;base64," +
+                    //       this.props.item.category_image,
+                    //   }}
+                    //   resizeMode={"stretch"}
+                    //   containerStyle={{ borderColor: 1, borderColor: "gray" }}
+                    //   style={styles.item_img}
+                    // />
                   )}
                 </View>
                 <ScrollView>
@@ -1136,7 +1142,7 @@ export default class ItemDetailComponent extends Component {
                         key={idx}
                         onPress={() => this.onSelectCategory(item)}
                       >
-                        {!item.image_variant ? (
+                        {!item.sb_default_icon ? (
                           <Avatar
                             rounded
                             overlayContainerStyle={
@@ -1154,25 +1160,30 @@ export default class ItemDetailComponent extends Component {
                             style={styles.l_img}
                           />
                         ) : (
-                          <Avatar
-                            rounded
-                            overlayContainerStyle={
-                              this.state.selectCatID == item.id
-                                ? { backgroundColor: "#dfdfdf", opacity: 1 }
-                                : { backgroundColor: "#dfdfdf", opacity: 0.8 }
-                            }
-                            size="xlarge"
-                            source={{
-                              uri:
-                                "data:image/png;base64," + item.image_variant,
-                            }}
-                            resizeMode={"stretch"}
-                            containerStyle={{
-                              borderColor: 1,
-                              borderColor: "gray",
-                            }}
-                            style={styles.l_img}
-                          />
+                          // <Avatar
+                          //   rounded
+                          //   overlayContainerStyle={
+                          //     this.state.selectCatID == item.id
+                          //       ? { backgroundColor: "#dfdfdf", opacity: 1 }
+                          //       : { backgroundColor: "#dfdfdf", opacity: 0.8 }
+                          //   }
+                          //   size="xlarge"
+                          //   source={{
+                          //     uri:
+                          //       "data:image/png;base64," + item.image_variant,
+                          //   }}
+                          //   resizeMode={"stretch"}
+                          //   containerStyle={{
+                          //     borderColor: 1,
+                          //     borderColor: "gray",
+                          //   }}
+                          //   style={styles.l_img}
+                          // />
+                          <View style={[styles.l_img , { borderColor: "gray", backgroundColor: "#dfdfdf", justifyContent:'center', alignItems:'center', borderRadius:180}]}>
+                          <Icon name={item.sb_default_icon} size={25}></Icon>
+                          </View>
+
+
                         )}
                         <Text
                           style={

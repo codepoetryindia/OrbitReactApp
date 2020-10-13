@@ -508,11 +508,8 @@ export default class PersonalDetailScreen extends Component {
                       </Text>
                     )}
 
-                      {this.state.address_arr.length > 0  ? (
+                      {/* {this.state.address_arr.length > 0  ? ( */}
                       <View>
-
-                    
-
 
                     <View style={{ marginTop: 15 * metrics }} />
                     <View
@@ -757,7 +754,7 @@ export default class PersonalDetailScreen extends Component {
                       />
                     </View>
                     </View>
-                      ):null}
+                      {/* ):null} */}
                     <View style={{ marginTop: 60 * metrics }} />
                   </View>
                 </ScrollView>
