@@ -248,7 +248,7 @@ export default class TabScreen extends Component {
       });
       return true;
     } else {
-      return false;
+      return true;
     }
   }
   render() {

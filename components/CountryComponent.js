@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     resizeMode: "stretch",
     justifyContent: "center",
-    elevation: 3.5,
+    // elevation: 3.5,
   },
   text_body: {
     marginLeft: 25 * metrics,

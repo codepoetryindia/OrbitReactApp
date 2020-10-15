@@ -44,7 +44,6 @@ target 'Naxetra' do
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
   pod 'Intercom'
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 

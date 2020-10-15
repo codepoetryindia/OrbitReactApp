@@ -15,6 +15,8 @@ import PropTypes from "prop-types";
 import { Avatar } from "react-native-elements";
 import { Fonts } from "../constants/Fonts";
 import TransactionService from "../service/TransactionService";
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
+
 import {
   paramDate2,
   getHoursAndMins,
@@ -172,20 +174,24 @@ export default class CategoryComponent extends Component {
                           style={styles.l_img}
                         />
                       ) : (
-                        <Avatar
-                          rounded
-                          overlayContainerStyle={{ backgroundColor: "#dfdfdf" }}
-                          size="xlarge"
-                          source={{
-                            uri: "data:image/png;base64," + item.category_image,
-                          }}
-                          resizeMode={"stretch"}
-                          containerStyle={{
-                            borderColor: 1,
-                            borderColor: "gray",
-                          }}
-                          style={styles.l_img}
-                        />
+                        // <Avatar
+                        //   rounded
+                        //   overlayContainerStyle={{ backgroundColor: "#dfdfdf" }}
+                        //   size="xlarge"
+                        //   source={{
+                        //     uri: "data:image/png;base64," + item.category_image,
+                        //   }}
+                        //   resizeMode={"stretch"}
+                        //   containerStyle={{
+                        //     borderColor: 1,
+                        //     borderColor: "gray",
+                        //   }}
+                        //   style={styles.l_img}
+                        // />
+
+                        <View style={[styles.l_img, {borderColor: 1, borderColor: "gray", backgroundColor: "#dfdfdf", justifyContent:'center', alignItems:'center'}]}>
+                        <Icon name={item.category_image} size={22}></Icon>
+                        </View>
                       )}
 
                       <TouchableOpacity

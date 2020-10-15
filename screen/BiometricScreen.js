@@ -31,6 +31,7 @@ import UserService from "../service/UserService";
 import { alertMessage } from "../utils/utils";
 import AsyncStorage from "@react-native-community/async-storage";
 import VideoRecorder from 'react-native-beautiful-video-recorder';
+import { RNCamera } from 'react-native-camera';
 
 const options = {
   title: "Select Avatar",
@@ -44,6 +45,20 @@ const options = {
 };
 
 export default class BiometricScreen extends Component {
+
+  constructor(props) {
+    super(props);
+    this.videoRecorder = React.createRef();
+ }
+
+ start = () => {
+    // 30 seconds
+	  this.videoRecorder.current.open({ maxLength: 30 },(data) => {
+		  console.log('captured data', data);
+	  });
+  } 
+
+
   componentDidMount() {
     this.setState({ isShow: false });
     analytics().setCurrentScreen("Biometric", "Biometric");
@@ -97,26 +112,45 @@ export default class BiometricScreen extends Component {
       });
     } else {
       //Video
-      ImagePicker.openCamera({
-        width: 300,
-        height: 400,
-        cropperCircleOverlay: true,
-        cropping: false,
-        mediaType: "video",
-        includeBase64: true,
-      }).then((video) => {
-        this.setState({ video_data: video, video_url: video.path }, () => {
+      // ImagePicker.openCamera({
+      //   width: 300,
+      //   height: 400,
+      //   cropperCircleOverlay: true,
+      //   cropping: false,
+      //   mediaType: "video",
+      //   includeBase64: true,
+      // }).then((video) => {
+      //   this.setState({ video_data: video, video_url: video.path }, () => {
+      //     this.checkReady();
+      //   });
+      //   RNFS.readFile(video.path, "base64").then((result) => {
+      //     var base64_data = result;
+      //     this.setState({ video_data: base64_data });
+      //   });
+      //   RNThumbnail.get(video.path).then((result) => {
+      //     this.setState({ thumb_img: { uri: result.path } });
+      //     global.video_img = { uri: result.path };
+      //   });
+      // });
+
+          // 30 seconds
+	  this.videoRecorder.current.open({ maxLength: 30 },(video) => {
+        this.setState({ video_data: video, video_url: video.uri }, () => {
           this.checkReady();
         });
-        RNFS.readFile(video.path, "base64").then((result) => {
+        RNFS.readFile(video.uri, "base64").then((result) => {
           var base64_data = result;
           this.setState({ video_data: base64_data });
         });
-        RNThumbnail.get(video.path).then((result) => {
+        RNThumbnail.get(video.uri).then((result) => {
           this.setState({ thumb_img: { uri: result.path } });
           global.video_img = { uri: result.path };
         });
-      });
+
+	  });
+
+
+
     }
   };
   checkReady = () => {
@@ -182,6 +216,15 @@ export default class BiometricScreen extends Component {
             goBack={() => this.props.navigation.goBack()}
           />
           <ScrollView style={{ width: "100%", height: "100%" }}>
+
+
+      		{/* <View style={{height:200, borderWidth:1}}>			
+            <TouchableOpacity onPress={this.start}>
+              <Text>Start</Text>
+            </TouchableOpacity>
+            		    </View> */}
+
+
             <View style={[global_style.input_body, { width: "75%" }]}>
               <View style={{ marginTop: 30 * metrics }} />
               <Text style={global_style.input_title}>
@@ -402,7 +445,11 @@ export default class BiometricScreen extends Component {
             />
           </View>
         )}
+            <VideoRecorder ref={ this.videoRecorder }  msg={ "Hi, My name is "+  global.user_info.first_name + " " +
+                      global.user_info.last_name + ". I would like to open Orbit Account"}  cameraOptions={{type : RNCamera.Constants.Type.front, flashMode:RNCamera.Constants.FlashMode.on}} recordOptions={{flashMode:RNCamera.Constants.FlashMode.on, defaultVideoQuality: 'RNCamera.Constants.VideoQuality.480p'}}/>
+
       </SafeAreaView>
+      
     );
   }
 }
