@@ -144,8 +144,8 @@ android {
         applicationId "com.orbit.money"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 116
-        versionName "1.06"
+        versionCode 118
+        versionName "1.08"
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true
     }

@@ -75,7 +75,7 @@ export default class CategoryComponent extends Component {
                 {this.state.transaction_arr.map((item, idx) => {
                   return (
                     <View style={styles.item} key={idx}>
-                      {!item.rb_transaction_icon ? (
+                      {!item.category_image ? (
                         <Avatar
                           rounded
                           overlayContainerStyle={{ backgroundColor: "#dfdfdf" }}
@@ -89,22 +89,26 @@ export default class CategoryComponent extends Component {
                           style={styles.l_img}
                         />
                       ) : (
-                        <Avatar
-                          rounded
-                          overlayContainerStyle={{ backgroundColor: "#dfdfdf" }}
-                          size="xlarge"
-                          source={{
-                            uri:
-                              "data:image/png;base64," +
-                              item.rb_transaction_icon,
-                          }}
-                          resizeMode={"stretch"}
-                          containerStyle={{
-                            borderColor: 1,
-                            borderColor: "gray",
-                          }}
-                          style={styles.l_img}
-                        />
+                        // <Avatar
+                        //   rounded
+                        //   overlayContainerStyle={{ backgroundColor: "#dfdfdf" }}
+                        //   size="xlarge"
+                        //   source={{
+                        //     uri:
+                        //       "data:image/png;base64," +
+                        //       item.rb_transaction_icon,
+                        //   }}
+                        //   resizeMode={"stretch"}
+                        //   containerStyle={{
+                        //     borderColor: 1,
+                        //     borderColor: "gray",
+                        //   }}
+                        //   style={styles.l_img}
+                        // />
+                        <View style={[styles.l_img, {borderColor: 1, borderColor: "gray", backgroundColor: "#dfdfdf", justifyContent:'center', alignItems:'center'}]}>
+                          <Icon name={item.category_image} size={22}></Icon>
+                        </View>
+
                       )}
 
                       <View style={styles.text_body}>

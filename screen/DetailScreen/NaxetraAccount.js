@@ -24,6 +24,8 @@ import global_style, { metrics } from '../../constants/GlobalStyle';
 import * as Images from '../../constants/Image';
 import TransactionService from '../../service/TransactionService';
 import { alertMessage, changeDate2, convertDate, getHoursAndMins } from '../../utils/utils';
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
+
 
 const placeholder = {
     label : 'Select Currency',
@@ -619,7 +621,7 @@ export default class NaxetraScreen extends Component {
                                             return(
                                                 <TouchableOpacity style={styles.category_item} key={idx} onPress={() => this.onSelectCategory(item)}>
                                                     {
-                                                        !item.image_variant ? 
+                                                        !item.sb_default_icon ? 
                                                         <Avatar
                                                             rounded
                                                             overlayContainerStyle={this.state.selectCatID == item.id ? { backgroundColor: '#dfdfdf',opacity : 1 } : { backgroundColor: '#dfdfdf',opacity : 0.8 }}
@@ -629,15 +631,19 @@ export default class NaxetraScreen extends Component {
                                                             containerStyle={{ borderColor: 1, borderColor: 'gray' }}
                                                             style={styles.l_img}
                                                         /> :
-                                                        <Avatar
-                                                            rounded
-                                                            overlayContainerStyle={this.state.selectCatID == item.id ? { backgroundColor: '#dfdfdf',opacity : 1 } : { backgroundColor: '#dfdfdf',opacity : 0.8 }}
-                                                            size="xlarge"
-                                                            source={{uri : 'data:image/png;base64,' + item.image_variant}}
-                                                            resizeMode={'stretch'}
-                                                            containerStyle={{ borderColor: 1, borderColor: 'gray' }}
-                                                            style={styles.l_img}
-                                                        />
+                                                        // <Avatar
+                                                        //     rounded
+                                                        //     overlayContainerStyle={this.state.selectCatID == item.id ? { backgroundColor: '#dfdfdf',opacity : 1 } : { backgroundColor: '#dfdfdf',opacity : 0.8 }}
+                                                        //     size="xlarge"
+                                                        //     source={{uri : 'data:image/png;base64,' + item.image_variant}}
+                                                        //     resizeMode={'stretch'}
+                                                        //     containerStyle={{ borderColor: 1, borderColor: 'gray' }}
+                                                        //     style={styles.l_img}
+                                                        // />
+
+                                                        <View style={[styles.l_img , { borderColor: "gray", backgroundColor: "#dfdfdf", justifyContent:'center', alignItems:'center', borderRadius:180}]}>
+                                                        <Icon name={item.sb_default_icon} size={25}></Icon>
+                                                        </View>
                                                     }
                                                     <Text style={this.state.selectCatID != item.id ? styles.normal_text : styles.item_text}>{item.name}</Text>
                                                 </TouchableOpacity>            
