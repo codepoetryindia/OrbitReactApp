@@ -1,0 +1,7 @@
+
+************************
+replace contents of Archive\node_modules\react-native-beautiful-video-recorder\lib\index.js file 
+with backup_react_native_beautiful_video_index.js 
+
+******************
+added for text overlay on top of video
