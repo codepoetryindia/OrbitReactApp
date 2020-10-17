@@ -60,7 +60,7 @@ export const fingerprint = require("../assets/img/finger_print.png");
 export const user_icon = require("../assets/img/CRM/user_icon.png");
 export const company_icon = require("../assets/img/CRM/company_icon.png");
 
-export const physical_card = require("../assets/img/card/physical_card.png");
+export const physical_card = require("../assets/img/card/master_card.png");
 export const virtual_card = require("../assets/img/card/virtual_card.png");
 export const camera_img = require("../assets/img/card/camera.png");
 
