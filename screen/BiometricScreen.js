@@ -134,7 +134,7 @@ export default class BiometricScreen extends Component {
       // });
 
           // 30 seconds
-	  this.videoRecorder.current.open({ maxLength: 30 },(video) => {
+	  this.videoRecorder.current.open({ maxLength: 10 },(video) => {
         this.setState({ video_data: video, video_url: video.uri }, () => {
           this.checkReady();
         });

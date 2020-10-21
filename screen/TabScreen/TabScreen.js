@@ -39,6 +39,8 @@ export default class TabScreen extends Component {
       header: null,
     };
   };
+
+
   openDrawer = () => {
     this.setState({ isShowSide: true });
     this._drawer.open();
@@ -94,14 +96,21 @@ export default class TabScreen extends Component {
   };
 
   showDetail = (item) => {
+    console.log( JSON.stringify(item));
+
+
     var obj = {
       note: !item.rb_transaction_add_notes ? "" : item.rb_transaction_add_notes,
       rating: "",
       attach: "",
     };
-    this.setState({ isLoading: true });
+
+    if(!this.props.navigation.getParam('openModal', false)){
+      this.setState({ isLoading: true });
+    }
     TransactionService.getTransactionDetail(global.token, item.id).then(
       (res) => {
+        console.log(res);
         var detail = res.data.result;
         if (!detail.success) {
           return;
@@ -201,6 +210,20 @@ export default class TabScreen extends Component {
     await AsyncStorage.setItem("is_signup", "");
   }
   componentDidMount() {
+    // console.log("called", this.state.page, global.tabIdx);
+    // console.log(this.props.navigation.state.params);
+    
+    let openModal = this.props.navigation.getParam('openModal', false);
+    if(openModal){      
+      global.tabIdx = 1;
+      try{
+      	      this.showDetail(JSON.parse(this.props.navigation.state.params.data));
+      this.props.navigation.setParams({ openModal: false });
+      }catch(error){
+      	console.log("json parese", error);
+      }
+    }
+
     this.setLocalStorage();
     global.pay_type = 1;
     BackHandler.addEventListener(

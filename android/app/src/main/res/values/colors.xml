@@ -2,4 +2,5 @@
 <resources>
     <color name="status_bar_color"><!-- Colour of your status bar here --></color>
     <color name="main_color">#fff</color>
+    <color name="white">#FFF</color>
 </resources>

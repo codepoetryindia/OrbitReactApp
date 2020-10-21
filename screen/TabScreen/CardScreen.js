@@ -325,15 +325,16 @@ export default class CardScreen extends Component {
                           >
                             {item.rb_card_type == "virtual" ? (
                               <ImageBackground
-                                source={Images.virtual_card}
+                                source={Images.physical_card}
                                 style={styles.cards}
                                 resizeMode={"stretch"}
                                 borderRadius={5 * metrics}
                               >
-                                <View style={{ marginTop: 120 * metrics }} />
-                                <View>
-                                  <Text style={styles.card_number}>
-                                    {item.rb_card_number == false
+
+                                 {/* <View style={{ marginTop: 120 * metrics }} />
+                                 <View>
+                                   <Text style={styles.card_number}>
+                                     {item.rb_card_number == false
                                       ? ""
                                       : item.rb_card_number}
                                   </Text>
@@ -395,7 +396,84 @@ export default class CardScreen extends Component {
                                       {global.user_info.account_number}
                                     </Text>
                                   </View>
+                                </View> */}
+
+                              <View style={{ marginTop: 35 * metrics }} />
+                              <View>
+                                <Text style={styles.card_name}>
+                                  {item.name}
+                                </Text>
+
+                                <View style={{ flexDirection: "row" }}>
+                                  <Text style={styles.card_id}>
+                                    * * * *  * * * *  * * * *                                                                          
+                                  </Text>
+
+                                  {item.rb_card_number? (
+                                  <Text style={styles.card_id}> {item.rb_card_number.substring(item.rb_card_number.length-4, item.rb_card_number.length)}</Text>
+                                  ): (
+                                  <Text style={styles.card_id}>****</Text>
+                                  ) }
                                 </View>
+                                {/* <Text style={styles.card_number}>{item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
+                                <View
+                                  style={{
+                                    flexDirection: "row",
+                                    flex: 1,
+                                    marginTop: 5 * metrics,
+                                    marginBottom: 10 * metrics,
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      flex: 0.7,
+                                      flexDirection: "row",
+                                    }}
+                                  >
+                                    <View>
+                                      <Text style={styles.cvv_title}>
+                                        Expire
+                                      </Text>
+                                      {/* <Text style={styles.cvv_title}>THRU</Text> */}
+                                    </View>
+                                    <Text style={styles.card_cvv}>
+                                      {item.rb_card_expiry_date}
+                                    </Text>
+                                  </View>
+                                  <View
+                                    style={{
+                                      flex: 0.7,
+                                      flexDirection: "row",
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 18 * metrics,
+                                        fontFamily: Fonts.adobe_clean,
+                                        color: "#7C7878",
+                                        marginRight: 7 * metrics * metrics,
+                                      }}
+                                    >
+                                      CVV
+                                    </Text>
+
+                                    <Text
+                                      style={{
+                                        fontSize: 18 * metrics,
+                                        fontFamily: Fonts.adobe_clean,
+                                        color: "#7C7878",
+                                      }}
+                                    >
+                                      ***
+                                      {/* {item.rb_card_cvv == false
+                                        ? ""
+                                        : item.rb_card_cvv} */}
+                                    </Text>
+                                  </View>
+                                  <View style={{ flex: 0.1 }} />
+                                </View>
+                              </View>
+
                               </ImageBackground>
                             ) : (
                               <ImageBackground
@@ -479,9 +557,14 @@ export default class CardScreen extends Component {
 
                                   <View style={{ flexDirection: "row" }}>
                                     <Text style={styles.card_id}>
-                                      * * * *  * * * *  * * * *
+                                      * * * *  * * * *  * * * *                                  
                                     </Text>
-                                    <Text style={styles.card_id}> 5 6 5 6</Text>
+
+                                    {item.rb_card_number? (
+                                    <Text style={styles.card_id}> {item.rb_card_number.substring(item.rb_card_number.length-4, item.rb_card_number.length)}</Text>
+                                    ): (
+                                    <Text style={styles.card_id}>****</Text>
+                                    ) }
                                   </View>
                                   {/* <Text style={styles.card_number}>{item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
                                   <View
@@ -532,9 +615,10 @@ export default class CardScreen extends Component {
                                           color: "#7C7878",
                                         }}
                                       >
-                                        {item.rb_card_cvv == false
+                                        ***
+                                        {/* {item.rb_card_cvv == false
                                           ? ""
-                                          : item.rb_card_cvv}
+                                          : item.rb_card_cvv} */}
                                       </Text>
                                     </View>
                                     <View style={{ flex: 0.1 }} />
@@ -565,12 +649,12 @@ export default class CardScreen extends Component {
                         <View style={{ width: "90%", alignSelf: "center" }}>
                           {this.state.select_item.rb_card_type == "virtual" ? (
                             <ImageBackground
-                              source={Images.virtual_card}
+                              source={Images.physical_card}
                               style={styles.cards}
                               resizeMode={"stretch"}
                               borderRadius={5 * metrics}
                             >
-                              <View style={{ marginTop: 120 * metrics }} />
+                              {/* <View style={{ marginTop: 120 * metrics }} />
                               <View>
                                 <Text style={styles.card_number}>
                                   {this.state.select_item.rb_card_number ==
@@ -633,6 +717,81 @@ export default class CardScreen extends Component {
                                     {global.user_info.account_number}
                                   </Text>
                                 </View>
+                              </View> */}
+                                                            <View style={{ marginTop: 35 * metrics }} />
+                              <View>
+                                <Text style={styles.card_name}>
+                                  {item.name}
+                                </Text>
+
+                                <View style={{ flexDirection: "row" }}>
+                                  <Text style={styles.card_id}>
+                                    * * * *  * * * *  * * * *                                      
+                                  </Text>
+
+                                  {item.rb_card_number? (
+                                  <Text style={styles.card_id}> {item.rb_card_number.substring(item.rb_card_number.length-4, item.rb_card_number.length)}</Text>
+                                  ): (
+                                  <Text style={styles.card_id}>****</Text>
+                                  ) }
+                                </View>
+                                {/* <Text style={styles.card_number}>{item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
+                                <View
+                                  style={{
+                                    flexDirection: "row",
+                                    flex: 1,
+                                    marginTop: 5 * metrics,
+                                    marginBottom: 10 * metrics,
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      flex: 0.7,
+                                      flexDirection: "row",
+                                    }}
+                                  >
+                                    <View>
+                                      <Text style={styles.cvv_title}>
+                                        Expire
+                                      </Text>
+                                      {/* <Text style={styles.cvv_title}>THRU</Text> */}
+                                    </View>
+                                    <Text style={styles.card_cvv}>
+                                      {item.rb_card_expiry_date}
+                                    </Text>
+                                  </View>
+                                  <View
+                                    style={{
+                                      flex: 0.7,
+                                      flexDirection: "row",
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 18 * metrics,
+                                        fontFamily: Fonts.adobe_clean,
+                                        color: "#7C7878",
+                                        marginRight: 7 * metrics * metrics,
+                                      }}
+                                    >
+                                      CVV
+                                    </Text>
+
+                                    <Text
+                                      style={{
+                                        fontSize: 18 * metrics,
+                                        fontFamily: Fonts.adobe_clean,
+                                        color: "#7C7878",
+                                      }}
+                                    >
+                                      ***
+                                      {/* {item.rb_card_cvv == false
+                                        ? ""
+                                        : item.rb_card_cvv} */}
+                                    </Text>
+                                  </View>
+                                  <View style={{ flex: 0.1 }} />
+                                </View>
                               </View>
                             </ImageBackground>
                           ) : (
@@ -667,14 +826,19 @@ export default class CardScreen extends Component {
                               <View style={{ marginTop: 35 * metrics }} />
                               <View>
                                 <Text style={styles.card_name}>
-                                  {item.name}
+                                  {this.state.select_item.name}
                                 </Text>
 
                                 <View style={{ flexDirection: "row" }}>
                                   <Text style={styles.card_id}>
                                     * * * * * * * * * * * *
                                   </Text>
-                                  <Text style={styles.card_id}>5 6 5 6</Text>
+                                  {this.state.select_item.rb_card_number? (
+                                    <Text style={styles.card_id}> {this.state.select_item.rb_card_number.substring(this.state.select_item.rb_card_number.length-4, this.state.select_item.rb_card_number.length)}</Text>
+                                    ): (
+                                    <Text style={styles.card_id}> * * * *</Text>
+                                    ) }
+
                                 </View>
                                 {/* <Text style={styles.card_number}>{item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
                                 <View
@@ -695,7 +859,7 @@ export default class CardScreen extends Component {
                                       {/* <Text style={styles.cvv_title}>THRU</Text> */}
                                     </View>
                                     <Text style={styles.card_cvv}>
-                                      {item.rb_card_expiry_date}
+                                      {this.state.select_item.rb_card_expiry_date}
                                     </Text>
                                   </View>
                                   <View
@@ -719,9 +883,10 @@ export default class CardScreen extends Component {
                                         color: "#7C7878",
                                       }}
                                     >
-                                      {item.rb_card_cvv == false
+                                      ***
+                                      {/* {this.state.select_item.rb_card_cvv == false
                                         ? ""
-                                        : item.rb_card_cvv}
+                                        : this.state.select_item.rb_card_cvv} */}
                                     </Text>
                                   </View>
                                   <View style={{ flex: 0.1 }} />
@@ -1066,12 +1231,12 @@ export default class CardScreen extends Component {
                         <View style={{ width: "90%", alignSelf: "center" }}>
                           {this.state.select_item.rb_card_type == "virtual" ? (
                             <ImageBackground
-                              source={Images.virtual_card}
+                              source={Images.physical_card}
                               style={styles.cards}
                               resizeMode={"stretch"}
                               borderRadius={5 * metrics}
                             >
-                              <View style={{ marginTop: 120 * metrics }} />
+                              {/* <View style={{ marginTop: 120 * metrics }} />
                               <View>
                                 <Text style={styles.card_number}>
                                   {this.state.select_item.rb_card_number ==
@@ -1116,6 +1281,81 @@ export default class CardScreen extends Component {
                                     {global.user_info.account_number}
                                   </Text>
                                 </View>
+                              </View> */}
+                                                            <View style={{ marginTop: 35 * metrics }} />
+                              <View>
+                                <Text style={styles.card_name}>
+                                  {item.name}
+                                </Text>
+
+                                <View style={{ flexDirection: "row" }}>
+                                  <Text style={styles.card_id}>
+                                    * * * *  * * * *  * * * *                                      
+                                  </Text>
+
+                                  {item.rb_card_number? (
+                                  <Text style={styles.card_id}> {item.rb_card_number.substring(item.rb_card_number.length-4, item.rb_card_number.length)}</Text>
+                                  ): (
+                                  <Text style={styles.card_id}>****</Text>
+                                  ) }
+                                </View>
+                                {/* <Text style={styles.card_number}>{item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
+                                <View
+                                  style={{
+                                    flexDirection: "row",
+                                    flex: 1,
+                                    marginTop: 5 * metrics,
+                                    marginBottom: 10 * metrics,
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      flex: 0.7,
+                                      flexDirection: "row",
+                                    }}
+                                  >
+                                    <View>
+                                      <Text style={styles.cvv_title}>
+                                        Expire
+                                      </Text>
+                                      {/* <Text style={styles.cvv_title}>THRU</Text> */}
+                                    </View>
+                                    <Text style={styles.card_cvv}>
+                                      {item.rb_card_expiry_date}
+                                    </Text>
+                                  </View>
+                                  <View
+                                    style={{
+                                      flex: 0.7,
+                                      flexDirection: "row",
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 18 * metrics,
+                                        fontFamily: Fonts.adobe_clean,
+                                        color: "#7C7878",
+                                        marginRight: 7 * metrics * metrics,
+                                      }}
+                                    >
+                                      CVV
+                                    </Text>
+
+                                    <Text
+                                      style={{
+                                        fontSize: 18 * metrics,
+                                        fontFamily: Fonts.adobe_clean,
+                                        color: "#7C7878",
+                                      }}
+                                    >
+                                      ***
+                                      {/* {item.rb_card_cvv == false
+                                        ? ""
+                                        : item.rb_card_cvv} */}
+                                    </Text>
+                                  </View>
+                                  <View style={{ flex: 0.1 }} />
+                                </View>
                               </View>
                             </ImageBackground>
                           ) : (
@@ -1148,16 +1388,20 @@ export default class CardScreen extends Component {
                               <View style={{ marginTop: 35 * metrics }} />
                               <View>
                                 <Text style={styles.card_name}>
-                                  {item.name}
+                                  {this.state.select_item.name}
                                 </Text>
 
                                 <View style={{ flexDirection: "row" }}>
                                   <Text style={styles.card_id}>
                                     * * * * * * * * * * * *
                                   </Text>
-                                  <Text style={styles.card_id}>5 6 5 6</Text>
+                                  {this.state.select_item.rb_card_number? (
+                                    <Text style={styles.card_id}> {this.state.select_item.rb_card_number.substring(this.state.select_item.rb_card_number.length-4, this.state.select_item.rb_card_number.length)}</Text>
+                                    ): (
+                                    <Text style={styles.card_id}> * * * *</Text>
+                                    ) }
                                 </View>
-                                {/* <Text style={styles.card_number}>{item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
+                                {/* <Text style={styles.card_number}>{this.state.select_item.rb_card_number == false ? '' :  this.state.select_item.rb_card_number}</Text> */}
                                 <View
                                   style={{
                                     flexDirection: "row",
@@ -1176,7 +1420,7 @@ export default class CardScreen extends Component {
                                       {/* <Text style={styles.cvv_title}>THRU</Text> */}
                                     </View>
                                     <Text style={styles.card_cvv}>
-                                      {item.rb_card_expiry_date}
+                                      {this.state.select_item.rb_card_expiry_date}
                                     </Text>
                                   </View>
                                   <View
@@ -1199,10 +1443,10 @@ export default class CardScreen extends Component {
                                         fontFamily: Fonts.adobe_clean,
                                         color: "#7C7878",
                                       }}
-                                    >
-                                      {item.rb_card_cvv == false
+                                    >***
+                                      {/* {this.state.select_item.rb_card_cvv == false
                                         ? ""
-                                        : item.rb_card_cvv}
+                                        : this.state.select_item.rb_card_cvv} */}
                                     </Text>
                                   </View>
                                   <View style={{ flex: 0.1 }} />

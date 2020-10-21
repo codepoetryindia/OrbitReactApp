@@ -80,13 +80,20 @@ export default class TransactionItem extends Component {
           ]}
         >
           {this.state.item_arr.map((item, index) => {
-            var date = new Date(
-              item.nx_transaction_date.split(" ")[0] +
-                "T" +
-                item.nx_transaction_date.split(" ")[1]
-            )
-              .toISOString()
-              .toLocaleString("en-GB", { timeZone: "Europe/London" });
+            if(item.nx_transaction_date){
+              var date = new Date(
+                item.nx_transaction_date.split(" ")[0] +
+                  "T" +
+                  item.nx_transaction_date.split(" ")[1]
+              )
+                .toISOString()
+                .toLocaleString("en-GB", { timeZone: "Europe/London" });
+            }else{
+              var date = new Date().toISOString().toLocaleString("en-GB", { timeZone: "Europe/London" });
+            }
+
+
+
             return (
               <View style={styles.item} key={index}>
                 {!item.category_image ? (

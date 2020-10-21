@@ -144,8 +144,8 @@ android {
         applicationId "com.orbit.money"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 118
-        versionName "1.08"
+        versionCode 119
+        versionName "1.09"
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true
     }
@@ -212,6 +212,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-push-notification')
     implementation project(':@react-native-firebase_messaging')
     implementation project(':react-native-version-number')
     implementation project(':react-native-fingerprint-scanner')

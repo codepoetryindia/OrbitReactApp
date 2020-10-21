@@ -1112,7 +1112,7 @@ export default class ItemDetailComponent extends Component {
                   size={25 * metrics}
                 />
               </TouchableOpacity>
-              <Text style={styles.back_txt}>Is this category correct?</Text>
+              <Text style={styles.back_txt}>Select transaction category</Text>
             </View>
             <View style={styles.search_body}>
               <TextInput

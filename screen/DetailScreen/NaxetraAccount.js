@@ -600,7 +600,7 @@ export default class NaxetraScreen extends Component {
                             <TouchableOpacity style={{marginLeft : 10 * metrics}} onPress={() => this.setState({is_subScreen : false})}>
                                 <MaterialCommunityIcons name="keyboard-backspace" size={25 * metrics}></MaterialCommunityIcons>
                             </TouchableOpacity>
-                            <Text style={styles.back_txt}>Is this category correct?</Text>
+                            <Text style={styles.back_txt}>Select transaction category</Text>
                         </View>
                         <View style={styles.search_body}>
                             <TextInput

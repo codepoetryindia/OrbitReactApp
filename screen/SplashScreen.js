@@ -31,6 +31,8 @@ import * as Images from "../constants/Image";
 import UserService from "../service/UserService";
 import { alertMessage } from "../utils/utils";
 import AsyncStorage from "@react-native-community/async-storage";
+import NavigationService from './../service/NavigationService';
+
 
 const resetAction = (routeName) =>
   StackActions.reset({
@@ -105,7 +107,8 @@ export default class SplashScreen extends Component {
     isLoading: false,
   };
   goLogin() {
-    this.props.navigation.navigate("LoginScreen");
+    // this.props.navigation.navigate("LoginScreen");
+    NavigationService.navigate("LoginScreen");
   }
   goSignUp() {
     this.props.navigation.navigate("SignUpScreen");
