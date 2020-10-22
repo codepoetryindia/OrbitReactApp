@@ -53,6 +53,17 @@ export default class CardScreen extends Component {
         if (data.success) {
           console.log("data = ", data.response);
           this.setState({ card_arr: data.response });
+          let openModal = this.props.navigation.getParam('openModal', false);
+          if(openModal){  
+            try{
+              this.onSelectItem(JSON.parse(this.props.navigation.state.params.data));
+              this.props.navigation.setParams({ openModal: false });
+            }catch(error){
+              console.log("json parese", error);
+            }
+          }
+
+
         } else {
           this.setState({ card_arr: [], isAdd: true });
         }

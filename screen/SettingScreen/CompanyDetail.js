@@ -191,7 +191,7 @@ export default class CompanyDetail extends Component {
                     color: Colors.white_gray_color,
                   }}
                 >
-                  Buisness Details
+                  Business Details
                 </Text>
                 <View style={styles.business_detail}>
                   <View style={{ marginTop: 20 * metrics }} />
@@ -213,6 +213,13 @@ export default class CompanyDetail extends Component {
                       {global.user_info.company_address}
                     </Text>
                   </View>
+                  <View style={styles.business_item}>
+                    <Text style={styles.label}>State</Text>
+                    <Text style={[styles.value, {textTransform: 'capitalize'}]}>
+                      {global.user_info.state}
+                    </Text>
+                  </View>
+
                   {/* <View style={styles.business_item}>
                     <Text style={styles.label}>Status</Text>
                     <Text style={styles.value}>

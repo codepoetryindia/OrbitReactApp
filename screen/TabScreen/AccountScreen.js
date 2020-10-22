@@ -9,7 +9,7 @@
 import analytics from '@react-native-firebase/analytics';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Linking } from 'react-native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import TabHeaderScreen from '../../components/TabHeaderScreen';
 import TransactionItem from '../../components/TransactionItem';
@@ -404,7 +404,12 @@ export default class AccountScreen extends Component {
                                 }}
                             >
                             <View style={this.state.show_banner ? styles.lists : styles.no_margin_lists}>
-                                {
+
+
+                                {global.user_info.state && global.user_info.state == "approved" ? 
+                                (
+                                    <View>
+                                                                        {
                                     this.state.transaction_arr.map((item, idx) => {
                                         return (
                                             <TransactionItem
@@ -418,6 +423,25 @@ export default class AccountScreen extends Component {
                                         )
                                     })
                                 }
+                                    </View>
+                                ):(
+                                    <View>
+                                <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 16 * metrics, textAlign:'center'}}>Your new business account is not currently active whilst we review your application.  If you have any queries on your application, please email</Text>
+                                <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL("mailto:support@orbit.money");
+                }}
+                style={{ marginTop: 10 }}
+              >
+                <Text style={[{ color: "#3498db", textAlign:'center' ,textDecorationLine: "underline"}]}>
+                  support@orbit.money
+                </Text>
+              </TouchableOpacity>
+                                </View>
+                                )}
+
+
+
                                 {
                                     this.state.pagenation &&
                                     <View>

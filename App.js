@@ -53,15 +53,46 @@ export default class App extends Component {
             NavigationService.navigate('LoginScreen', {data:remoteMessage.data.record, openModal:true});
           }
           break;
+          case "account_blocked":
+            // code block
+            if(remoteMessage.foreground){
+              return;
+              // NavigationService.navigate('CompanyDetail', {data:remoteMessage.data.data, openModal:true});
+            }else{
+              // NavigationService.navigate('TabScreen', {data:remoteMessage.data.record, openModal:true});
+              NavigationService.navigate('LoginScreen', {data:remoteMessage.data.record, openModal:true});
+            }
+            break;
+            case "account_deactivated":
+          // code block
+          if(remoteMessage.foreground){
+            return;
+            // NavigationService.navigate('CompanyDetail', {data:remoteMessage.data.data, openModal:true});
+          }else{
+            // NavigationService.navigate('TabScreen', {data:remoteMessage.data.record, openModal:true});
+            NavigationService.navigate('LoginScreen', {data:remoteMessage.data.record, openModal:true});
+          }
+          break;
         case "send_money":
             // code block
             if(remoteMessage.foreground){
-                NavigationService.resetRoute('TabScreen', {data:remoteMessage.data.data, openModal:true});
+                NavigationService.resetRoute('TabScreen', {data:remoteMessage.data.data, openModal:true, screen:'tab'});
             }else{
                 NavigationService.navigate('LoginScreen', {data:remoteMessage.data.record, openModal:true});
             }
             
         break;
+        case "card_block_admin":
+          // code block
+          if(remoteMessage.foreground){
+            return;
+              // NavigationService.resetRoute('TabScreen', {data:remoteMessage.data.data, openModal:true, screen:"card"});
+          }else{
+              NavigationService.navigate('LoginScreen', {data:remoteMessage.data.record, openModal:true});
+          }
+          
+        break;
+
           case "kyc_approval":
                         // code block
             if(remoteMessage.foreground){
@@ -72,11 +103,11 @@ export default class App extends Component {
         break;
             case "beneficiary_success":
                         // code block
-                        if(remoteMessage.foreground){
-                          NavigationService.navigate('ManageBeneficiary', {data:remoteMessage.data.data, openModal:false});
-                      }else{
+              if(remoteMessage.foreground){
+                  NavigationService.navigate('ManageBeneficiary', {data:remoteMessage.data.data, openModal:false});
+              }else{
                           NavigationService.navigate('LoginScreen', {data:remoteMessage.data.record, openModal:true});
-                      }
+              }
 
             default:
 

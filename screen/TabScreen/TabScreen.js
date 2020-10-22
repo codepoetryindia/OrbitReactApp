@@ -214,11 +214,17 @@ export default class TabScreen extends Component {
     // console.log(this.props.navigation.state.params);
     
     let openModal = this.props.navigation.getParam('openModal', false);
+    let screen = this.props.navigation.getParam('screen', false);
     if(openModal){      
-      global.tabIdx = 1;
       try{
-      	      this.showDetail(JSON.parse(this.props.navigation.state.params.data));
-      this.props.navigation.setParams({ openModal: false });
+        if(screen=='tab'){
+          global.tabIdx = 1;
+          this.showDetail(JSON.parse(this.props.navigation.state.params.data));
+          this.props.navigation.setParams({ openModal: false });
+        }else{
+          global.tabIdx = 4;          
+          // this.props.navigation.setParams({ openModal: false });
+        }
       }catch(error){
       	console.log("json parese", error);
       }
