@@ -62,6 +62,7 @@ export default class NaxetraScreen extends Component {
                 }
             ],
             category_arr : [],
+            m_categories: [],
             user_arr : [],
             account_arr : [],
             isReady : false,
@@ -195,13 +196,16 @@ export default class NaxetraScreen extends Component {
             var data = res.data.result
             if (data.success) {
                 this.setState({category_arr : data.response.records})
+                this.setState({m_categories : data.response.records})
             } else {
                 this.setState({category_arr : []})
+                this.setState({m_categories : []})
             }
             this.setState({isLoading : false})
         }).catch(error => {
             console.log('error = ' , error.message)
-            this.setState({category_arr : []})  
+            this.setState({category_arr : []})
+            this.setState({m_categories : []})
             this.setState({isLoading : false})
         })
     }
@@ -365,6 +369,31 @@ export default class NaxetraScreen extends Component {
             is_subScreen : false
         })
     }
+
+    // this.state.category_arr
+
+    onChangeSearchText(text) {
+        this.setState({ search_text: text }, () => {
+          if (text == "") {
+            //console.log('lenght = ' , this.state.m_categories.length)
+            this.setState({ category_arr: this.state.m_categories }, () =>
+              console.log("length = ", this.state.categories)
+            );
+          } else {
+            var arr = [];
+            for (var i = 0; i < this.state.m_categories.length; i++) {
+              if (
+                this.state.m_categories[i].name
+                  .toLowerCase()
+                  .indexOf(text.toLowerCase()) != -1
+              ) {
+                arr.push(this.state.m_categories[i]);
+              }
+            }
+            this.setState({ category_arr: arr });
+          }
+        });
+      }
 
 
     render() {

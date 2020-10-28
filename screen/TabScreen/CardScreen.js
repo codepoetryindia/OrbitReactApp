@@ -650,6 +650,9 @@ export default class CardScreen extends Component {
                   <View style={{ flex: 0.1 }} />
                 </View>
               )}
+
+
+
               {this.state.isSelected &&
                 !this.state.isAdd &&
                 !this.state.show_carddeatil && (
@@ -732,7 +735,7 @@ export default class CardScreen extends Component {
                                                             <View style={{ marginTop: 35 * metrics }} />
                               <View>
                                 <Text style={styles.card_name}>
-                                  {item.name}
+                                  {this.state.select_item.name}
                                 </Text>
 
                                 <View style={{ flexDirection: "row" }}>
@@ -740,13 +743,13 @@ export default class CardScreen extends Component {
                                     * * * *  * * * *  * * * *                                      
                                   </Text>
 
-                                  {item.rb_card_number? (
-                                  <Text style={styles.card_id}> {item.rb_card_number.substring(item.rb_card_number.length-4, item.rb_card_number.length)}</Text>
+                                  {this.state.select_item.rb_card_number? (
+                                  <Text style={styles.card_id}> {this.state.select_item.rb_card_number.substring(this.state.select_item.rb_card_number.length-4, this.state.select_item.rb_card_number.length)}</Text>
                                   ): (
                                   <Text style={styles.card_id}>****</Text>
                                   ) }
                                 </View>
-                                {/* <Text style={styles.card_number}>{item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
+                                {/* <Text style={styles.card_number}>{this.state.select_item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
                                 <View
                                   style={{
                                     flexDirection: "row",
@@ -768,7 +771,7 @@ export default class CardScreen extends Component {
                                       {/* <Text style={styles.cvv_title}>THRU</Text> */}
                                     </View>
                                     <Text style={styles.card_cvv}>
-                                      {item.rb_card_expiry_date}
+                                      {this.state.select_item.rb_card_expiry_date}
                                     </Text>
                                   </View>
                                   <View
@@ -796,7 +799,7 @@ export default class CardScreen extends Component {
                                       }}
                                     >
                                       ***
-                                      {/* {item.rb_card_cvv == false
+                                      {/* {this.state.select_item.rb_card_cvv == false
                                         ? ""
                                         : item.rb_card_cvv} */}
                                     </Text>
@@ -1296,7 +1299,7 @@ export default class CardScreen extends Component {
                                                             <View style={{ marginTop: 35 * metrics }} />
                               <View>
                                 <Text style={styles.card_name}>
-                                  {item.name}
+                                  {this.state.select_item.name}
                                 </Text>
 
                                 <View style={{ flexDirection: "row" }}>
@@ -1304,13 +1307,13 @@ export default class CardScreen extends Component {
                                     * * * *  * * * *  * * * *                                      
                                   </Text>
 
-                                  {item.rb_card_number? (
-                                  <Text style={styles.card_id}> {item.rb_card_number.substring(item.rb_card_number.length-4, item.rb_card_number.length)}</Text>
+                                  {this.state.select_item.rb_card_number? (
+                                  <Text style={styles.card_id}> {this.state.select_item.rb_card_number.substring(this.state.select_item.rb_card_number.length-4, this.state.select_item.rb_card_number.length)}</Text>
                                   ): (
                                   <Text style={styles.card_id}>****</Text>
                                   ) }
                                 </View>
-                                {/* <Text style={styles.card_number}>{item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
+                                {/* <Text style={styles.card_number}>{this.state.select_item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
                                 <View
                                   style={{
                                     flexDirection: "row",
@@ -1332,7 +1335,7 @@ export default class CardScreen extends Component {
                                       {/* <Text style={styles.cvv_title}>THRU</Text> */}
                                     </View>
                                     <Text style={styles.card_cvv}>
-                                      {item.rb_card_expiry_date}
+                                      {this.state.select_item.rb_card_expiry_date}
                                     </Text>
                                   </View>
                                   <View
@@ -1360,7 +1363,7 @@ export default class CardScreen extends Component {
                                       }}
                                     >
                                       ***
-                                      {/* {item.rb_card_cvv == false
+                                      {/* {this.state.select_item.rb_card_cvv == false
                                         ? ""
                                         : item.rb_card_cvv} */}
                                     </Text>

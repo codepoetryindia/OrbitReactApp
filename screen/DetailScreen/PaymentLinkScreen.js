@@ -19,6 +19,8 @@ import global_style, { metrics } from '../../constants/GlobalStyle';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import TransactionService from '../../service/TransactionService';
 import {Fonts} from '../../constants/Fonts'
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
+
 
 const placeholder = {
     label : 'Select currency',
@@ -56,6 +58,7 @@ export default class PaymentLinkScreen extends Component {
             }
         ],
         category_arr : [],
+        m_categories:[],
         isLoading : false,
         amount : '',
         message : '',
@@ -102,13 +105,16 @@ export default class PaymentLinkScreen extends Component {
             console.log('data = ', data)
             if (data.success) {
                 this.setState({category_arr : data.response.records})
+                this.setState({m_categories : data.response.records})
             } else {
                 this.setState({category_arr : []})
+                this.setState({m_categories : []})
             }
             this.setState({isLoading : false})
         }).catch(error => {
             console.log('error = ' , error.message)
             this.setState({category_arr : []})  
+            this.setState({m_categories : []})
             this.setState({isLoading : false})
         })
     }
@@ -149,6 +155,29 @@ export default class PaymentLinkScreen extends Component {
             selectCatIcon : item.image_variant
         }, () => this.checkReady())
     }
+
+    onChangeSearchText(text) {
+        this.setState({ search_text: text }, () => {
+          if (text == "") {
+            //console.log('lenght = ' , this.state.m_categories.length)
+            this.setState({ category_arr: this.state.m_categories }, () =>
+              console.log("length = ", this.state.categories)
+            );
+          } else {
+            var arr = [];
+            for (var i = 0; i < this.state.m_categories.length; i++) {
+              if (
+                this.state.m_categories[i].name
+                  .toLowerCase()
+                  .indexOf(text.toLowerCase()) != -1
+              ) {
+                arr.push(this.state.m_categories[i]);
+              }
+            }
+            this.setState({ category_arr: arr });
+          }
+        });
+      }
 
     render() {
         return (
@@ -240,7 +269,7 @@ export default class PaymentLinkScreen extends Component {
                                             return(
                                                 <TouchableOpacity style={styles.category_item} key={idx} onPress={() => this.onSelectCategory(item)}>
                                                     {
-                                                        !item.image_variant ? 
+                                                        !item.sb_default_icon ? 
                                                         <Avatar
                                                             rounded
                                                             overlayContainerStyle={this.state.selectCatID == item.id ? { backgroundColor: '#dfdfdf',opacity : 1 } : { backgroundColor: '#dfdfdf',opacity : 0.8 }}
@@ -250,15 +279,18 @@ export default class PaymentLinkScreen extends Component {
                                                             containerStyle={{ borderColor: 1, borderColor: 'gray' }}
                                                             style={styles.l_img}
                                                         /> :
-                                                        <Avatar
-                                                            rounded
-                                                            overlayContainerStyle={this.state.selectCatID == item.id ? { backgroundColor: '#dfdfdf',opacity : 1 } : { backgroundColor: '#dfdfdf',opacity : 0.8 }}
-                                                            size="xlarge"
-                                                            source={{uri : 'data:image/png;base64,' + item.image_variant}}
-                                                            resizeMode={'stretch'}
-                                                            containerStyle={{ borderColor: 1, borderColor: 'gray' }}
-                                                            style={styles.l_img}
-                                                        />
+                                                        // <Avatar
+                                                        //     rounded
+                                                        //     overlayContainerStyle={this.state.selectCatID == item.id ? { backgroundColor: '#dfdfdf',opacity : 1 } : { backgroundColor: '#dfdfdf',opacity : 0.8 }}
+                                                        //     size="xlarge"
+                                                        //     source={{uri : 'data:image/png;base64,' + item.image_variant}}
+                                                        //     resizeMode={'stretch'}
+                                                        //     containerStyle={{ borderColor: 1, borderColor: 'gray' }}
+                                                        //     style={styles.l_img}
+                                                        // />
+                                                        <View style={[styles.l_img , { borderColor: "gray", backgroundColor: "#dfdfdf", justifyContent:'center', alignItems:'center', borderRadius:180}]}>
+                                                        <Icon name={item.sb_default_icon} size={25}></Icon>
+                                                        </View>
                                                     }
                                                     <Text style={this.state.selectCatID != item.id ? styles.normal_text : styles.item_text}>{item.name}</Text>
                                                 </TouchableOpacity>            

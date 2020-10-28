@@ -125,12 +125,16 @@ export default class LoginScreen extends Component {
     this.initLocalStorage();
     this.setState({
       url: "",
-      email: "",
-      password: "",
+      email:'',
+      password:'',
+      /* Prod login */
+      // email: "priyankajasani777@gmail.com",
+      // password: "sb@123",      
       //email : 'snippetbucket@gmail.com',
       //password : 'prj@7799',
-      // email: "priyankaac@gmail.com",
-      // password: "sb@123",
+      /*Dev login */
+       email: "priyankaac@gmail.com",
+       password: "sb@123",
       isReady: false,
       valid_url: true,
       valid_email: true,
