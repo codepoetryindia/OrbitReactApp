@@ -24,13 +24,13 @@ import ImagePicker from "react-native-image-picker";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import TabHeaderScreen from "../../components/TabHeaderScreen";
-import * as Colors from "../../constants/Colors";
-import { Fonts } from "../../constants/Fonts";
-import global_style, { metrics } from "../../constants/GlobalStyle";
-import * as Images from "../../constants/Image";
-import CardService from "../../service/CardService";
-import { alertMessage } from "../../utils/utils";
+import TabHeaderScreen from "../../../components/TabHeaderScreen";
+import * as Colors from "../../../constants/Colors";
+import { Fonts } from "../../../constants/Fonts";
+import global_style, { metrics } from "../../../constants/GlobalStyle";
+import * as Images from "../../../constants/Image";
+import CardService from "../../../service/CardService";
+import { alertMessage } from "../../../utils/utils";
 
 const options = {
   title: "Select Card Pic",
@@ -41,47 +41,60 @@ const options = {
   },
 };
 
-export default class CardScreen extends Component {
+export default class CardDetail extends Component {
+
+
+    constructor(props) {
+        super(props);
+        // console.log(props);
+    }
+
+
+
   componentWillReceiveProps() {
     this.componentDidMount();
   }
   componentDidMount() {
-    this.setState({ isLoading: true, isAdd: false, isSelected: false });
-    CardService.getAllCardList(global.token)
-      .then((res) => {
-        var data = res.data.result;
-        if (data.success) {
-          console.log("data = ", data.response);
-          this.setState({ card_arr: data.response });
-          let openModal = this.props.navigation.getParam('openModal', false);
-          if(openModal){  
-            try{
-              this.onSelectItem(JSON.parse(this.props.navigation.state.params.data));
-              this.props.navigation.setParams({ openModal: false });
-            }catch(error){
-              console.log("json parese", error);
-            }
-          }
+    this.onSelectItem(this.props.navigation.state.params.data);
+
+    // this.setState({ isLoading: true, isAdd: false, isSelected: false });
+    // CardService.getAllCardList(global.token)
+    //   .then((res) => {
+    //     var data = res.data.result;
+    //     if (data.success) {
+    //       console.log("data = ", data.response);
+    //       this.setState({ card_arr: data.response });
+    //       let openModal = this.props.navigation.getParam('openModal', false);
+    //       if(openModal){  
+    //         try{
+    //           this.onSelectItem(JSON.parse(this.props.navigation.state.params.data));
+    //           this.props.navigation.setParams({ openModal: false });
+    //         }catch(error){
+    //           console.log("json parese", error);
+    //         }
+    //       }
 
 
-        } else {
-          this.setState({ card_arr: [], isAdd: true });
-        }
-        this.setState({ isLoading: false });
-      })
-      .catch((err) => {
-        this.setState({ isLoading: false });
-        this.setState({ card_arr: [], isAdd: true });
-      });
+    //     } else {
+    //       this.setState({ card_arr: [], isAdd: true });
+    //     }
+    //     this.setState({ isLoading: false });
+    //   })
+    //   .catch((err) => {
+    //     this.setState({ isLoading: false });
+    //     this.setState({ card_arr: [], isAdd: true });
+    //   });
 
     //this.setState({isLoading : false})
 
     analytics().setCurrentScreen("Card", "Card Screen");
   }
+
+
   static navigationOptions = ({ navigation }) => {
     const { state } = navigation;
     return {
-      header: null,
+        title: 'Card Details',
     };
   };
 
@@ -176,10 +189,6 @@ export default class CardScreen extends Component {
   };
 
   onSelectItem = (item) => {
-
-    this.props.navigation.navigate("CardDetail", {data:item});
-    return;
-
     // CardService.getTransactionInformation(global.token, item.id).then(res => {
     //     var data = res.data.result
     // })
@@ -187,7 +196,7 @@ export default class CardScreen extends Component {
       this.setState({ freeze: true });
     } else {
       this.setState({ freeze: false });
-    }
+    }    
     this.setState({ isSelected: true, select_item: item, view_pin: false });
   };
 
@@ -239,12 +248,12 @@ export default class CardScreen extends Component {
     return (
       <View>
         <View style={{ width: "100%", height: "100%" }}>
-          <TabHeaderScreen
+          {/* <TabHeaderScreen
             headerTitle="Cards"
             navigation={this.props.navigation}
             showDrawer={() => this.props.showDrawer()}
             onPlusBtn={() => this.gotoAdd()}
-          />
+          /> */}
           <View
             style={{
               flex: 1,
@@ -327,335 +336,6 @@ export default class CardScreen extends Component {
                   </TouchableOpacity>
                 </View>
               )}
-              {!this.state.isAdd && !this.state.isSelected && (
-                <View style={{ flex: 1, flexDirection: "column" }}>
-                  <View style={{ flex: 1, marginTop: 20 * metrics }}>
-                    <ScrollView style={{ flex: 1 }}>
-                      {this.state.card_arr.map((item, idx) => {
-                        return (
-                          <TouchableOpacity
-                            style={{ width: "90%", alignSelf: "center" }}
-                            onPress={() => this.onSelectItem(item)}
-                            key={idx}
-                          >
-                            {item.rb_card_type == "virtual" ? (
-                              <ImageBackground
-                                source={Images.physical_card}
-                                style={styles.cards}
-                                resizeMode={"stretch"}
-                                borderRadius={5 * metrics}
-                              >
-
-                                 {/* <View style={{ marginTop: 120 * metrics }} />
-                                 <View>
-                                   <Text style={styles.card_number}>
-                                     {item.rb_card_number == false
-                                      ? ""
-                                      : item.rb_card_number}
-                                  </Text>
-                                  <View
-                                    style={{
-                                      flexDirection: "row",
-                                      flex: 1,
-                                      marginTop: 5 * metrics,
-                                      marginBottom: 10 * metrics,
-                                    }}
-                                  >
-                                    <View
-                                      style={{
-                                        flex: 0.3,
-                                        justifyContent: "center",
-                                      }}
-                                    >
-                                      <Text
-                                        style={{
-                                          fontSize: 18 * metrics,
-                                          fontFamily: Fonts.adobe_clean,
-                                          color: "white",
-                                          marginLeft: 20 * metrics,
-                                        }}
-                                      >
-                                        {item.rb_card_cvv == false
-                                          ? ""
-                                          : item.rb_card_cvv}
-                                      </Text>
-                                    </View>
-                                    <View
-                                      style={{
-                                        flex: 0.6,
-                                        flexDirection: "row",
-                                      }}
-                                    >
-                                      <View style={{ flexDirection: "column" }}>
-                                        <Text style={styles.cvv_title}>
-                                          VAUD
-                                        </Text>
-                                        <Text style={styles.cvv_title}>
-                                          THRU
-                                        </Text>
-                                      </View>
-                                      <Text style={styles.card_cvv}>
-                                        {item.rb_card_expiry_date}
-                                      </Text>
-                                    </View>
-                                    <View style={{ flex: 0.1 }} />
-                                  </View>
-                                  <Text style={styles.card_name}>
-                                    {item.name}
-                                  </Text>
-                                  <View style={{ flexDirection: "row" }}>
-                                    <Text style={styles.card_id}>
-                                      {global.user_info.sort_code}
-                                    </Text>
-                                    <Text style={styles.card_id}>
-                                      {global.user_info.account_number}
-                                    </Text>
-                                  </View>
-                                </View> */}
-
-                              <View style={{ marginTop: 35 * metrics }} />
-                              <View>
-                                <Text style={styles.card_name}>
-                                  {item.name}
-                                </Text>
-
-                                <View style={{ flexDirection: "row" }}>
-                                  <Text style={styles.card_id}>
-                                    * * * *  * * * *  * * * *                                                                          
-                                  </Text>
-
-                                  {item.rb_card_number? (
-                                  <Text style={styles.card_id}> {item.rb_card_number.substring(item.rb_card_number.length-4, item.rb_card_number.length)}</Text>
-                                  ): (
-                                  <Text style={styles.card_id}>****</Text>
-                                  ) }
-                                </View>
-                                {/* <Text style={styles.card_number}>{item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
-                                <View
-                                  style={{
-                                    flexDirection: "row",
-                                    flex: 1,
-                                    marginTop: 5 * metrics,
-                                    marginBottom: 10 * metrics,
-                                  }}
-                                >
-                                  <View
-                                    style={{
-                                      flex: 0.7,
-                                      flexDirection: "row",
-                                    }}
-                                  >
-                                    <View>
-                                      <Text style={styles.cvv_title}>
-                                        Expire
-                                      </Text>
-                                      {/* <Text style={styles.cvv_title}>THRU</Text> */}
-                                    </View>
-                                    <Text style={styles.card_cvv}>
-                                      {item.rb_card_expiry_date}
-                                    </Text>
-                                  </View>
-                                  <View
-                                    style={{
-                                      flex: 0.7,
-                                      flexDirection: "row",
-                                    }}
-                                  >
-                                    <Text
-                                      style={{
-                                        fontSize: 18 * metrics,
-                                        fontFamily: Fonts.adobe_clean,
-                                        color: "#7C7878",
-                                        marginRight: 7 * metrics * metrics,
-                                      }}
-                                    >
-                                      CVV
-                                    </Text>
-
-                                    <Text
-                                      style={{
-                                        fontSize: 18 * metrics,
-                                        fontFamily: Fonts.adobe_clean,
-                                        color: "#7C7878",
-                                      }}
-                                    >
-                                      ***
-                                      {/* {item.rb_card_cvv == false
-                                        ? ""
-                                        : item.rb_card_cvv} */}
-                                    </Text>
-                                  </View>
-                                  <View style={{ flex: 0.1 }} />
-                                </View>
-                              </View>
-
-                              </ImageBackground>
-                            ) : (
-                              <ImageBackground
-                                source={Images.physical_card}
-                                style={styles.cards}
-                                resizeMode={"stretch"}
-                                borderRadius={10 * metrics}
-                              >
-                                {/* <View style={{ marginTop: 120 * metrics }} />
-                                <View>
-                                  <Text style={styles.card_number}>
-                                    {item.rb_card_number == false
-                                      ? ""
-                                      : item.rb_card_number}
-                                  </Text>
-                                  <View
-                                    style={{
-                                      flexDirection: "row",
-                                      flex: 1,
-                                      marginTop: 5 * metrics,
-                                      marginBottom: 10 * metrics,
-                                    }}
-                                  >
-                                    <View
-                                      style={{
-                                        flex: 0.3,
-                                        justifyContent: "center",
-                                      }}
-                                    >
-                                      <Text
-                                        style={{
-                                          fontSize: 18 * metrics,
-                                          fontFamily: Fonts.adobe_clean,
-                                          color: "white",
-                                          marginLeft: 20 * metrics,
-                                        }}
-                                      >
-                                        {item.rb_card_cvv == false
-                                          ? ""
-                                          : item.rb_card_cvv}
-                                      </Text>
-                                    </View>
-                                    <View
-                                      style={{
-                                        flex: 0.6,
-                                        flexDirection: "row",
-                                      }}
-                                    >
-                                      <View style={{ flexDirection: "column" }}>
-                                        <Text style={styles.cvv_title}>
-                                          VAUD
-                                        </Text>
-                                        <Text style={styles.cvv_title}>
-                                          THRU
-                                        </Text>
-                                      </View>
-                                      <Text style={styles.card_cvv}>
-                                        {item.rb_card_expiry_date}
-                                      </Text>
-                                    </View>
-                                    <View style={{ flex: 0.1 }} />
-                                  </View>
-                                  <Text style={styles.card_name}>
-                                    {item.name}
-                                  </Text>
-                                  <View style={{ flexDirection: "row" }}>
-                                    <Text style={styles.card_id}>
-                                      {global.user_info.sort_code}
-                                    </Text>
-                                    <Text style={styles.card_id}>
-                                      {global.user_info.account_number}
-                                    </Text>
-                                  </View>
-                                </View> */}
-
-                                <View style={{ marginTop: 35 * metrics }} />
-                                <View>
-                                  <Text style={styles.card_name}>
-                                    {item.name}
-                                  </Text>
-
-                                  <View style={{ flexDirection: "row" }}>
-                                    <Text style={styles.card_id}>
-                                      * * * *  * * * *  * * * *                                  
-                                    </Text>
-
-                                    {item.rb_card_number? (
-                                    <Text style={styles.card_id}> {item.rb_card_number.substring(item.rb_card_number.length-4, item.rb_card_number.length)}</Text>
-                                    ): (
-                                    <Text style={styles.card_id}>****</Text>
-                                    ) }
-                                  </View>
-                                  {/* <Text style={styles.card_number}>{item.rb_card_number == false ? '' :  item.rb_card_number}</Text> */}
-                                  <View
-                                    style={{
-                                      flexDirection: "row",
-                                      flex: 1,
-                                      marginTop: 5 * metrics,
-                                      marginBottom: 10 * metrics,
-                                    }}
-                                  >
-                                    <View
-                                      style={{
-                                        flex: 0.7,
-                                        flexDirection: "row",
-                                      }}
-                                    >
-                                      <View>
-                                        <Text style={styles.cvv_title}>
-                                          Expire
-                                        </Text>
-                                        {/* <Text style={styles.cvv_title}>THRU</Text> */}
-                                      </View>
-                                      <Text style={styles.card_cvv}>
-                                        {item.rb_card_expiry_date}
-                                      </Text>
-                                    </View>
-                                    <View
-                                      style={{
-                                        flex: 0.7,
-                                        flexDirection: "row",
-                                      }}
-                                    >
-                                      <Text
-                                        style={{
-                                          fontSize: 18 * metrics,
-                                          fontFamily: Fonts.adobe_clean,
-                                          color: "#7C7878",
-                                          marginRight: 7 * metrics * metrics,
-                                        }}
-                                      >
-                                        CVV
-                                      </Text>
-
-                                      <Text
-                                        style={{
-                                          fontSize: 18 * metrics,
-                                          fontFamily: Fonts.adobe_clean,
-                                          color: "#7C7878",
-                                        }}
-                                      >
-                                        ***
-                                        {/* {item.rb_card_cvv == false
-                                          ? ""
-                                          : item.rb_card_cvv} */}
-                                      </Text>
-                                    </View>
-                                    <View style={{ flex: 0.1 }} />
-                                  </View>
-                                </View>
-                              </ImageBackground>
-                            )}
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </ScrollView>
-                  </View>
-                  {/* <View style={{flex : 0.1, justifyContent : 'center'}}>
-                                        <TouchableOpacity style={{alignSelf : 'center'}} onPress={() => this.setState({isAdd : true})}>
-                                            <MaterialCommunityIcons name="plus-circle-outline" size={40 * metrics}></MaterialCommunityIcons>
-                                        </TouchableOpacity>
-                                    </View> */}
-                  <View style={{ flex: 0.1 }} />
-                </View>
-              )}
-
-
 
               {this.state.isSelected &&
                 !this.state.isAdd &&
@@ -672,71 +352,7 @@ export default class CardScreen extends Component {
                               resizeMode={"stretch"}
                               borderRadius={5 * metrics}
                             >
-                              {/* <View style={{ marginTop: 120 * metrics }} />
-                              <View>
-                                <Text style={styles.card_number}>
-                                  {this.state.select_item.rb_card_number ==
-                                  false
-                                    ? ""
-                                    : this.state.select_item.rb_card_number}
-                                </Text>
-                                <View
-                                  style={{
-                                    flexDirection: "row",
-                                    flex: 1,
-                                    marginTop: 5 * metrics,
-                                    marginBottom: 10 * metrics,
-                                  }}
-                                >
-                                  <View
-                                    style={{
-                                      flex: 0.3,
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <Text
-                                      style={{
-                                        fontSize: 18 * metrics,
-                                        fontFamily: Fonts.adobe_clean,
-                                        color: "white",
-                                        marginLeft: 20 * metrics,
-                                      }}
-                                    >
-                                      {this.state.select_item.rb_card_cvv
-                                        .length == 0
-                                        ? ""
-                                        : this.state.select_item.rb_card_cvv}
-                                    </Text>
-                                  </View>
-                                  <View
-                                    style={{ flex: 0.6, flexDirection: "row" }}
-                                  >
-                                    <View style={{ flexDirection: "column" }}>
-                                      <Text style={styles.cvv_title}>VAUD</Text>
-                                      <Text style={styles.cvv_title}>THRU</Text>
-                                    </View>
-                                    <Text style={styles.card_cvv}>
-                                      {
-                                        this.state.select_item
-                                          .rb_card_expiry_date
-                                      }
-                                    </Text>
-                                  </View>
-                                  <View style={{ flex: 0.1 }} />
-                                </View>
-                                <Text style={styles.card_name}>
-                                  {this.state.select_item.name}
-                                </Text>
-                                <View style={{ flexDirection: "row" }}>
-                                  <Text style={styles.card_id}>
-                                    {global.user_info.sort_code}
-                                  </Text>
-                                  <Text style={styles.card_id}>
-                                    {global.user_info.account_number}
-                                  </Text>
-                                </View>
-                              </View> */}
-                                                            <View style={{ marginTop: 35 * metrics }} />
+                            <View style={{ marginTop: 35 * metrics }} />
                               <View>
                                 <Text style={styles.card_name}>
                                   {this.state.select_item.name}
@@ -819,28 +435,6 @@ export default class CardScreen extends Component {
                               resizeMode={"stretch"}
                               borderRadius={10 * metrics}
                             >
-                              {/* <View style={{marginTop : 120 * metrics}}></View>
-                                                        <View>
-                                                            <Text style={styles.card_number}>{this.state.select_item.rb_card_number == false ? '' : this.state.select_item.rb_card_number}</Text>
-                                                            <View style={{flexDirection : 'row', flex : 1, marginTop : 5 * metrics, marginBottom : 10 * metrics}}>
-                                                                <View style={{flex : 0.3, justifyContent : 'center'}}>
-                                                                    <Text style={{fontSize : 18 * metrics, fontFamily : Fonts.adobe_clean,color : 'white',marginLeft : 20 * metrics}}>{this.state.select_item.rb_card_cvv.length == 0 ? '' : this.state.select_item.rb_card_cvv}</Text>
-                                                                </View>
-                                                                <View style={{flex : 0.6, flexDirection :'row'}}>
-                                                                    <View style={{flexDirection : 'column'}}>
-                                                                        <Text style={styles.cvv_title}>VAUD</Text>
-                                                                        <Text style={styles.cvv_title}>THRU</Text>
-                                                                    </View>
-                                                                    <Text style={styles.card_cvv}>{this.state.select_item.rb_card_expiry_date}</Text>
-                                                                </View>
-                                                                <View style={{flex : 0.1}}></View>
-                                                            </View>
-                                                            <Text style={styles.card_name}>{this.state.select_item.name}</Text>
-                                                            <View style={{flexDirection : 'row'}}>
-                                                                <Text style={styles.card_id}>{global.user_info.sort_code}</Text>
-                                                                <Text style={styles.card_id}>{global.user_info.account_number}</Text>
-                                                            </View>
-                                                        </View> */}
                               <View style={{ marginTop: 35 * metrics }} />
                               <View>
                                 <Text style={styles.card_name}>
@@ -932,7 +526,7 @@ export default class CardScreen extends Component {
                                   </Text>
                                 </View>
                               </View>
-                              {this.state.select_item.rb_card_type ==
+                              {/* {this.state.select_item.rb_card_type ==
                                 "virtual" ||
                               this.state.select_item.state == "active" ? (
                                 <View
@@ -985,7 +579,64 @@ export default class CardScreen extends Component {
                                     </Text>
                                   </TouchableOpacity>
                                 </View>
+                              )} */}
+
+                              {this.state.select_item.rb_card_type ==
+                                "virtual" ||
+                              this.state.select_item.card_activated || this.state.select_item.state == "active" ? (
+                                <View
+                                  style={{
+                                    flex: 0.4,
+                                    backgroundColor: "green",
+                                    borderRadius: 20 * metrics,
+                                    height: 40 * metrics,
+                                    justifyContent: "center",
+                                    alignSelf: "flex-end",
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontFamily: Fonts.adobe_clean,
+                                      fontSize: 18 * metrics,
+                                      color: "white",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    ACTIVE
+                                  </Text>
+                                </View>
+                              ) : (
+                                <View
+                                  style={{ flex: 0.4, alignItems: "flex-end" }}
+                                >
+                                  <TouchableOpacity
+                                    style={{
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                    onPress={() => this.setActive()}
+                                  >
+                                    <Image
+                                      source={Images.camera_img}
+                                      style={{
+                                        width: 55 * metrics,
+                                        height: 55 * metrics,
+                                      }}
+                                    />
+                                    <Text
+                                      style={{
+                                        fontFamily: Fonts.adobe_clean,
+                                        fontSize: 14 * metrics,
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      ACTIVATE
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
                               )}
+
+
                             </View>
                           )}
 
@@ -1212,8 +863,9 @@ export default class CardScreen extends Component {
                           <View style={{ marginTop: 40 * metrics }} />
                           <View style={[styles.item, { alignItems: "center" }]}>
                             <TouchableOpacity
-                              onPress={() =>
-                                this.setState({ isSelected: false })
+                            //   onPress={() =>
+                            //     this.setState({ isSelected: false })
+                            onPress={() => this.props.navigation.goBack()
                               }
                               style={styles.touch_btn}
                             >
@@ -1254,53 +906,7 @@ export default class CardScreen extends Component {
                               resizeMode={"stretch"}
                               borderRadius={5 * metrics}
                             >
-                              {/* <View style={{ marginTop: 120 * metrics }} />
-                              <View>
-                                <Text style={styles.card_number}>
-                                  {this.state.select_item.rb_card_number ==
-                                  false
-                                    ? ""
-                                    : "" +
-                                      this.state.select_item.rb_card_number}
-                                </Text>
-                                <View
-                                  style={{
-                                    flexDirection: "row",
-                                    flex: 1,
-                                    marginTop: 5 * metrics,
-                                    marginBottom: 10 * metrics,
-                                  }}
-                                >
-                                  <View style={{ flex: 0.3 }} />
-                                  <View
-                                    style={{ flex: 0.6, flexDirection: "row" }}
-                                  >
-                                    <View style={{ flexDirection: "column" }}>
-                                      <Text style={styles.cvv_title}>VAUD</Text>
-                                      <Text style={styles.cvv_title}>THRU</Text>
-                                    </View>
-                                    <Text style={styles.card_cvv}>
-                                      {
-                                        this.state.select_item
-                                          .rb_card_expiry_date
-                                      }
-                                    </Text>
-                                  </View>
-                                  <View style={{ flex: 0.1 }} />
-                                </View>
-                                <Text style={styles.card_name}>
-                                  {this.state.select_item.name}
-                                </Text>
-                                <View style={{ flexDirection: "row" }}>
-                                  <Text style={styles.card_id}>
-                                    {global.user_info.sort_code}
-                                  </Text>
-                                  <Text style={styles.card_id}>
-                                    {global.user_info.account_number}
-                                  </Text>
-                                </View>
-                              </View> */}
-                                                            <View style={{ marginTop: 35 * metrics }} />
+                            <View style={{ marginTop: 35 * metrics }} />
                               <View>
                                 <Text style={styles.card_name}>
                                   {this.state.select_item.name}
@@ -1383,26 +989,7 @@ export default class CardScreen extends Component {
                               resizeMode={"stretch"}
                               borderRadius={10 * metrics}
                             >
-                              {/* <View style={{marginTop : 120 * metrics}}></View>
-                                                         <View>
-                                                            <Text style={styles.card_number}>{this.state.select_item.rb_card_number == false ? '' : this.state.select_item.rb_card_number}</Text>
-                                                            <View style={{flexDirection : 'row', flex : 1, marginTop : 5 * metrics, marginBottom : 10 * metrics}}>
-                                                                <View style={{flex : 0.3}}></View>
-                                                                <View style={{flex : 0.6, flexDirection :'row'}}>
-                                                                    <View style={{flexDirection : 'column'}}>
-                                                                        <Text style={styles.cvv_title}>VAUD</Text>
-                                                                        <Text style={styles.cvv_title}>THRU</Text>
-                                                                    </View>
-                                                                    <Text style={styles.card_cvv}>{this.state.select_item.rb_card_expiry_date}</Text>
-                                                                </View>
-                                                                <View style={{flex : 0.1}}></View>
-                                                            </View>
-                                                            <Text style={styles.card_name}>{this.state.select_item.name}</Text>
-                                                            <View style={{flexDirection : 'row'}}>
-                                                                <Text style={styles.card_id}>{global.user_info.sort_code}</Text>
-                                                                <Text style={styles.card_id}>{global.user_info.account_number}</Text>
-                                                            </View>
-                                                        </View> */}
+
                               <View style={{ marginTop: 35 * metrics }} />
                               <View>
                                 <Text style={styles.card_name}>
@@ -1598,7 +1185,7 @@ export default class CardScreen extends Component {
   }
 }
 
-CardScreen.propType = {
+CardDetail.propType = {
   showDrawer: PropTypes.func,
 };
 const styles = StyleSheet.create({

@@ -164,7 +164,7 @@ export default class AnalyticsScreen extends Component {
                         <View style={styles.tab_body}>
                             {
                                 this.state.tabIdx == 1 &&
-                                <CategoryComponent navigation ={this.props.navigation} showLoadingFunc = {this.showLoading} transactions = {this.state.category_list}></CategoryComponent>
+                                <CategoryComponent navigation ={this.props.navigation} showLoadingFunc = {this.showLoading} transactions = {this.state.category_list} showDetailItem={this.props.showDetailItem}></CategoryComponent>
                             }
                             {/* {
                                 this.state.tabIdx == 2 && 

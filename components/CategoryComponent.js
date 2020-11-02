@@ -26,6 +26,10 @@ import {
 } from "../utils/utils";
 
 export default class CategoryComponent extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   state = {
     category_arr: [],
     show_detail: false,
@@ -43,7 +47,9 @@ export default class CategoryComponent extends Component {
           arr.push(data[i]);
         }
       }
-      this.setState({ show_detail: true, transaction_arr: arr });
+      // this.setState({ show_detail: true, transaction_arr: arr });
+      this.props.navigation.navigate("CategoryDetail", {data:arr, showDetailItem: this.props.showDetailItem})
+
     }
   };
 
@@ -223,7 +229,7 @@ export default class CategoryComponent extends Component {
                           {item.transaction_count} transactions
                         </Text> */}
                       </TouchableOpacity>
-                      <View style={styles.count_body}>
+                      {/* <View style={styles.count_body}>
                         {item.transaction_amount < 0 ? (
                           <Text
                             style={global_style.m_balance}
@@ -247,7 +253,36 @@ export default class CategoryComponent extends Component {
                             ).toFixed(2)}
                           </Text>
                         )}
+                      </View> */}
+                      <View style={styles.count_body}>
+                        {item.receive_transaction_amount ? (
+                                                    <Text
+                                                    style={global_style.p_balance}
+                                                    numberOfLines={1}
+                                                  >
+                                                    {" "}
+                                                    + £{" "}
+                                                    {Number(
+                                                      changeNumber(Math.abs(item.receive_transaction_amount))
+                                                    ).toFixed(2)}
+                                                  </Text>
+                        ):null}
+
+{item.send_transaction_amount ? (
+                                                    <Text
+                                                    style={global_style.m_balance}
+                                                    numberOfLines={1}
+                                                  >
+                                                    {" "}
+                                                    - £{" "}
+                                                    {Number(
+                                                      changeNumber(Math.abs(item.send_transaction_amount))
+                                                    ).toFixed(2)}
+                                                  </Text>
+                        ):null}
                       </View>
+
+
                     </View>
                   );
                 })}
@@ -275,6 +310,7 @@ CategoryComponent.propType = {
   date: PropTypes.string,
   transactions: PropTypes.array,
   showLoadingFunc: PropTypes.func,
+  showDetailItem : PropTypes.func
 };
 const styles = StyleSheet.create({
   container: {

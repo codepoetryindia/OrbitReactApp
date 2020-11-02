@@ -31,6 +31,8 @@ import { Fonts } from "../../constants/Fonts";
 import { alertMessage } from "../../utils/utils";
 import TransactionService from "../../service/TransactionService";
 import AsyncStorage from "@react-native-community/async-storage";
+import NavigationService from './../../service/NavigationService';
+
 
 export default class TabScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -271,13 +273,36 @@ export default class TabScreen extends Component {
   }
 
   handleBackButtonClick() {
-    if (this.state.isShowDetail) {
-      this.setState({ isShowDetail: false }, () => {
-        this.account_ref.onChangeState(); //new add
-      });
-      return true;
-    } else {
-      return true;
+    if(NavigationService.getCurrentRoute() == "TabScreen"){
+      if (this.state.isShowDetail) {
+        this.setState({ isShowDetail: false }, () => {
+          this.account_ref.onChangeState(); //new add
+        });
+        return true;
+      } else {
+  
+        if(this.state.page == "Account"){        
+          Alert.alert(
+            "Exit",
+            "Are you sure to exit?",
+            [
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel"
+              },
+              { text: "OK", onPress: () => BackHandler.exitApp() }
+            ],
+            { cancelable: false }
+          );
+          return true;
+          }else{
+            this.setState({ page: "Account" });
+            return true;
+          }          
+      }
+    }else{
+      return false;
     }
   }
   render() {

@@ -24,10 +24,22 @@ const resetAction = StackActions.reset({
 _navigator.dispatch(resetAction);
 }
 
+function  getCurrentRoute  () {
+  const route = _navigator;
+  if(route.state.nav.routes.length > 0){
+    return route.state.nav.routes[route.state.nav.routes.length - 1].routeName;    
+  }else{
+    return null;
+  }
+  // return route.state.nav.routes;
+};
+
+
 // add other navigation functions that you need and export them
 
 export default {
   navigate,
   setTopLevelNavigator,
-  resetRoute
+  resetRoute,
+  getCurrentRoute
 };

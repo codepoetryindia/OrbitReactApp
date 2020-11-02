@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import { StyleSheet,Text, View , Image ,ActivityIndicator, ScrollView,SafeAreaView,BackHandler, TouchableOpacity} from 'react-native'
+import { StyleSheet,Text, View , Image ,ActivityIndicator, ScrollView,SafeAreaView,BackHandler, TouchableOpacity, Alert} from 'react-native'
 import * as Colors from '../../constants/Colors'
 import * as Images from '../../constants/Image'
 import DetailHeaderComponent from '../../components/DetailHeaderComponent'
@@ -16,6 +16,7 @@ import TransactionService from '../../service/TransactionService';
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import {Fonts} from '../../constants/Fonts'
 import { convertJSON } from '../../utils/utils';
+import SimpleToast from 'react-native-simple-toast';
 
 export default class ManageBeneficiary extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -81,6 +82,78 @@ export default class ManageBeneficiary extends Component {
         global.beneficiary_info = item
     }
 
+    DeleteBeneficiaries(item){
+        Alert.alert(
+            "Delete",
+            "Are you sure want to delete?",
+            [
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel"
+              },
+              { text: "OK", onPress: () => {
+                this.setState({isLoading : true})
+                TransactionService.deleteBeneficiary(item.id, global.token).then(res => {
+                    console.log(res);
+                    var data = res.data.result
+                    console.log('data = ' , data)
+                    if (data.success) {
+                        SimpleToast.show(data.message);
+                        this.getBenificiaeries();                        
+                    } else {
+                        SimpleToast.show(data.message);
+                        this.setState({isLoading : false})
+                    }
+                }).catch(error => {
+                    console.log('error = ' , error.message)
+                    this.setState({isLoading : false})
+                })
+              } }
+            ],
+            { cancelable: false }
+          );
+    }
+
+
+    getBenificiaeries(){
+        console.log("calling");
+        this.setState({isLoading : true})
+        TransactionService.getAllBeneficiary(global.token).then(res => {
+            var data = res.data.result
+            console.log('data = ' , data)
+            if (data.success) {
+                var data_arr = data.response.records
+                this.setState({beneficiaries_arr : data_arr})
+                // if (data_arr.length > 0) {
+                //     var arr = []
+                //     for (var i = 0 ;i < data_arr.length; i++) {
+                //         var check = 0;
+                //         for (var j = i + 1 ;j < data_arr.length; j++) {
+                //             if (data_arr[i].rb_uk_account_number == data_arr[j].rb_uk_account_number) {
+                //                 check = 1
+                //             }
+                //         }    
+                //         if (check == 0) {
+                //             arr.push(data_arr[i])
+                //         }
+                //     }
+                //     this.setState({beneficiaries_arr : arr})
+                // } else {
+                //     this.setState({beneficiaries_arr : []})
+                // }
+            } else {
+                this.setState({beneficiaries_arr : []})
+            }
+            this.setState({isLoading : false})
+        }).catch(error => {
+            console.log('error = ' , error.message)
+            this.setState({isLoading : false})
+        })
+    }
+
+
+
     render() {
         return (
             <SafeAreaView>
@@ -127,6 +200,14 @@ export default class ManageBeneficiary extends Component {
                                                     <Text style={{textAlign : 'center', color : Colors.main_color,fontFamily : Fonts.adobe_clean,}}>{this.state.show_select ? 'Select' : ''}</Text>
                                                 }
                                                 
+                                            </View>
+
+                                            <View style={{flex : 0.25,justifyContent : 'center', alignItems:'center'}}>
+                                                <TouchableOpacity style={{backgroundColor:'#f00', paddingVertical:3, paddingHorizontal:8, borderRadius:5}} onPress={()=>this.DeleteBeneficiaries(item)}>
+                                                    <Text style={{color:'#fff'}}>
+                                                        Delete
+                                                    </Text>
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
                                     )

@@ -70,6 +70,22 @@ var TransactionService = {
             }
         })
     },
+
+    deleteBeneficiary : function (id, token) {
+
+        var data = {
+            params : {}
+        }
+
+        return axios.post(WEB_API + 'beneficiaries/deactivate/'+id ,{params:{}}, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            }
+        })
+    },
+
+
     createTransactionsFund : function (obj) {
         var data = {
             params : obj
