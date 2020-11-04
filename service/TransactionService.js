@@ -85,6 +85,20 @@ var TransactionService = {
         })
     },
 
+    GetBeneficiaryTransactions : function (id, token) {
+        var data = {
+            params : {
+                "bene_id":id
+            }
+        }
+        return axios.post(WEB_API + 'transaction/search/',data, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            }
+        })
+    },
+
 
     createTransactionsFund : function (obj) {
         var data = {

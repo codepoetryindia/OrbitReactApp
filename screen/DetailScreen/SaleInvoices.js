@@ -18,7 +18,7 @@ import {Fonts} from '../../constants/Fonts'
 import { convertJSON } from '../../utils/utils';
 import SimpleToast from 'react-native-simple-toast';
 
-export default class ManageBeneficiary extends Component {
+export default class SaleInvoices extends Component {
     static navigationOptions = ({ navigation }) => {
 		const { state } = navigation;
 		return {
@@ -43,23 +43,6 @@ export default class ManageBeneficiary extends Component {
             if (data.success) {
                 var data_arr = data.response.records
                 this.setState({beneficiaries_arr : data_arr})
-                // if (data_arr.length > 0) {
-                //     var arr = []
-                //     for (var i = 0 ;i < data_arr.length; i++) {
-                //         var check = 0;
-                //         for (var j = i + 1 ;j < data_arr.length; j++) {
-                //             if (data_arr[i].rb_uk_account_number == data_arr[j].rb_uk_account_number) {
-                //                 check = 1
-                //             }
-                //         }    
-                //         if (check == 0) {
-                //             arr.push(data_arr[i])
-                //         }
-                //     }
-                //     this.setState({beneficiaries_arr : arr})
-                // } else {
-                //     this.setState({beneficiaries_arr : []})
-                // }
             } else {
                 this.setState({beneficiaries_arr : []})
             }
@@ -125,23 +108,6 @@ export default class ManageBeneficiary extends Component {
             if (data.success) {
                 var data_arr = data.response.records
                 this.setState({beneficiaries_arr : data_arr})
-                // if (data_arr.length > 0) {
-                //     var arr = []
-                //     for (var i = 0 ;i < data_arr.length; i++) {
-                //         var check = 0;
-                //         for (var j = i + 1 ;j < data_arr.length; j++) {
-                //             if (data_arr[i].rb_uk_account_number == data_arr[j].rb_uk_account_number) {
-                //                 check = 1
-                //             }
-                //         }    
-                //         if (check == 0) {
-                //             arr.push(data_arr[i])
-                //         }
-                //     }
-                //     this.setState({beneficiaries_arr : arr})
-                // } else {
-                //     this.setState({beneficiaries_arr : []})
-                // }
             } else {
                 this.setState({beneficiaries_arr : []})
             }
@@ -158,7 +124,7 @@ export default class ManageBeneficiary extends Component {
         return (
             <SafeAreaView>
                 <View style={styles.container}>
-                    <DetailHeaderComponent navigation={this.props.navigation}  title="My Beneficiaries" goBack ={() => this.props.navigation.goBack()} navigation = {this.props.navigation}></DetailHeaderComponent>
+                    <DetailHeaderComponent navigation={this.props.navigation}  title="Sale Invoices" goBack ={() => this.props.navigation.goBack()} navigation = {this.props.navigation}></DetailHeaderComponent>
                     <View style={{flex : 1}}>
                         <ScrollView style={{flexDirection : 'column', width : '100%' , alignSelf : 'center'}}>
                             {

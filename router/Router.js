@@ -83,6 +83,10 @@ import AddMoney from "../screen/DetailScreen/AddMoney";
 // Details Screens added to fix back button issue
 import CardDetail from "../screen/TabScreen/DetailScreen/CardDetail";
 import CategoryDetail from "../screen/TabScreen/DetailScreen/CategoryDetail";
+import BeneficiaryTransactions from "../screen/TabScreen/DetailScreen/BeneficiaryTransactions";
+
+import SaleInvoices from "../screen/DetailScreen/SaleInvoices";
+
 
 
 
@@ -161,7 +165,11 @@ const AppNavigator = createStackNavigator(
     CompanyDetail: { screen: CompanyDetail },
     /*Added Later to fix back button issue*/
     CardDetail:{screen:CardDetail},
-    CategoryDetail:{screen:CategoryDetail}
+    CategoryDetail:{screen:CategoryDetail},
+    BeneficiaryTransactions:{screen:BeneficiaryTransactions},
+    /*Added for invoice upgrade*/  
+    SaleInvoices:{screen:SaleInvoices}
+
   },
   {
     initialRouteName: "SplashScreen",

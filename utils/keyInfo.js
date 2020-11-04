@@ -6,7 +6,7 @@ export const APP_VERSION = VersionNumber.appVersion;
 
 
 export const WEB_API = "https://dev.orbit.money/api/" //Debug Api
-//export const WEB_API = "https://api.orbit.money/api/"; //Production Api
+// export const WEB_API = "https://api.orbit.money/api/"; //Production Api
 
 //export const WEB_API = "https://playlive.naxetra.com/api/"
 //export const OFD_API = "https://api.onfido.com/v2"
