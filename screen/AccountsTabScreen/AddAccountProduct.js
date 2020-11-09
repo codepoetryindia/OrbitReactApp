@@ -21,13 +21,17 @@ import { alertMessage } from '../../utils/utils';
 import { Fonts } from '../../constants/Fonts';
 import CrmService from '../../service/CrmService';
 
-export default class InvoiceAdd extends Component {
+export default class AddAccountProduct extends Component {
     static navigationOptions = ({ navigation }) => {
 		const { state } = navigation;
 		return {
 			header: null,
 		}
     };
+
+    constructor(props) {
+        super(props);
+    }
 
     state = {
         isLoading : false,
@@ -45,7 +49,11 @@ export default class InvoiceAdd extends Component {
         show_customer : false,
         is_error_account_number : false,
         is_error_sort_code : false,
-        is_back_sort : false
+        is_back_sort : false,
+        customer:'',
+        payment_terms:'',
+        items:[]
+
     }
     // constructor(props) {
     //     super(props);
@@ -190,13 +198,48 @@ export default class InvoiceAdd extends Component {
         return (
             <SafeAreaView>
                 <View style={styles.container}>
-                    <DetailHeaderComponent navigation={this.props.navigation}  title="Add New Invoice" goBack ={() => {
+                    <DetailHeaderComponent navigation={this.props.navigation}  title="Add New Product" goBack ={() => {
                         this.props.navigation.goBack()
                     }}></DetailHeaderComponent>
                     <View style={{flex : 1}}>
                         <View style={global_style.mgHuge}></View>
                         <View style={{flexDirection : 'column', width : '85%', height : '100%',alignSelf : 'center'}}>
                             <View style={{height : 30 * metrics, flexDirection : 'row' }}></View>
+
+                            <TouchableOpacity onPress={()=>{
+                                this.props.navigation.navigate('PaymentTerms')
+                            } }>
+                                <Text>Payment Terms</Text>
+                            </TouchableOpacity>
+
+
+                            <TouchableOpacity onPress={()=>{
+                                this.props.navigation.navigate('Products')
+                            } }>
+                                <Text>Products</Text>
+                            </TouchableOpacity>
+
+
+                            {/* <TouchableOpacity onPress={()=>{
+                                this.props.navigation.navigate('PaymentTerms')
+                            } }>
+                                <Text>fughfydgf</Text>
+                            </TouchableOpacity> */}
+                            
+                            <TextComponent
+                                textPlaceHolder = "Name"
+                                textValue={this.state.name}
+                                textType="text"
+                                ready = {this.state.isReady}
+                                onChangeText = {(value) => this.setState({name : value},() => {this.checkReady()})}
+                                onFocus={()=>{
+                                    console.log("hello");
+                                    this.props.navigation.navigate('Products')
+                                }}
+                            > </TextComponent>
+                            
+
+
                             <TextComponent
                                 textPlaceHolder = "Name"
                                 textValue={this.state.name}

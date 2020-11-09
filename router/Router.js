@@ -95,6 +95,8 @@ import BillsTab from "../screen/AccountsTabScreen/BillsTab";
 import SettingTab from "../screen/AccountsTabScreen/SettingTab";
 import InvoiceAdd from "../screen/AccountsTabScreen/InvoiceAdd";
 import PaymentTerms from "../screen/AccountsTabScreen/PaymentTerms";
+import Products from "../screen/AccountsTabScreen/Products";
+import AddAccountProduct from "../screen/AccountsTabScreen/AddAccountProduct";
 
 
 import SideMenuComponentTab from "../components/SideMenuComponentTab";
@@ -264,6 +266,8 @@ const AppNavigator = createStackNavigator(
     BeneficiaryTransactions:{screen:BeneficiaryTransactions},
     InvoiceAdd:{screen:InvoiceAdd},
     PaymentTerms:{screen:PaymentTerms},
+    Products:{screen:Products},
+    AddAccountProduct:{screen:AddAccountProduct},
     Lolscreen : {
       screen : Drawer,
       navigationOptions: {

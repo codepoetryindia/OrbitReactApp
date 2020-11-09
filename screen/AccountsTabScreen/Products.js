@@ -29,7 +29,7 @@ import RNPickerSelect from 'react-native-picker-select';
 
 
 
-export default class PaymentTerms extends Component {
+export default class Products extends Component {
     static navigationOptions = ({ navigation }) => {
 		const { state } = navigation;
 		return {
@@ -47,6 +47,7 @@ export default class PaymentTerms extends Component {
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);   
         this.FilterData = this.FilterData.bind(this);   
+        this.navigateProductAdd = this.navigateProductAdd.bind(this);
 
         
 
@@ -87,7 +88,7 @@ export default class PaymentTerms extends Component {
         if (global.is_accounting) {
             this.setState({show_select : true})
         }
-        this.getPaymentTerms();
+        this.getProducts();
     }
     componentWillReceiveProps () {
         this.componentDidMount()
@@ -109,6 +110,22 @@ export default class PaymentTerms extends Component {
                     value={searchText}
                 />
             </View>
+
+            {/* <TouchableOpacity style={{
+                padding:8, backgroundColor:'#cacaca',
+                marginRight:5,
+                borderRadius:2, 
+                shadowColor: "#fff",
+                shadowOffset: {
+                width: 0,
+                height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
+            }} onPress={()=>this.openModal()}>
+                <Ionicons name="ios-list" size={40}></Ionicons>
+            </TouchableOpacity> */}
           </View>
         );
       };
@@ -126,7 +143,7 @@ export default class PaymentTerms extends Component {
             obj.active = this.state.active;
         }
 
-        this.getPaymentTerms(text, obj);
+        this.getProducts(text, obj);
         // const newData = this.arrayholder.filter((item) => {
         //   const itemData = `${item.PainterName.toUpperCase()}`;
         //   const textData = text.toUpperCase();
@@ -139,16 +156,17 @@ export default class PaymentTerms extends Component {
       };
 
 
-    getPaymentTerms(text = '', data={}){
+    getProducts(text = '', data={}){
+
         let obj = {
             "name":text,
             ...data
         };
 
         this.setState({isLoading : true})
-        InvoiceService.getPaymentTerms(obj, global.token).then(res => {
+        InvoiceService.getProducts(obj, global.token).then(res => {
             var data = res.data.result
-            console.log('data = ' , data)
+            console.log('Products data = ' , data)
             if (data.success) {
                 var data_arr = data.response.records
                 this.setState({Customers : data_arr})
@@ -173,7 +191,7 @@ export default class PaymentTerms extends Component {
         if(this.state.active){
             obj.active = this.state.active;
         }
-        this.getPaymentTerms(this.state.searchText, obj);
+        this.getProducts(this.state.searchText, obj);
         this.closeModal();
     }
 
@@ -187,7 +205,7 @@ export default class PaymentTerms extends Component {
                                             <View style={{flex : 0.2 , justifyContent : 'center', alignItems : 'center'}}>
                                                 {
                                                     !item.rb_beneficiary_icon ?
-                                                    <EvilIcons name="user" style={{fontFamily : Fonts.adobe_clean,fontSize : 60 * metrics, color : Colors.main_color,alignSelf : 'flex-start'}}></EvilIcons>
+                                                    <EvilIcons name="image" style={{fontFamily : Fonts.adobe_clean,fontSize : 60 * metrics, color : Colors.main_color,alignSelf : 'flex-start'}}></EvilIcons>
                                                     :
                                                     <Image source={{uri : 'data:image/png;base64,' + item.rb_beneficiary_icon}} style={{width :50 * metrics,alignSelf : 'flex-start', height : 50 * metrics, borderRadius : 100 ,resizeMode : 'cover'}}></Image>    
                                                 }
@@ -197,13 +215,13 @@ export default class PaymentTerms extends Component {
                                                 <View style={{marginTop : 5 * metrics}}></View>
                                                 <View style={{flexDirection : 'column'}}>
                                                     <View style={{flexDirection : 'row'}}>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : '#000', marginRight : 10 * metrics}}>Phone : </Text>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.phone}</Text>
+                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : '#000', marginRight : 10 * metrics}}>Type : </Text>
+                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.type}</Text>
                                                     </View>
                                                     <View style={{marginTop : 5 * metrics}}></View>
                                                     <View style={{flexDirection : 'row'}}>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : '#000', marginRight : 10 * metrics}}>Total Invoiced : </Text>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.total_invoiced}</Text>
+                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : '#000', marginRight : 10 * metrics}}>Category : </Text>
+                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.categ_id[1]}</Text>
                                                     </View>
                                                 </View>
                                                 
@@ -225,7 +243,7 @@ export default class PaymentTerms extends Component {
 
     onRefresh(){
         this.setState({isRefresh : true})
-        this.getPaymentTerms();
+        this.getProducts();
     }
 
 
@@ -235,6 +253,11 @@ export default class PaymentTerms extends Component {
     openModal(){
         this.setState({isOpenModal : true})
     }
+
+
+    navigateProductAdd(){
+        this.props.navigation.navigate("AddAccountProduct");
+    }
     
 
 
@@ -243,9 +266,7 @@ export default class PaymentTerms extends Component {
         return (
             <SafeAreaView style={{flex:1, height:'100%', width:"100%", position:'relative', flexDirection:'column'}}>
                 <View style={styles.container}>
-                <DetailHeaderComponent navigation={this.props.navigation}  title="Select Terms" goBack ={() => {
-                        this.props.navigation.goBack()
-                    }}></DetailHeaderComponent>
+                <TabHeaderScreen headerTitle="Products" navigation = {this.props.navigation} showDrawer={() => this.openDrawer()} navigate={this.navigateProductAdd}></TabHeaderScreen>
                    
                     <View style={{flex : 1}}>            
                         <ScrollView style={{flexDirection : 'column', width : '100%' , alignSelf : 'center'}}>

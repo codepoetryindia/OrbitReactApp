@@ -69,6 +69,35 @@ var InvoiceService = {
             },
         })
     },
+
+    getPaymentTerms : function(obj, token) {
+        var data = {
+            params : obj
+        }
+
+        console.log(data);
+
+        return axios.post(WEB_API + 'payment_terms/list/', data, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            },
+        })
+    },
+    getProducts : function(obj, token) {
+        var data = {
+            params : obj
+        }
+
+        console.log(data);
+
+        return axios.post(WEB_API + 'product/search/', data, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            },
+        })
+    },
 }
 
 export default InvoiceService
