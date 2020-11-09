@@ -45,6 +45,14 @@ export default class TabHeaderScreen extends Component {
                             <SimpleLineIcons name="plus" size={26 * metrics} style={styles.icon}></SimpleLineIcons>
                         </BorderlessButton>        
                     }
+
+                    {
+                        this.props.navigate &&
+                        <BorderlessButton style={styles.icon_btn} onPress={() => this.props.navigate()}>
+                            <SimpleLineIcons name="plus" size={26 * metrics} style={styles.icon}></SimpleLineIcons>
+                        </BorderlessButton>        
+                    }
+
                     <View style={{flex : 0.05}}></View>
                     {/*<BorderlessButton style={styles.icon_btn} onPress={() => this.onMessage()}>
                         <Fontisto name="hipchat" size={24 * metrics} style={styles.icon}></Fontisto>
@@ -76,6 +84,12 @@ export default class TabHeaderScreen extends Component {
     onPlusBtn = () => {
         this.props.onPlusBtn()
     }
+
+    navigate = () =>{
+        this.props.navigation.navigate('Chat')
+
+    }
+
 }
 
 const styles = StyleSheet.create({
@@ -98,5 +112,6 @@ const styles = StyleSheet.create({
 TabHeaderScreen.propType = {
     headerTitle: PropTypes.string,
     showDrawer : PropTypes.func,
-    onPlusBtn : PropTypes.func
+    onPlusBtn : PropTypes.func,
+    navigate:PropTypes.func
 }

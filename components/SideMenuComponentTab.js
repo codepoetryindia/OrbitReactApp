@@ -28,7 +28,7 @@ const resetAction = (routeName) =>
     actions: [NavigationActions.navigate({ routeName: routeName })],
   });
 
-export default class SideMenuComponent extends Component {
+export default class SideMenuComponentTab extends Component {
   componentDidMount() {
     //console.log('name = ', global.user_info)
     analytics().setCurrentScreen("Slide Menu", "Slide Menu");
@@ -40,8 +40,7 @@ export default class SideMenuComponent extends Component {
   }
   async Logout() {
     global.init_account = "false";
-    this.props.isLoadingfunc(true);
-    this.closeDrawer();
+    // this.props.isLoadingfunc(true);
     var finger = await AsyncStorage.getItem("finger_print");
 
     UserService.logoutUser(global.token)
@@ -53,7 +52,7 @@ export default class SideMenuComponent extends Component {
         }
         global.token = "";
 
-        this.props.isLoadingfunc(false);
+        // this.props.isLoadingfunc(false);
         clearInterval(global.timeout); //clear timeout
         this.setLocalStorage();
         if (finger == "true") {
@@ -63,14 +62,13 @@ export default class SideMenuComponent extends Component {
         }
       })
       .catch((error) => {
-        this.props.isLoadingfunc(false);
+        // this.props.isLoadingfunc(false);
         alertMessage(error.message);
       });
   }
   onBanking() {
     global.tabIdx = 1;
     global.init_account = "true";
-    this.closeDrawer();
     this.props.navigation.navigate("TabScreen", { refresh: true });
   }
   onCRM() {
@@ -78,23 +76,19 @@ export default class SideMenuComponent extends Component {
     this.props.navigation.navigate("ComingSoonScreen", {
       msg:"Your mobile CRM experience is coming soon.  In the meantime, experience CRM features on our website at orbit.money.  Login in with your usual mobile login credentials."
     });
-    this.closeDrawer();
   }
   onPurchase() {
     this.props.navigation.navigate("ComingSoonScreen");
-    this.closeDrawer();
   }
   onSetting() {
     global.tabIdx = 5;
     this.props.navigation.navigate("SettingScreen");
-    this.closeDrawer();
   }
   onSales() {
     global.web_url =
       "https://dev.naxetra.com/web#view_type=kanban&model=stock.picking.type&menu_id=363&action=424";
     global.other_title = "Inventory";
     this.props.navigation.navigate("ComingSoonScreen");
-    this.closeDrawer();
   }
   onAccount() {
     global.web_url = "";
@@ -106,7 +100,6 @@ export default class SideMenuComponent extends Component {
     // });
 
     this.props.navigation.navigate('Lolscreen');
-    this.closeDrawer();
   }
 
   closeDrawer() {
@@ -115,7 +108,6 @@ export default class SideMenuComponent extends Component {
 
   gotoHelp() {
     this.props.navigation.navigate("HelpScreen");
-    this.closeDrawer();
   }
 
   render() {
@@ -346,7 +338,7 @@ export default class SideMenuComponent extends Component {
   }
 }
 
-SideMenuComponent.propType = {
+SideMenuComponentTab.propType = {
   closeDrawer: PropTypes.func,
   goInit: PropTypes.func,
   isLoadingfunc: PropTypes.func,

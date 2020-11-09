@@ -1,6 +1,8 @@
 import React from "react";
-import { createAppContainer, createDrawerNavigator } from "react-navigation";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createDrawerNavigator } from 'react-navigation-drawer';
 
 import LoginScreen from "../screen/LoginScreen";
 //import FingerScreen from '../screen/FingerScreen'
@@ -86,9 +88,102 @@ import CategoryDetail from "../screen/TabScreen/DetailScreen/CategoryDetail";
 import BeneficiaryTransactions from "../screen/TabScreen/DetailScreen/BeneficiaryTransactions";
 
 import SaleInvoices from "../screen/DetailScreen/SaleInvoices";
+import DashboardTab from "../screen/AccountsTabScreen/DashboardTab";
+import InvoicesTab from "../screen/AccountsTabScreen/InvoicesTab";
+import CustomersTab from "../screen/AccountsTabScreen/CustomersTab";
+import BillsTab from "../screen/AccountsTabScreen/BillsTab";
+import SettingTab from "../screen/AccountsTabScreen/SettingTab";
+import InvoiceAdd from "../screen/AccountsTabScreen/InvoiceAdd";
+import PaymentTerms from "../screen/AccountsTabScreen/PaymentTerms";
+
+
+import SideMenuComponentTab from "../components/SideMenuComponentTab";
+
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import global_style, { metrics } from "../constants/GlobalStyle";
+import * as Colors from "../constants/Colors";
 
 
 
+
+
+    /*Added for invoice upgrade*/      
+    const AccountsNavigator = createBottomTabNavigator({
+      DashboardTab:{
+        screen:DashboardTab,         navigationOptions: {
+          tabBarLabel: 'Dashboard', 
+          tabBarIcon: ({ tintColor }) => (
+              <Ionicons name="ios-apps" color={tintColor} size={25*metrics} />
+          )
+      }
+     },
+      SaleInvoices:{
+        screen:InvoicesTab,         
+        navigationOptions: {
+          tabBarLabel: 'Sale Invoice', 
+          tabBarIcon: ({ tintColor }) => (
+              <Ionicons name="ios-clipboard" color={tintColor} size={25*metrics} />
+          )
+      }
+     },
+     CustomersTab:{
+          screen:CustomersTab,         navigationOptions: {
+            tabBarLabel: 'Customers', 
+            tabBarIcon: ({ tintColor }) => (
+                <Ionicons name="ios-people" color={tintColor} size={25*metrics} />
+            )
+        }
+      },
+      BillsTab:{
+          screen:BillsTab,         navigationOptions: {
+            tabBarLabel: 'Bills', 
+            tabBarIcon: ({ tintColor }) => (
+                <Ionicons name="ios-document" color={tintColor} size={25*metrics} />
+            )
+        }
+      },
+      SettingTab:{
+        screen:SettingTab,         navigationOptions: {
+          tabBarLabel: 'Settings', 
+          tabBarIcon: ({ tintColor }) => (
+              <Ionicons name="ios-settings" color={tintColor} size={25*metrics} />
+          )
+      }
+      }     
+    },  {
+      defaultNavigationOptions: ({ navigation }) => ({
+        tabBarIcon: ({ focused, horizontal, tintColor }) => {
+          const { routeName } = navigation.state;
+          let IconComponent = Ionicons;
+          let iconName;
+          if (routeName === 'Home') {
+            iconName = focused
+              ? 'ios-information-circle'
+              : 'ios-information-circle-outline';
+            // Sometimes we want to add badges to some icons.
+            // You can check the implementation below.
+            IconComponent = HomeIconWithBadge;
+          } else if (routeName === 'Settings') {
+            iconName = focused ? 'ios-list-box' : 'ios-list';
+          }
+  
+          // You can return any component that you like here!
+          return <IconComponent name={iconName} size={25} color={tintColor} />;
+        },
+      }),
+      tabBarOptions: {
+        activeTintColor: Colors.main_color,
+        inactiveTintColor: 'gray',
+      },
+    });
+
+    const Drawer = createDrawerNavigator({
+      home: AccountsNavigator
+    }, {
+      initialRouteName: 'home',
+      contentComponent: SideMenuComponentTab,
+      // drawerWidth: 300    
+    });
 
 
 const AppNavigator = createStackNavigator(
@@ -167,9 +262,14 @@ const AppNavigator = createStackNavigator(
     CardDetail:{screen:CardDetail},
     CategoryDetail:{screen:CategoryDetail},
     BeneficiaryTransactions:{screen:BeneficiaryTransactions},
-    /*Added for invoice upgrade*/  
-    SaleInvoices:{screen:SaleInvoices}
-
+    InvoiceAdd:{screen:InvoiceAdd},
+    PaymentTerms:{screen:PaymentTerms},
+    Lolscreen : {
+      screen : Drawer,
+      navigationOptions: {
+        header: null
+     }
+   },
   },
   {
     initialRouteName: "SplashScreen",
@@ -179,6 +279,6 @@ const AppNavigator = createStackNavigator(
   }
 );
 
-const AppContainer = createAppContainer(AppNavigator);
 
+const AppContainer = createAppContainer(AppNavigator);
 export default AppContainer;
