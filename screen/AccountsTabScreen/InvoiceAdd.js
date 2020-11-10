@@ -309,7 +309,7 @@ export default class InvoiceAdd extends Component {
                   </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress = {()=>{  this.props.navigation.navigate('Products');}}>
                   <View
                     style={{
                       height: 90,
