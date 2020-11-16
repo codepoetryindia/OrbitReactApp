@@ -29,7 +29,7 @@ import RNPickerSelect from 'react-native-picker-select';
 
 
 
-export default class Products extends Component {
+export default class CustomersList extends Component {
     static navigationOptions = ({ navigation }) => {
 		const { state } = navigation;
 		return {
@@ -47,8 +47,7 @@ export default class Products extends Component {
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);   
         this.FilterData = this.FilterData.bind(this);   
-        this.navigateProductAdd = this.navigateProductAdd.bind(this);
-        this.setProduct = this.setProduct.bind(this);
+        this.setCustomer = this.setCustomer.bind(this);
 
         
 
@@ -64,8 +63,7 @@ export default class Products extends Component {
           isCompany:false,
           isActive:false,
           active:'',
-          product_id:'',
-          forSelect:false   
+          forSelect:false,   
         };
       }
 
@@ -88,10 +86,10 @@ export default class Products extends Component {
         searchText:''
     }
     componentDidMount() {
-
         let data = this.props.navigation.getParam('forSelect', false)
         if(data){
             console.log("data");
+
             this.setState({forSelect:true});
         }
 
@@ -99,32 +97,12 @@ export default class Products extends Component {
         if (global.is_accounting) {
             this.setState({show_select : true})
         }
-        
-        this.props.navigation.addListener(
-            'willFocus',
-            () => {
-                this.getProducts();
-            }
-          );
-
-        
+        this.getCustomers();
     }
+
     componentWillReceiveProps () {
         this.componentDidMount()
     }
-
-    
-    //   componentWillUnmount() {
-    //     this.willFocusSubscription.remove();
-    //   }
-
-
-    setProduct(data){
-        if(this.state.forSelect){
-             this.props.navigation.state.params.setProduct(data);
-             this.props.navigation.pop();
-         }
-     }
 
 
 
@@ -143,7 +121,7 @@ export default class Products extends Component {
                 />
             </View>
 
-            {/* <TouchableOpacity style={{
+            <TouchableOpacity style={{
                 padding:8, backgroundColor:'#cacaca',
                 marginRight:5,
                 borderRadius:2, 
@@ -157,7 +135,7 @@ export default class Products extends Component {
                 elevation: 5,
             }} onPress={()=>this.openModal()}>
                 <Ionicons name="ios-list" size={40}></Ionicons>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
         );
       };
@@ -175,7 +153,7 @@ export default class Products extends Component {
             obj.active = this.state.active;
         }
 
-        this.getProducts(text, obj);
+        this.getCustomers(text, obj);
         // const newData = this.arrayholder.filter((item) => {
         //   const itemData = `${item.PainterName.toUpperCase()}`;
         //   const textData = text.toUpperCase();
@@ -188,17 +166,17 @@ export default class Products extends Component {
       };
 
 
-    getProducts(text = '', data={}){
-
+    getCustomers(text = '', data={}){
         let obj = {
             "name":text,
             ...data
         };
 
+
         this.setState({isLoading : true})
-        InvoiceService.getProducts(obj, global.token).then(res => {
+        InvoiceService.getCustomers(obj, global.token).then(res => {
             var data = res.data.result
-            console.log('Products data = ' , data)
+            console.log('data = ' , data)
             if (data.success) {
                 var data_arr = data.response.records
                 this.setState({Customers : data_arr})
@@ -223,8 +201,17 @@ export default class Products extends Component {
         if(this.state.active){
             obj.active = this.state.active;
         }
-        this.getProducts(this.state.searchText, obj);
+        this.getCustomers(this.state.searchText, obj);
         this.closeModal();
+    }
+
+
+    setCustomer(data){
+       if(this.state.forSelect){
+            console.log(this.props.navigation.state);
+            this.props.navigation.state.params.setCustomer(data);
+            this.props.navigation.pop();
+        }
     }
 
 
@@ -232,12 +219,12 @@ export default class Products extends Component {
         return (
                                     <View key={idx} style={{flex:1, flexDirection:'row', paddingVertical:5,         borderBottomWidth : 1 ,
                                         borderBottomColor : Colors.white_gray_color}}>
-                                            <TouchableOpacity style={styles.item} onPress={()=> this.setProduct(item)}>
+                                            <TouchableOpacity style={styles.item} onPress={()=>this.setCustomer(item)}>
                                             <View style={{flex : 0.05}}></View>
                                             <View style={{flex : 0.2 , justifyContent : 'center', alignItems : 'center'}}>
                                                 {
                                                     !item.rb_beneficiary_icon ?
-                                                    <EvilIcons name="image" style={{fontFamily : Fonts.adobe_clean,fontSize : 60 * metrics, color : Colors.main_color,alignSelf : 'flex-start'}}></EvilIcons>
+                                                    <EvilIcons name="user" style={{fontFamily : Fonts.adobe_clean,fontSize : 60 * metrics, color : Colors.main_color,alignSelf : 'flex-start'}}></EvilIcons>
                                                     :
                                                     <Image source={{uri : 'data:image/png;base64,' + item.rb_beneficiary_icon}} style={{width :50 * metrics,alignSelf : 'flex-start', height : 50 * metrics, borderRadius : 100 ,resizeMode : 'cover'}}></Image>    
                                                 }
@@ -247,13 +234,13 @@ export default class Products extends Component {
                                                 <View style={{marginTop : 5 * metrics}}></View>
                                                 <View style={{flexDirection : 'column'}}>
                                                     <View style={{flexDirection : 'row'}}>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : '#000', marginRight : 10 * metrics}}>Type : </Text>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.type}</Text>
+                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : '#000', marginRight : 10 * metrics}}>Phone : </Text>
+                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.phone}</Text>
                                                     </View>
                                                     <View style={{marginTop : 5 * metrics}}></View>
                                                     <View style={{flexDirection : 'row'}}>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : '#000', marginRight : 10 * metrics}}>Category : </Text>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.categ_id[1]}</Text>
+                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : '#000', marginRight : 10 * metrics}}>Total Invoiced : </Text>
+                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.total_invoiced}</Text>
                                                     </View>
                                                 </View>
                                                 
@@ -275,7 +262,7 @@ export default class Products extends Component {
 
     onRefresh(){
         this.setState({isRefresh : true})
-        this.getProducts();
+        this.getCustomers();
     }
 
 
@@ -285,11 +272,6 @@ export default class Products extends Component {
     openModal(){
         this.setState({isOpenModal : true})
     }
-
-
-    navigateProductAdd(){
-        this.props.navigation.navigate("AddAccountProduct");
-    }
     
 
 
@@ -298,7 +280,14 @@ export default class Products extends Component {
         return (
             <SafeAreaView style={{flex:1, height:'100%', width:"100%", position:'relative', flexDirection:'column'}}>
                 <View style={styles.container}>
-                <TabHeaderScreen headerTitle="Products" navigation = {this.props.navigation} showDrawer={() => this.openDrawer()} navigate={this.navigateProductAdd}></TabHeaderScreen>
+                {/* <TabHeaderScreen headerTitle="Customers" navigation = {this.props.navigation} showDrawer={() => this.openDrawer()}></TabHeaderScreen> */}
+                <DetailHeaderComponent
+              navigation={this.props.navigation}
+              title="Select Customer"
+              goBack={() => {
+                this.props.navigation.goBack();
+              }}
+            />
                    
                     <View style={{flex : 1}}>            
                         <ScrollView style={{flexDirection : 'column', width : '100%' , alignSelf : 'center'}}>

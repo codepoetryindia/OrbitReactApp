@@ -85,7 +85,14 @@ export default class InvoicesTab extends Component {
         if (global.is_accounting) {
             this.setState({show_select : true})
         }
-        this.getInvoices();
+
+        this.props.navigation.addListener(
+            'willFocus',
+            () => {
+                this.getInvoices();
+            }
+          );
+
     }
     componentWillReceiveProps () {
         this.componentDidMount()

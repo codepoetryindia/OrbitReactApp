@@ -30,6 +30,10 @@ import { alertMessage } from "../../utils/utils";
 import { Fonts } from "../../constants/Fonts";
 import CrmService from "../../service/CrmService";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { format } from "date-fns";
+import InvoiceService from "../../service/InvoiceService";
+import Toast from 'react-native-simple-toast';
 
 export default class InvoiceAdd extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -40,37 +44,146 @@ export default class InvoiceAdd extends Component {
   };
     state = {
         isLoading : false,
-        name : '',
-        account_number : '',
-        sort_code : '',
-        show_sort_code : 'XX-XX-XX',
         isReady : false,
-        pay_type : '',
-        activeIdx : -1,
-        check_coustomers : false,
-        check_supplier : false,
-        customer_list : [],
-        customer_id : '',
-        show_customer : false,
-        is_error_account_number : false,
-        is_error_sort_code : false,
-        is_back_sort : false
+        datePickerVisible:false,
+        datePickerVisible2:false,        
+        "partner_id": 60,
+        "invoice_date": "01/03/2020",
+        "due_date": "02/03/2020",
+        "payment_term_id": false,
+        "name": "Any reference title",
+        "invoice_line_ids": [
+              {
+                  "product_id": "2",
+                  "description": "Mango, Kind of Fruite and this is demo description",
+                  "quantity": "15",
+                  "tax_ids":15,
+                  "price": "50"
+              },
+          ],
+          "recurring": true,
+          "recurring_type": "monthly",
+          "recurring_interval": 1,
+          "recurring_end": "after",
+          "recurring_end_interval": 1
     }
-    // constructor(props) {
-    //     super(props);
-    //     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
-    // }
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // }
-    // componentDidMount() {
-    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // }
 
 
-  // handleBackButtonClick = () => {
-  //     this.props.navigation.goBack()
-  // }
+
+
+
+    constructor(props) {
+        super(props);
+        this.SelectCustomer = this.SelectCustomer.bind(this);
+        this.setCustomer = this.setCustomer.bind(this);
+        this.setTerms = this.setTerms.bind(this);
+        this.setProduct = this.setProduct.bind(this);
+        this.openDatePicker = this.openDatePicker.bind(this);
+        this.openDatePicker2 = this.openDatePicker2.bind(this);
+        this.hideDatepicker = this.hideDatepicker.bind(this);
+        this.formatDate = this.formatDate.bind(this); 
+        this.removeItem = this.removeItem.bind(this);
+
+        this.state={
+          isLoading : false,
+          isReady : false,
+          datePickerVisible:false,
+          "partner_id": 60,
+          "partner_name": '',
+          "invoice_date": this.formatDate(new Date()),
+          "due_date": this.formatDate(new Date()),
+          "payment_term_id": false,
+          "payment_term_name":'',
+          "name": "Any reference title",
+          invoice_line_ids: [
+                // {
+                //     "product_id": "2",
+                //     "description": "Mango, Kind of Fruite and this is demo description",
+                //     "quantity": "15",
+                //     "tax_ids":15,
+                //     "price": "50"
+                // },
+                // {
+                //   "product_id": "3",
+                //   "description": "Mango, Kind of Fruite and this is demo description",
+                //   "quantity": "15",
+                //   "tax_ids":15,
+                //   "price": "50"
+                // }
+            ],
+            "recurring": true,
+            "recurring_type": "monthly",
+            "recurring_interval": 1,
+            "recurring_end": "after",
+            "recurring_end_interval": 1,
+            "subtotal":0,          
+        }        
+    }
+
+    setCustomer(data){
+      this.setState({partner_id:data.id, partner_name:data.name});
+    }
+    
+    
+    SelectCustomer(){
+      this.props.navigation.navigate("CustomersList", {forSelect:true, setCustomer:this.setCustomer});
+    }
+
+    setProduct(data){
+      console.log(data);
+      this.setState(prevState =>({        
+        invoice_line_ids:[...prevState.invoice_line_ids, data]
+      })
+    );
+
+        let total = parseInt(data.price)* parseInt(data.quantity);
+    this.setState(prevState =>({subtotal: prevState.subtotal + total }));              
+  }
+    
+    
+    SelectProduct(){
+      this.props.navigation.navigate("AddItem", {forSelect:true, setProduct:this.setProduct});
+    }
+
+
+
+    setTerms(data){
+      this.setState({payment_term_id:data.id, payment_term_name:data.name});
+    }
+    
+    
+    SelectTerms(){
+      this.props.navigation.navigate("PaymentTerms", {forSelect:true, setTerms:this.setTerms});
+    }
+
+    openDatePicker(){
+      this.setState({datePickerVisible:true});
+    }
+
+    openDatePicker2(){
+      this.setState({datePickerVisible2:true});
+    }
+
+    hideDatepicker(){
+      this.setState({datePickerVisible:false, datePickerVisible2:false});
+    }
+
+
+    formatDate(date){
+      return format(date, "dd/MM/yyyy");
+    }
+
+    removeItem(data){
+      let filteredArray = this.state.invoice_line_ids.filter(item => {
+        return item.product_id != data.product_id
+      })
+
+      let total = 0;
+      filteredArray.forEach(element => {
+          total = total+  (parseInt(element.price)* parseInt(element.quantity));
+      });
+      this.setState({invoice_line_ids: filteredArray, subtotal: total});
+    }
 
   componentDidMount() {
     console.log(global.bank_name);
@@ -111,46 +224,41 @@ export default class InvoiceAdd extends Component {
   };
 
   add = () => {
+    console.log(this.state);
+
     if (!this.state.isReady) {
-      return;
+      // return;
     }
     if (global.user_info == "") {
       return;
     }
 
-    var sort_arr = this.state.sort_code.split("-");
-    var res_sort_code = "";
-    for (var i = 0; i < sort_arr.length; i++) {
-      res_sort_code = res_sort_code + sort_arr[i];
-    }
-
     var obj = {
-      name: this.state.name,
-      sort_code: res_sort_code,
-      account_number: this.state.account_number,
-      email: global.user_info.email,
-      nick_name: global.user_info.first_name,
-      telephone: global.user_info.phone,
-      type: global.user_info.account_type,
-      //token : global.token
+      partner_id: this.state.partner_id,
+      invoice_date: this.state.invoice_date,
+      due_date: this.state.due_date,
+      payment_term_id: this.state.payment_term_id,
+      invoice_line_ids: this.state.invoice_line_ids,
     };
     console.log("obj = ", obj);
     this.setState({ isLoading: true });
-    TransactionService.addBeneficiary(obj, global.token)
+    InvoiceService.createInvoice(obj, global.token)
       .then((res) => {
+
+        console.log(res);
+
         var data = res.data.result;
         if (typeof data == "undefined") {
           alertMessage("You must enter correct informations.");
         } else {
           if (data.success) {
-            global.verify_type = "add_beneficiary";
-            global.beneficiary_id = data.response.beneficiary_id;
-            this.props.navigation.navigate("VerfiyNumberScreen");
+            Toast.show(data.messasge, Toast.LONG);
+            this.props.navigation.pop();
+
           } else {
             alertMessage(data.message);
           }
         }
-
         this.setState({ isLoading: false });
       })
       .catch((error) => {
@@ -159,55 +267,12 @@ export default class InvoiceAdd extends Component {
       });
   };
 
-  onChangeCustomer() {
-    if (!this.state.check_coustomers) {
-      this.setState({ check_coustomers: true }, () => this.checkCustomer());
-    } else {
-      this.setState({ check_coustomers: false }, () => this.checkCustomer());
-    }
-  }
 
-  onChangeSupplier() {
-    if (!this.state.check_supplier) {
-      this.setState({ check_supplier: true }, () => this.checkCustomer());
-    } else {
-      this.setState({ check_supplier: false }, () => this.checkCustomer());
-    }
-  }
-  checkCustomer() {
-    if (!this.state.check_coustomers && !this.state.check_supplier) {
-      this.setState({ show_customer: false });
-    } else {
-      this.setState({ show_customer: true });
-    }
-  }
-
-  setSortCode(text) {
-    if (text.length > 8) {
-      return;
-    }
-    if (text.length == 2) {
-      text = text + "-";
-    }
-    if (text.length == 5) {
-      text = text + "-";
-    }
-    this.setState({ sort_code: text }, () => this.checkReady());
-  }
-
-  setAccountNumber(text) {
-    if (text.length != 8) {
-      this.setState({ is_error_account_number: true });
-    } else {
-      this.setState({ is_error_account_number: false });
-    }
-    this.setState({ account_number: text }, () => this.checkReady());
-  }
 
   render() {
     return (
       <SafeAreaView>
-        <ScrollView>
+        <ScrollView style={{width:'100%', height:'100%'}}>
           <View style={styles.container}>
             <DetailHeaderComponent
               navigation={this.props.navigation}
@@ -226,25 +291,54 @@ export default class InvoiceAdd extends Component {
                   alignSelf: "center",
                 }}
               >
-                <View style={{ height: 30 * metrics, flexDirection: "row" }} />
-                {/* 
-              <TextComponent
-                textPlaceHolder="Name"
-                textValue={this.state.name}
-                textType="text"
-                ready={this.state.isReady}
-                onChangeText={(value) =>
-                  this.setState({ name: value }, () => {
-                    this.checkReady();
-                  })
-                }
-                onFocus={() => {
-                  console.log("hello");
-                  this.props.navigation.navigate("PaymentTerms");
-                }}
-              >
-                {" "}
-              </TextComponent> */}
+                <View style={{ height: 30 * metrics, flexDirection: "row" }} />        
+              <View style={styles.card}>
+                <View style={styles.cardItem}>
+                  <View>
+                    <Text style={{ fontSize: 16, fontWeight:'700' }}>Invoice Date: </Text>
+                    <Text style={{ fontSize: 16 }}>{this.state.invoice_date}</Text>
+                  </View>
+
+                  <View>
+                    <TouchableOpacity onPress={()=>this.openDatePicker()} style={styles.smallBtn}>
+                      <Text>Select Date</Text>
+                    </TouchableOpacity>
+
+                    <DateTimePickerModal
+                      isVisible={this.state.datePickerVisible}
+                      mode="date"
+                      onConfirm={(date)=>{this.setState({invoice_date:this.formatDate(date)}); this.hideDatepicker();}}
+                      onCancel={()=>this.hideDatepicker()}
+                    />
+
+
+                  </View>
+                </View>
+                
+                <View style={styles.cardItem}>
+                  <View>
+                    <Text style={{ fontSize: 16, fontWeight:'700' }}>Due Date: </Text>
+                    <Text style={{ fontSize: 16 }}>{this.state.due_date}</Text>
+                  </View>
+                <View>
+                  <TouchableOpacity onPress={()=>this.openDatePicker2()} style={styles.smallBtn}>
+                    <Text>Select Date</Text>
+                  </TouchableOpacity>
+                  <DateTimePickerModal
+                      isVisible={this.state.datePickerVisible2}
+                      mode="date"
+                      onConfirm={(date)=>{this.setState({due_date:this.formatDate(date)}); this.hideDatepicker(); }}
+                      onCancel={()=>this.hideDatepicker()}
+                    />
+
+                  </View>
+                </View>
+
+
+              </View>
+
+
+
                 <View
                   style={{
                     height: 50,
@@ -264,19 +358,39 @@ export default class InvoiceAdd extends Component {
                     <View
                       style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                      <Text style={{ fontSize: 16 }}>TO :</Text>
-                      <Text style={{ fontSize: 16, color: "grey" }}>
-                        Customer
-                      </Text>
+                      <Text style={{ fontSize: 16 }}>TO: </Text>
+                      {
+                        this.state.partner_name ? (
+                          <Text style={{ fontSize: 16, color: "#000" }}>
+                          {this.state.partner_name}
+                        </Text>
+                        ):(
+                          <Text style={{ fontSize: 16, color: "grey" }}>
+                          Customer
+                        </Text>
+                        )
+                      }
                     </View>
                   </TouchableOpacity>
 
-                  <TouchableOpacity>
-                    <Ionicons
-                      name="ios-add-circle-outline"
-                      size={25 * metrics}
-                    />
-                  </TouchableOpacity>
+                  {
+                        this.state.partner_name ? (
+                          <TouchableOpacity onPress={()=>this.setState({partner_id:'', partner_name:''})}>
+                          <Ionicons
+                            name="ios-close"
+                            size={30 * metrics}
+                            style={{color:'#f00'}}
+                          />
+                        </TouchableOpacity>
+                        ):(
+                          <TouchableOpacity onPress={this.SelectCustomer}>
+                          <Ionicons
+                            name="ios-add-circle-outline"
+                            size={30 * metrics}
+                          />
+                        </TouchableOpacity>
+                        )
+                      }
                 </View>
 
                 <View
@@ -294,50 +408,151 @@ export default class InvoiceAdd extends Component {
                     marginBottom: 10,
                   }}
                 >
-                  <TouchableOpacity>
+                  <View                       style={{
+                        flex:1}} >
                     <View
                       style={{
+                        flex:1,
+                        width:'100%',
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
                       }}
                     >
-                      <Text style={{ fontSize: 16, color: "grey" }}>
-                        PaymentTerms
-                      </Text>
+                    <TouchableOpacity style={{flex:0.9}}>
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Text style={{ fontSize: 16 }}>Payment Terms: </Text>
+                        {
+                          this.state.payment_term_name ? (
+                            <Text style={{ fontSize: 16, color: "#000" }}>
+                            {this.state.payment_term_name}
+                          </Text>
+                          ):(
+                            <Text style={{ fontSize: 16, color: "grey" }}>
+                            
+                          </Text>
+                          )
+                        }
+                      </View>
+                    </TouchableOpacity>
+
+                  {
+                        this.state.payment_term_name ? (
+                          <TouchableOpacity onPress={()=>this.setState({payment_term:'', payment_term_name:''})}>
+                          <Ionicons
+                            name="ios-close"
+                            size={30 * metrics}
+                            style={{color:'#f00'}}
+                          />
+                        </TouchableOpacity>
+                        ):(
+                          <TouchableOpacity onPress={()=>this.SelectTerms()}>
+                          <Ionicons
+                            name="ios-add-circle-outline"
+                            size={30 * metrics}
+                          />
+                        </TouchableOpacity>
+                        )
+                      }
                     </View>
-                  </TouchableOpacity>
+                  </View>
                 </View>
 
-                <TouchableOpacity onPress = {()=>{  this.props.navigation.navigate('Products');}}>
+                <View>
+                <View
+                      style={{
+                        width: "100%",
+                        height: 40,
+                        backgroundColor: "#535050",
+                        borderTopLeftRadius: 9,
+                        borderTopRightRadius: 9,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        paddingHorizontal: 10,                        
+                      }}
+                    >
+                      <Text style={{ fontSize: 16, color: "white" }}>
+                        Add Products
+                      </Text>
+                      <TouchableOpacity onPress = {()=>{  this.SelectProduct()}}>
+                    <Ionicons
+                      name="ios-add-circle-outline"
+                      size={30 * metrics}
+                      style={{color:'#fff'}}
+                    />
+                  </TouchableOpacity>
+                    </View>
+
+
+
                   <View
                     style={{
-                      height: 90,
                       width: "100%",
                       borderWidth: 1,
                       borderColor: "grey",
                       borderRadius: 10,
                       backgroundColor: "white",
                       marginBottom: 10,
+                      borderTopLeftRadius: 0,
+                      borderTopRightRadius: 0,
+                      padding:10
                     }}
                   >
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        paddingHorizontal: 10,
-                      }}
-                    >
-                      <Text style={{ fontSize: 16, color: "grey" }}>
-                        Add Item
-                      </Text>
-                      <Text style={{ fontSize: 16, color: "grey" }}>
-                        0*0.00
-                      </Text>
-                    </View>
-                    <View
+
+                    {this.state.invoice_line_ids.length > 0 ? (
+
+                        this.state.invoice_line_ids.map((item, index) =>{                        
+                          return(
+                            <View
+                            style={{
+                              flex: 1,
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              marginBottom:5                              
+                            }}
+                            key={index}
+                          >
+                            <Text style={{ fontSize: 16, color: "grey" , flex:0.8,fontWeight:'700'}}>
+                              {item.description}
+                            </Text>
+
+                            <Text style={{ fontSize: 16, color: "black", fontWeight:'700'}}>
+                            {item.quantity} * {item.price}
+                            </Text>
+
+                            <TouchableOpacity style={{flex:0.05}} onPress={()=>this.removeItem(item)}>
+                              <Ionicons
+                            name="ios-close"
+                            size={30 * metrics}
+                            style={{color:'#f00'}}
+                          />
+                            </TouchableOpacity>
+
+                          </View>
+                          )
+                        })                                              
+                    ) :(
+                                          <View
+                                          style={{
+                                            flex: 1,
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            paddingBottom: 10,
+                                          }}
+                                        >
+                                          <Text style={{ fontSize: 16, color: "grey" }}>
+                                            No Items Added
+                                          </Text>
+                                        </View>
+                    )}
+
+
+                    {/* <View
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
@@ -346,32 +561,57 @@ export default class InvoiceAdd extends Component {
                         marginBottom: 5,
                       }}
                     >
-                      <Text style={{ fontSize: 16, color: "grey" }}>$0.00</Text>
-                    </View>
-                    <View
-                      style={{
-                        width: "100%",
-                        height: 30,
-                        backgroundColor: "#535050",
-                        borderBottomLeftRadius: 9,
-                        borderBottomRightRadius: 9,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        paddingHorizontal: 10,
-                      }}
-                    >
-                      <Text style={{ fontSize: 16, color: "white" }}>
-                        Subtotal
-                      </Text>
-                      <Text style={{ fontSize: 16, color: "white" }}>
-                        $ 0.00
-                      </Text>
-                    </View>
+                      <Text style={{ fontSize: 16, color: "grey" }}>{total}</Text>
+                    </View> */}
+
+
+                                        <View
+                                        style={{
+                                          width: "100%",
+                                          borderBottomLeftRadius: 9,
+                                          borderBottomRightRadius: 9,
+                                          flexDirection: "row",
+                                          alignItems: "center",
+                                          justifyContent: "space-between",
+                                          borderTopColor:'#cacaca',
+                                          borderTopWidth:1,
+                                          paddingVertical:10
+                                        }}
+                                      >
+                                        <Text style={{ fontSize: 16, color: "#000", fontWeight:'700' }}>
+                                          Subtotal
+                                        </Text>
+                                        <Text style={{ fontSize: 16, color: "#000" }}>
+                                        {this.state.subtotal}
+                                        </Text>
+                                      </View>
+                                      
+                  
+                                         
+                  </View>
+                </View>
+
+                <View style={styles.bottom}>
+                <TouchableOpacity
+                  style={
+                    this.state.isReady
+                      ? global_style.bottom_active_btn
+                      : global_style.bottom_btn
+                  }
+                  onPress={() => this.add()}
+                >
+                  <View style={global_style.btn_body}>
+                    <Text style={global_style.left_text}>Save</Text>
+                    <MaterialIcon
+                      style={global_style.right_icon}
+                      name="arrow-right"
+                      size={25 * metrics}
+                    />
                   </View>
                 </TouchableOpacity>
+              </View>
 
-                <TouchableOpacity>
+                {/* <TouchableOpacity>
                   <View
                     style={{
                       height: 150,
@@ -456,9 +696,9 @@ export default class InvoiceAdd extends Component {
                       </Text>
                     </View>
                   </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
-                <TouchableOpacity>
+                {/* <TouchableOpacity>
                   <View
                     style={{
                       height: 40,
@@ -501,30 +741,13 @@ export default class InvoiceAdd extends Component {
                   >
                     <Text style={{ fontSize: 16, color: "grey" }}>Note</Text>
                   </View>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.bottom}>
-                <TouchableOpacity
-                  style={
-                    this.state.isReady
-                      ? global_style.bottom_active_btn
-                      : global_style.bottom_btn
-                  }
-                  onPress={() => this.add()}
-                >
-                  <View style={global_style.btn_body}>
-                    <Text style={global_style.left_text}>Save</Text>
-                    <MaterialIcon
-                      style={global_style.right_icon}
-                      name="arrow-right"
-                      size={25 * metrics}
-                    />
-                  </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
           </View>
-          {this.state.isLoading && (
+        </ScrollView>
+
+        {this.state.isLoading && (
             <View style={global_style.loading_body}>
               <ActivityIndicator
                 size={100}
@@ -533,7 +756,6 @@ export default class InvoiceAdd extends Component {
               />
             </View>
           )}
-        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -544,11 +766,9 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     flexDirection: "column",
-    alignSelf: "center",
   },
   bottom: {
-    width: "85%",
-    bottom: 40,
+    width: "100%",
     alignSelf: "center",
   },
   check_body: {
@@ -578,4 +798,28 @@ const styles = StyleSheet.create({
     color: Colors.gray_color,
     marginLeft: 4 * metrics,
   },
+
+  card:{
+      paddingVertical:10,
+      width: "100%",
+      borderWidth: 1,
+      borderColor: "grey",
+      borderRadius: 10,
+      backgroundColor: "white",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      paddingHorizontal: 10,
+      marginBottom: 10,
+  },
+
+  cardItem:{
+    flex:1, flexDirection:'row', justifyContent:'space-between',marginBottom:10,
+    alignItems:'center'
+  },
+  smallBtn:{
+    backgroundColor:'#0f0',
+    alignItems:'center',
+    padding:5,
+    borderRadius:5
+  }
 });

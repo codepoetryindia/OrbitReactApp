@@ -23,6 +23,7 @@
     "@react-native-firebase/perf": "7.3.2",
     "aws-sdk": "^2.639.0",
     "axios": "^0.19.0",
+    "date-fns": "^2.16.1",
     "markdown-it": "^11.0.0",
     "prop-types": "^15.7.2",
     "react": "16.9.0",

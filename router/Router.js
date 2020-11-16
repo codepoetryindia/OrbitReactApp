@@ -97,6 +97,10 @@ import InvoiceAdd from "../screen/AccountsTabScreen/InvoiceAdd";
 import PaymentTerms from "../screen/AccountsTabScreen/PaymentTerms";
 import Products from "../screen/AccountsTabScreen/Products";
 import AddAccountProduct from "../screen/AccountsTabScreen/AddAccountProduct";
+import CustomersList from "../screen/AccountsTabScreen/CustomersList";
+import AddItem from "../screen/AccountsTabScreen/AddItem";
+
+
 
 
 import SideMenuComponentTab from "../components/SideMenuComponentTab";
@@ -268,6 +272,8 @@ const AppNavigator = createStackNavigator(
     PaymentTerms:{screen:PaymentTerms},
     Products:{screen:Products},
     AddAccountProduct:{screen:AddAccountProduct},
+    CustomersList:{screen:CustomersList},
+    AddItem:{screen:AddItem},
     Lolscreen : {
       screen : Drawer,
       navigationOptions: {

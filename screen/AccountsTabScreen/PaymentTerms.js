@@ -46,9 +46,9 @@ export default class PaymentTerms extends Component {
         this.onRefresh = this.onRefresh.bind(this);       
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);   
-        this.FilterData = this.FilterData.bind(this);   
-
-        
+        this.FilterData = this.FilterData.bind(this);
+        this.setTerms = this.setTerms.bind(this);
+                
 
         this.state = {
           isShowDetail: false,
@@ -61,7 +61,8 @@ export default class PaymentTerms extends Component {
           isPerson:false,
           isCompany:false,
           isActive:false,
-          active:''   
+          active:'',
+          forSelect:false,   
         };
       }
 
@@ -84,6 +85,12 @@ export default class PaymentTerms extends Component {
         searchText:''
     }
     componentDidMount() {
+        let data = this.props.navigation.getParam('forSelect', false)
+        if(data){
+            console.log("data");
+            this.setState({forSelect:true});
+        }
+
         if (global.is_accounting) {
             this.setState({show_select : true})
         }
@@ -92,6 +99,16 @@ export default class PaymentTerms extends Component {
     componentWillReceiveProps () {
         this.componentDidMount()
     }
+
+
+    setTerms(data){
+        if(this.state.forSelect){
+             console.log(this.props.navigation.state);
+             this.props.navigation.state.params.setTerms(data);
+             this.props.navigation.pop();
+         }
+     }
+ 
 
 
 
@@ -182,32 +199,27 @@ export default class PaymentTerms extends Component {
         return (
                                     <View key={idx} style={{flex:1, flexDirection:'row', paddingVertical:5,         borderBottomWidth : 1 ,
                                         borderBottomColor : Colors.white_gray_color}}>
-                                            <TouchableOpacity style={styles.item}>
-                                            <View style={{flex : 0.05}}></View>
-                                            <View style={{flex : 0.2 , justifyContent : 'center', alignItems : 'center'}}>
-                                                {
-                                                    !item.rb_beneficiary_icon ?
-                                                    <EvilIcons name="user" style={{fontFamily : Fonts.adobe_clean,fontSize : 60 * metrics, color : Colors.main_color,alignSelf : 'flex-start'}}></EvilIcons>
-                                                    :
-                                                    <Image source={{uri : 'data:image/png;base64,' + item.rb_beneficiary_icon}} style={{width :50 * metrics,alignSelf : 'flex-start', height : 50 * metrics, borderRadius : 100 ,resizeMode : 'cover'}}></Image>    
-                                                }
-                                            </View>
-                                            <View style={{flex : 0.5,flexDirection : 'column', justifyContent : 'center'}}>
-                                                <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 18 * metrics , color : 'black'}}>{item.name}</Text>
-                                                <View style={{marginTop : 5 * metrics}}></View>
-                                                <View style={{flexDirection : 'column'}}>
-                                                    <View style={{flexDirection : 'row'}}>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : '#000', marginRight : 10 * metrics}}>Phone : </Text>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.phone}</Text>
-                                                    </View>
-                                                    <View style={{marginTop : 5 * metrics}}></View>
-                                                    <View style={{flexDirection : 'row'}}>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : '#000', marginRight : 10 * metrics}}>Total Invoiced : </Text>
-                                                        <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.total_invoiced}</Text>
-                                                    </View>
+                                            <TouchableOpacity style={styles.item} onPress={()=>this.setTerms(item)}>
+                                                <View style={{flex : 0.05}}></View>
+                                                <View style={{flex : 0.2 , justifyContent : 'center', alignItems : 'center'}}>
+                                                    {
+                                                        !item.rb_beneficiary_icon ?
+                                                        <EvilIcons name="pencil" style={{fontFamily : Fonts.adobe_clean,fontSize : 60 * metrics, color : Colors.main_color,alignSelf : 'flex-start'}}></EvilIcons>
+                                                        :
+                                                        <Image source={{uri : 'data:image/png;base64,' + item.rb_beneficiary_icon}} style={{width :50 * metrics,alignSelf : 'flex-start', height : 50 * metrics, borderRadius : 100 ,resizeMode : 'cover'}}></Image>    
+                                                    }
                                                 </View>
-                                                
-                                            </View>
+                                                <View style={{flex : 0.5,flexDirection : 'column', justifyContent : 'center', paddingVertical:10}}>
+                                                    <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 18 * metrics , color : 'black'}}>{item.name}</Text>
+                                                    <View style={{marginTop : 5 * metrics}}></View>
+                                                    <View style={{flexDirection : 'column'}}>
+                                                        <View style={{flexDirection : 'row'}}>
+                                                            <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : '#000', marginRight : 10 * metrics}}>Note : </Text>
+                                                            <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.note}</Text>
+                                                        </View>
+                                                    </View>
+                                                    
+                                                </View>
                                             </TouchableOpacity>
                                         </View> 
         );

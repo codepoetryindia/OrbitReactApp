@@ -98,6 +98,48 @@ var InvoiceService = {
             },
         })
     },
+
+    getProductCategories : function(obj, token) {
+        var data = {
+            params : obj
+        }
+        return axios.post(WEB_API + 'product/category', data, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            },
+        })
+    },
+
+
+    addProduct : function(obj, token) {
+        var data = {
+            params : obj
+        }
+        return axios.post(WEB_API + 'product', data, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            },
+        })
+    },
+
+
+    createInvoice : function(obj, token) {
+        var data = {
+            params : obj
+        }
+
+        console.log(JSON.stringify(data));
+
+        return axios.post(WEB_API + 'customer/'+obj.partner_id+'/Bill', data, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            },
+        })
+    },
+
 }
 
 export default InvoiceService

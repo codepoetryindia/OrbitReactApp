@@ -26,10 +26,13 @@ import global_style, { metrics } from "../../constants/GlobalStyle";
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { CheckBox } from "react-native-elements";
 import TransactionService from "../../service/TransactionService";
+import InvoiceService from "../../service/InvoiceService";
 import { alertMessage } from "../../utils/utils";
 import { Fonts } from "../../constants/Fonts";
 import CrmService from "../../service/CrmService";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import ImagePicker from 'react-native-image-crop-picker';
+import RNPickerSelect from 'react-native-picker-select';
 
 export default class AddAccountProduct extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -39,45 +42,34 @@ export default class AddAccountProduct extends Component {
     };
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      productName: "",
-      salesPrice: "",
-      cost: "",
-      description: "",
-    };
-  }
 
   state = {
     isLoading: false,
-    name: "",
-    account_number: "",
-    sort_code: "",
-    show_sort_code: "XX-XX-XX",
-    isReady: false,
-    pay_type: "",
-    activeIdx: -1,
-    check_coustomers: false,
-    check_supplier: false,
-    customer_list: [],
-    customer_id: "",
-    show_customer: false,
-    is_error_account_number: false,
-    is_error_sort_code: false,
-    is_back_sort: false,
-    customer: "",
-    payment_terms: "",
-    items: [],
-    productName: "",
-    salesPrice: "",
-    cost: "",
-    description: "",
+    isReady: false,    
   };
-  // constructor(props) {
-  //     super(props);
-  //     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
-  // }
+
+  constructor(props) {
+    super(props);
+    this.selectProductImage = this.selectProductImage.bind(this);
+    this.checkReady = this.checkReady.bind(this);
+    this.getProductCategories = this.getProductCategories.bind(this);
+    this.state = {
+      isLoading: false,
+      isReady: false,
+      name: "",
+      lst_price: "",
+      standard_price: "",
+      description: "",
+      image:'',
+      mime:'',
+      ProductCategory:[],
+      categ_id:'',
+      type:''
+    };
+  }
+
+
+
   // componentWillUnmount() {
   //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
   // }
@@ -89,43 +81,78 @@ export default class AddAccountProduct extends Component {
   //     this.props.navigation.goBack()
   // }
 
-  componentDidMount() {
-    console.log(global.bank_name);
-    if (global.bank_name != undefined && global.bank_name != "") {
-      this.setState({ name: global.bank_name });
+
+  selectProductImage(){
+    try {
+      ImagePicker.openPicker({
+        width: 300,
+        height: 400,
+        cropping: true,
+        includeBase64:true,
+      }).then(image => {
+        console.log(image);
+        this.setState({image:image.data, mime:image.mime});
+        this.checkReady();
+      }).catch(error => {
+        console.log(error);
+      })      
+    } catch (error) {
+      
     }
-    CrmService.getCustomerList(global.token)
-      .then((res) => {
-        var data = res.data.result;
-        if (data.success) {
-          this.setState({ customer_list: data.response.records });
-        } else {
-          this.setState({ customer_list: [] });
-        }
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
   }
 
-  selectType = (value) => {
-    this.setState({ pay_type: value });
-  };
+
+  componentDidMount() {
+    this.getProductCategories();
+  }
+
+  getProductCategories(text = '', data={}){
+    let obj = {
+        "name":text,
+        ...data
+    };
+    this.setState({isLoading : true})
+    InvoiceService.getProductCategories(obj, global.token).then(res => {
+        var data = res.data.result
+        console.log('Products data = ' , data)
+        if (data.success) {
+            var data_arr = data.response.records
+
+            data_arr.forEach(element => {
+              element.value =  element.id;
+              element.label = element.name;
+              element.key  = element.id;
+            });
+
+            this.setState({ProductCategory : data_arr})
+        } else {
+            this.setState({ProductCategory : []})
+        }
+        this.setState({isLoading : false})
+    }).catch(error => {
+        console.log('error = ' , error.message)
+        this.setState({isLoading : false})
+    })
+}
+
+
 
   checkReady = () => {
-    console.log(this.state.sort_code);
     if (
       this.state.name != "" &&
-      this.state.sort_code != "" &&
-      this.state.account_number != "" &&
-      this.state.account_number.length == 8 &&
-      this.state.sort_code.length == 8
+      this.state.categ_id != "" &&
+      this.state.type != "" &&
+      this.state.lst_price != "" &&
+      this.state.standard_price != "" &&
+      this.state.description &&
+      this.state.image
     ) {
       this.setState({ isReady: true });
     } else {
       this.setState({ isReady: false });
     }
-  };
+};
+
 
   add = () => {
     if (!this.state.isReady) {
@@ -134,35 +161,27 @@ export default class AddAccountProduct extends Component {
     if (global.user_info == "") {
       return;
     }
-
-    var sort_arr = this.state.sort_code.split("-");
-    var res_sort_code = "";
-    for (var i = 0; i < sort_arr.length; i++) {
-      res_sort_code = res_sort_code + sort_arr[i];
+    var obj = {
+      name:this.state.name,
+      lst_price:this.state.lst_price,
+      standard_price:this.state.standard_price,
+      description: this.state.description,
+      image:this.state.image,
+      categ_id:this.state.categ_id,
+      type:this.state.type
     }
 
-    var obj = {
-      name: this.state.name,
-      sort_code: res_sort_code,
-      account_number: this.state.account_number,
-      email: global.user_info.email,
-      nick_name: global.user_info.first_name,
-      telephone: global.user_info.phone,
-      type: global.user_info.account_type,
-      //token : global.token
-    };
     console.log("obj = ", obj);
     this.setState({ isLoading: true });
-    TransactionService.addBeneficiary(obj, global.token)
+    InvoiceService.addProduct(obj, global.token)
       .then((res) => {
         var data = res.data.result;
+        console.log(res);
         if (typeof data == "undefined") {
           alertMessage("You must enter correct informations.");
         } else {
           if (data.success) {
-            global.verify_type = "add_beneficiary";
-            global.beneficiary_id = data.response.beneficiary_id;
-            this.props.navigation.navigate("VerfiyNumberScreen");
+            this.props.navigation.pop();
           } else {
             alertMessage(data.message);
           }
@@ -176,50 +195,6 @@ export default class AddAccountProduct extends Component {
       });
   };
 
-  onChangeCustomer() {
-    if (!this.state.check_coustomers) {
-      this.setState({ check_coustomers: true }, () => this.checkCustomer());
-    } else {
-      this.setState({ check_coustomers: false }, () => this.checkCustomer());
-    }
-  }
-
-  onChangeSupplier() {
-    if (!this.state.check_supplier) {
-      this.setState({ check_supplier: true }, () => this.checkCustomer());
-    } else {
-      this.setState({ check_supplier: false }, () => this.checkCustomer());
-    }
-  }
-  checkCustomer() {
-    if (!this.state.check_coustomers && !this.state.check_supplier) {
-      this.setState({ show_customer: false });
-    } else {
-      this.setState({ show_customer: true });
-    }
-  }
-
-  setSortCode(text) {
-    if (text.length > 8) {
-      return;
-    }
-    if (text.length == 2) {
-      text = text + "-";
-    }
-    if (text.length == 5) {
-      text = text + "-";
-    }
-    this.setState({ sort_code: text }, () => this.checkReady());
-  }
-
-  setAccountNumber(text) {
-    if (text.length != 8) {
-      this.setState({ is_error_account_number: true });
-    } else {
-      this.setState({ is_error_account_number: false });
-    }
-    this.setState({ account_number: text }, () => this.checkReady());
-  }
 
   render() {
     return (
@@ -233,7 +208,6 @@ export default class AddAccountProduct extends Component {
             }}
           />
           <View style={{ flex: 1 }}>
-            <View />
             <View
               style={{
                 flexDirection: "column",
@@ -243,23 +217,7 @@ export default class AddAccountProduct extends Component {
               }}
             >
               <View style={{ height: 30 * metrics, flexDirection: "row" }} />
-
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate("PaymentTerms");
-                }}
-              >
-                <Text>Payment Terms</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate("Products");
-                }}
-              >
-                <Text>Products</Text>
-              </TouchableOpacity>
-
+              
               <View
                 style={{
                   width: "100%",
@@ -269,7 +227,7 @@ export default class AddAccountProduct extends Component {
                   alignItems: "center",
                 }}
               >
-                <View
+                <TouchableOpacity
                   style={{
                     flex: 1,
                     height: 100,
@@ -282,13 +240,23 @@ export default class AddAccountProduct extends Component {
                     paddingHorizontal: 10,
                     marginRight: 10,
                   }}
+
+                  onPress={()=>this.selectProductImage()}
+
                 >
-                  <Ionicons
-                    name="ios-image"
-                    size={100 * metrics}
-                    color="grey"
-                  />
-                </View>
+                  {!this.state.image ? (
+                                      <Ionicons
+                                      name="ios-image"
+                                      size={99 * metrics}
+                                      color="grey"
+                                    />
+                  ):(
+                    <Image
+                    style={{width:100, height:100}}
+                    source={{uri: `data:${this.state.mime};base64,${this.state.image}`}}
+                  />        
+                  )}
+                </TouchableOpacity>
                 <TextInput
                   style={{
                     flex: 3,
@@ -302,10 +270,65 @@ export default class AddAccountProduct extends Component {
                   }}
                   placeholder="Product Name"
                   onChangeText={(text) => {
-                    this.setState({ productName: text });
+                    this.setState({ name: text });
+                    this.checkReady();
                   }}
                 />
               </View>
+
+              <View                 
+              style={{
+                  width: "100%",
+                  height: 50,
+                  alignItems: "center",
+                  marginBottom: 10,
+                  paddingHorizontal: 10,
+                  borderWidth: 1,
+                  borderColor: "grey",
+                  backgroundColor: "white",
+                }}>
+                  <RNPickerSelect
+                      onValueChange={(value) => this.setState({categ_id: value})}
+                      items={this.state.ProductCategory}
+                      placeholderTextColor={'grey'}
+                      style={{}}
+                      // placeholder={"Slect Category"}
+                      value={this.state.categ_id}
+                      textInputProps={{
+                        fontSize: 17 * metrics,
+                        fontFamily: Fonts.adobe_clean,
+                      }}
+                    />
+                  </View>
+
+                  <View                 
+              style={{
+                  width: "100%",
+                  height: 50,
+                  alignItems: "center",
+                  marginBottom: 10,
+                  paddingHorizontal: 10,
+                  borderWidth: 1,
+                  borderColor: "grey",
+                  backgroundColor: "white",
+                }}>
+                  <RNPickerSelect
+                      onValueChange={(value) => this.setState({type: value})}
+                      items={[
+                        {label:"consumable", value:"consumable", key :1},
+                        {label:"salable", value:"salable", key :2},
+                        {label:"service", value:"service", key :3},
+                      ]}
+                      placeholderTextColor={'grey'}
+                      style={{}}
+                      // placeholder={"Slect Category"}
+                      value={this.state.type}
+                      textInputProps={{
+                        fontSize: 17 * metrics,
+                        fontFamily: Fonts.adobe_clean,
+                      }}
+                    />
+                  </View>
 
               <View
                 style={{
@@ -333,7 +356,8 @@ export default class AddAccountProduct extends Component {
                   }}
                   placeholder="0.00"
                   onChangeText={(text) => {
-                    this.setState({ salesPrice: text });
+                    this.setState({ lst_price: text });
+                    this.checkReady();
                   }}
                 />
               </View>
@@ -362,7 +386,8 @@ export default class AddAccountProduct extends Component {
                   }}
                   placeholder="0.00"
                   onChangeText={(text) => {
-                    this.setState({ cost: text });
+                    this.setState({ standard_price: text });
+                    this.checkReady();
                   }}
                 />
               </View>
@@ -370,7 +395,6 @@ export default class AddAccountProduct extends Component {
               <View
                 style={{
                   width: "100%",
-                  height: 150,
                   borderWidth: 1,
                   borderColor: "grey",
                   backgroundColor: "white",
@@ -384,14 +408,17 @@ export default class AddAccountProduct extends Component {
                     fontSize: 16,
                     fontWeight: "bold",
                   }}
+                  multiline={true}
+                  numberOfLines={3}
                   placeholder="Description"
                   onChangeText={(text) => {
                     this.setState({ description: text });
+                    this.checkReady();
                   }}
                 />
               </View>
-            </View>
-            <View style={styles.bottom}>
+
+              <View style={styles.bottom}>
               <TouchableOpacity
                 style={
                   this.state.isReady
@@ -410,6 +437,10 @@ export default class AddAccountProduct extends Component {
                 </View>
               </TouchableOpacity>
             </View>
+
+            </View>
+          
+          <View />
           </View>
         </View>
         {this.state.isLoading && (
@@ -434,9 +465,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   bottom: {
-    width: "85%",
-    bottom: 170,
-    alignSelf: "center",
+    marginTop:20
   },
   check_body: {
     marginTop: 50 * metrics,
