@@ -139,6 +139,17 @@ var InvoiceService = {
             },
         })
     },
+    getTaxes : function(obj, token) {
+        var data = {
+            params : obj
+        }
+        return axios.post(WEB_API + 'taxes/search/', data, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            },
+        })
+    },
 
 }
 

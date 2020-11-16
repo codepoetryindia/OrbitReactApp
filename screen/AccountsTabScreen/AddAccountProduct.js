@@ -18,10 +18,10 @@ import {
   TextInput,
   Picker,
 } from "react-native";
-import * as Colors from "../../constants/Colors";
 import DetailHeaderComponent from "../../components/DetailHeaderComponent";
 import TextComponent from "../../components/TextComponent";
 import { RadioButton } from "react-native-paper";
+import * as Colors from "../../constants/Colors";
 import global_style, { metrics } from "../../constants/GlobalStyle";
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { CheckBox } from "react-native-elements";

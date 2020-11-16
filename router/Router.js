@@ -99,12 +99,8 @@ import Products from "../screen/AccountsTabScreen/Products";
 import AddAccountProduct from "../screen/AccountsTabScreen/AddAccountProduct";
 import CustomersList from "../screen/AccountsTabScreen/CustomersList";
 import AddItem from "../screen/AccountsTabScreen/AddItem";
-
-
-
-
+import AddCustomers from "../screen/AccountsTabScreen/AddCustomers";
 import SideMenuComponentTab from "../components/SideMenuComponentTab";
-
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import global_style, { metrics } from "../constants/GlobalStyle";
 import * as Colors from "../constants/Colors";
@@ -274,6 +270,7 @@ const AppNavigator = createStackNavigator(
     AddAccountProduct:{screen:AddAccountProduct},
     CustomersList:{screen:CustomersList},
     AddItem:{screen:AddItem},
+    AddCustomers:{screen:AddCustomers},
     Lolscreen : {
       screen : Drawer,
       navigationOptions: {

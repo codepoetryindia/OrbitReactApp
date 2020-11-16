@@ -1,7 +1,13 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, TextInput } from "react-native";
+import { Text, View, StyleSheet, TextInput, ActivityIndicator,SafeAreaView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import RNPickerSelect from 'react-native-picker-select';
+import InvoiceService from "../../service/InvoiceService";
+import * as Colors from "../../constants/Colors";
+import global_style, { metrics } from "../../constants/GlobalStyle";
+
+
 
 export default class AddItem extends Component {
 
@@ -10,11 +16,14 @@ constructor(props){
   this.setProduct = this.setProduct.bind(this);
   this.addProduct = this.addProduct.bind(this);
   this.state={
+    TAXES:[],
+    isLoading:false,
     product_name:'',
     product_id:'',
     description:'',
     quantity:'0',
-    price:''
+    price:'',
+    tax_ids:''
   }
 }
 
@@ -28,6 +37,39 @@ SelectProduct(){
 }
 
 
+componentDidMount() {
+  this.getTaxes('', {"type_tax_use":"sale"});
+}
+
+getTaxes(text = '', data={}){
+  let obj = {
+      "name":text,
+      ...data
+  };
+  this.setState({isLoading : true})
+  InvoiceService.getTaxes(obj, global.token).then(res => {
+      var data = res.data.result
+      console.log('TAxes data = ' , data)
+      if (data.success) {
+          var data_arr = data.response.records
+          data_arr.forEach(element => {
+            element.value =  element.id;
+            element.label = element.name;
+            element.key  = element.id;
+          });
+
+          this.setState({TAXES : data_arr})
+      } else {
+          this.setState({TAXES : []})
+      }
+      this.setState({isLoading : false})
+  }).catch(error => {
+      console.log('error = ' , error.message)
+      this.setState({isLoading : false})
+  })
+}
+
+
 
 addProduct(){
 
@@ -36,15 +78,30 @@ addProduct(){
     description:this.state.description,
     quantity:this.state.quantity,
     price:this.state.price,
-    tax_ids:3
+    tax_ids:this.state.tax_ids
   }
        this.props.navigation.state.params.setProduct(data);
        this.props.navigation.pop();
 }
 
 
+
+
+
+
   render() {
     return (
+      <SafeAreaView style={{flex:1, position:'relative'}}>
+      {this.state.isLoading && (
+        <View style={global_style.loading_body}>
+          <ActivityIndicator
+            size={100}
+            color={Colors.main_color}
+            style={global_style.activityIndicator}
+          />
+        </View>
+      )}
+
       <View style={styles.container}>
         <View style={styles.textFeild}>
         {this.state.product_name ? (
@@ -86,6 +143,32 @@ addProduct(){
           />
         </View>
 
+        <View                 
+              style={{
+                  width: "100%",
+                  height: 50,
+                  alignItems: "center",
+                  marginBottom: 10,
+                  paddingHorizontal: 10,
+                  borderWidth: 1,
+                  borderColor: "grey",
+                  backgroundColor: "white",
+                }}>
+                  <RNPickerSelect
+                      placeholder={{
+                        label: 'Select TAX id',
+                                    value: null,
+                      }}
+                      onValueChange={(value) => this.setState({tax_ids: value})}
+                      items={this.state.TAXES}
+                      placeholderTextColor={'grey'}
+                      style={{}}
+                      value={this.state.tax_ids}
+                      textInputProps={{
+                        fontSize: 17,
+                      }}
+                    />
+                  </View>
         <TextInput
           style={{
             borderWidth: 1,
@@ -129,6 +212,8 @@ addProduct(){
           </View>
         </TouchableOpacity>
       </View>
+    </SafeAreaView>
+
     );
   }
 }

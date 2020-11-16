@@ -46,9 +46,9 @@ export default class CustomersTab extends Component {
         this.onRefresh = this.onRefresh.bind(this);       
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);   
-        this.FilterData = this.FilterData.bind(this);   
-
-        
+        this.FilterData = this.FilterData.bind(this);
+        this.AddCustomers = this.AddCustomers.bind(this);
+            
 
         this.state = {
           isShowDetail: false,
@@ -252,6 +252,10 @@ export default class CustomersTab extends Component {
     openModal(){
         this.setState({isOpenModal : true})
     }
+
+    AddCustomers(){
+        this.props.navigation.navigate('AddCustomers');
+    }
     
 
 
@@ -260,7 +264,7 @@ export default class CustomersTab extends Component {
         return (
             <SafeAreaView style={{flex:1, height:'100%', width:"100%", position:'relative', flexDirection:'column'}}>
                 <View style={styles.container}>
-                <TabHeaderScreen headerTitle="Customers" navigation = {this.props.navigation} showDrawer={() => this.openDrawer()}></TabHeaderScreen>
+                <TabHeaderScreen headerTitle="Customers" navigation = {this.props.navigation} showDrawer={() => this.openDrawer()} navigate={this.AddCustomers}></TabHeaderScreen>
                    
                     <View style={{flex : 1}}>            
                         <ScrollView style={{flexDirection : 'column', width : '100%' , alignSelf : 'center'}}>
