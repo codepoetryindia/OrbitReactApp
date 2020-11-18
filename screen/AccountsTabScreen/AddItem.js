@@ -6,6 +6,37 @@ import RNPickerSelect from 'react-native-picker-select';
 import InvoiceService from "../../service/InvoiceService";
 import * as Colors from "../../constants/Colors";
 import global_style, { metrics } from "../../constants/GlobalStyle";
+import {Formik, Form} from 'formik';
+import * as Yup from "yup";
+
+const ValidationSchema = Yup.object().shape({
+  product_name: Yup.string()
+    .min(1, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
+    product_id : Yup.string()
+    .required('Required'),
+    description : Yup.string()
+    .min(2, 'Too Short!')
+    .max(300, 'Too Long!')
+    .required('Required'),
+    quantity : Yup.string()
+    .required('Required')
+    .test('Number', 'Please enter a valid Number', (data) => {
+      const regexp = /^[0-9]*$/;
+      return regexp.test(data);
+    }),
+    price : Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required')
+    .test('Number', 'Please enter a valid Amount', (data) => {
+      const regexp = /^[0-9]*$/;
+      return regexp.test(data);
+    }),
+    tax_ids : Yup.string()
+    .required('Required'),
+});
 
 
 
@@ -25,11 +56,19 @@ constructor(props){
     price:'',
     tax_ids:''
   }
+  this.inputRef = React.createRef();
 }
 
 
 setProduct(data){
   this.setState({product_id:data.id, description:data.name, price:data.standard_price.toString(), product_name:data.name});
+  // console.log(this.inputRef);
+
+  this.inputRef.current.setFieldValue("product_id",data.id);
+  this.inputRef.current.setFieldValue("description",data.name);
+  this.inputRef.current.setFieldValue("price",data.standard_price.toString());
+  this.inputRef.current.setFieldValue("product_name",data.name);
+
 }
 
 SelectProduct(){
@@ -71,14 +110,13 @@ getTaxes(text = '', data={}){
 
 
 
-addProduct(){
-
+addProduct(values){
   let data = {
-    product_id:this.state.product_id,
-    description:this.state.description,
-    quantity:this.state.quantity,
-    price:this.state.price,
-    tax_ids:this.state.tax_ids
+    product_id:values.product_id,
+    description:values.description,
+    quantity:values.quantity,
+    price:values.price,
+    tax_ids:values.tax_ids
   }
        this.props.navigation.state.params.setProduct(data);
        this.props.navigation.pop();
@@ -103,16 +141,37 @@ addProduct(){
       )}
 
       <View style={styles.container}>
+
+      <Formik
+        initialValues={{
+          product_name:'',
+          product_id:'',
+          description:'',
+          quantity:'0',
+          price:'',
+          tax_ids:''
+        }}
+        validationSchema={ValidationSchema}
+        onSubmit={values => this.addProduct(values)}
+        innerRef={this.inputRef}
+      >
+         {({ handleChange, handleBlur, handleSubmit, values, touched, errors, isSubmitting, setFieldTouched, isValid, setFieldValue}) => {
+          return (     
+            <View>
+
         <View style={styles.textFeild}>
-        {this.state.product_name ? (
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>{this.state.product_name}</Text>
+        {values.product_name ? (
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>{values.product_name}</Text>
         ):(
           <Text style={{ fontSize: 16, fontWeight: "bold" }}>Select Product</Text>
 
         )}
 
-        {this.state.product_name ? (
-            <TouchableOpacity onPress={()=>this.setState({product_id:'', product_name:''})}>
+        {values.product_name ? (
+            <TouchableOpacity onPress={()=>{
+              setFieldValue("product_id", "");
+              setFieldValue("product_name", "");
+            }}>
               <View>
                 <Ionicons name="ios-close" color="#f00" size={30} />
               </View>
@@ -126,29 +185,46 @@ addProduct(){
         )}
 
         </View>
+
+        {errors.product_id && touched.product_id ? (
+                <Text style={styles.errorLabel}>{errors.product_id}</Text>
+              ) : null}
+
         <View style={styles.textFeild}>
           <Text style={{ fontSize: 16, fontWeight: "700" }}>Quantity</Text>
           <TextInput
             style={{ height: 40, width:100, borderColor: 'gray', borderWidth: 1 }}
-            onChangeText={text => this.setState({quantity:text})}
-            value={this.state.quantity}
+            onChangeText={handleChange('quantity')}
+            onFocus={() => setFieldTouched('quantity')}
+            value={values.quantity}
           />
         </View>
+        {errors.quantity && touched.quantity ? (
+                <Text style={styles.errorLabel}>{errors.quantity}</Text>
+        ) : null}
+
+
         <View style={styles.textFeild}>
           <Text style={{ fontSize: 16, fontWeight: "700" }}>Price</Text>
           <TextInput
             style={{ height: 40, width:100, borderColor: 'gray', borderWidth: 1 }}
-            onChangeText={text => this.setState({price:text})}
-            value={this.state.price}
+            onChangeText={handleChange('price')}
+            onFocus={() => setFieldTouched('price')}
+            value={values.price}
           />
         </View>
+        {errors.price && touched.price ? (
+                <Text style={styles.errorLabel}>{errors.price}</Text>
+              ) : null}
 
+
+      <View>
         <View                 
               style={{
                   width: "100%",
                   height: 50,
                   alignItems: "center",
-                  marginBottom: 10,
+                  marginTop: 10,
                   paddingHorizontal: 10,
                   borderWidth: 1,
                   borderColor: "grey",
@@ -159,40 +235,60 @@ addProduct(){
                         label: 'Select TAX id',
                                     value: null,
                       }}
-                      onValueChange={(value) => this.setState({tax_ids: value})}
+                      onValueChange={(value) => {
+                        setFieldTouched('tax_ids');
+                        setFieldValue('tax_ids', value);
+                      }}
                       items={this.state.TAXES}
                       placeholderTextColor={'grey'}
                       style={{}}
-                      value={this.state.tax_ids}
+                      value={values.tax_ids}
                       textInputProps={{
                         fontSize: 17,
                       }}
                     />
                   </View>
+
+                  {errors.tax_ids && touched.tax_ids ? (
+                <Text style={styles.errorLabel}>{errors.tax_ids}</Text>
+              ) : null}
+
+                  </View>
+
+
+        <View>        
         <TextInput
           style={{
             borderWidth: 1,
             borderColor: "grey",
             backgroundColor: "white",
             padding: 10,
-            marginBottom: 10,
+            marginTop: 10,
             fontWeight: "bold",
             fontSize: 16,
             paddingHorizontal: 20,          
           }}
           placeholder="Description"
           multiline={true}
-          numberOfLines = {6}
-          onChangeText={(text) => this.setState({description : text})}
-          value={this.state.description}
+          numberOfLines = {3}
+          onChangeText={handleChange('description')}
+          onFocus={() => setFieldTouched('description')}
+          value={values.description}
         />
+
+          {errors.description && touched.description ? (
+                <Text style={styles.errorLabel}>{errors.description}</Text>
+              ) : null}
+        </View>  
+
+
         <TouchableOpacity
           style={{
             justifyContent: "center",
             alignItems: "center",
-            marginTop: 20,
+            marginTop: 15,
           }}
-          onPress={()=>this.addProduct()}
+          onPress={handleSubmit}
 
         >
           <View
@@ -211,6 +307,13 @@ addProduct(){
             </Text>
           </View>
         </TouchableOpacity>
+        </View>
+
+)
+}}
+</Formik>   
+
+
       </View>
     </SafeAreaView>
 
@@ -223,7 +326,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     paddingHorizontal:10,
-    marginTop:20,
+    marginTop:10,
 
   },
   textFeild: {
@@ -236,7 +339,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginBottom:15
+    marginTop:15
   },
   addBtn: {
     height: 30,
@@ -245,5 +348,9 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: "center",
     alignItems: "center",
+  },
+  errorLabel: {
+    color: '#f00',
+    fontSize: 14,
   },
 });

@@ -24,6 +24,7 @@ import TabHeaderScreen from '../../components/TabHeaderScreen';
 import {ListItem, Avatar, SearchBar} from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RNPickerSelect from 'react-native-picker-select';
+import * as Yup from "yup";
 
 
 

@@ -33,6 +33,42 @@ import CrmService from "../../service/CrmService";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ImagePicker from 'react-native-image-crop-picker';
 import RNPickerSelect from 'react-native-picker-select';
+import {Formik, Form} from 'formik';
+import * as Yup from "yup";
+
+
+const ValidationSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
+    categ_id : Yup.string()
+    .required('Required'),
+    type : Yup.string()
+    .required('Required'),
+    lst_price : Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required')
+    .test('Number', 'Please enter a valid Amount', (data) => {
+      const regexp = /^[0-9]*$/;
+      return regexp.test(data);
+    }),
+    standard_price : Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required')
+    .test('Number', 'Please enter a valid Amount', (data) => {
+      const regexp = /^[0-9]*$/;
+      return regexp.test(data);
+    }),
+    description : Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
+    image: Yup.string()
+    .required('Required')
+});
 
 export default class AddAccountProduct extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -82,7 +118,7 @@ export default class AddAccountProduct extends Component {
   // }
 
 
-  selectProductImage(){
+  selectProductImage(handleChange){
     try {
       ImagePicker.openPicker({
         width: 300,
@@ -92,6 +128,7 @@ export default class AddAccountProduct extends Component {
       }).then(image => {
         console.log(image);
         this.setState({image:image.data, mime:image.mime});
+        handleChange(image.data);
         this.checkReady();
       }).catch(error => {
         console.log(error);
@@ -154,21 +191,18 @@ export default class AddAccountProduct extends Component {
 };
 
 
-  add = () => {
-    if (!this.state.isReady) {
-      return;
-    }
+  add = (values) => {
     if (global.user_info == "") {
       return;
     }
     var obj = {
-      name:this.state.name,
-      lst_price:this.state.lst_price,
-      standard_price:this.state.standard_price,
-      description: this.state.description,
-      image:this.state.image,
-      categ_id:this.state.categ_id,
-      type:this.state.type
+      name:values.name,
+      lst_price:values.lst_price,
+      standard_price:values.standard_price,
+      description: values.description,
+      image:values.image,
+      categ_id:values.categ_id,
+      type:values.type
     }
 
     console.log("obj = ", obj);
@@ -216,120 +250,167 @@ export default class AddAccountProduct extends Component {
                 alignSelf: "center",
               }}
             >
-              <View style={{ height: 30 * metrics, flexDirection: "row" }} />
-              
+
+<Formik
+        initialValues={{
+          name :"",
+          categ_id :"",
+          type :"",
+          lst_price :"",
+          standard_price :"",
+          description :"",
+          image:''
+        }}
+        validationSchema={ValidationSchema}
+        onSubmit={values => this.add(values)}
+      >
+         {({ handleChange, handleBlur, handleSubmit, values, touched, errors, isSubmitting, setFieldTouched, isValid, setFieldValue}) => {
+          return (       
+              <View>
+                <View style={{ height: 30 * metrics, flexDirection: "row" }} />              
               <View
                 style={{
                   width: "100%",
-                  height: 120,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  marginBottom:10,minHeight:80
                 }}
               >
+
+                <View                
+                style={{
+                    marginRight: 10,
+                  }}>
                 <TouchableOpacity
                   style={{
                     flex: 1,
-                    height: 100,
-                    width: 100,
+                    height: 80,
+                    width: 80,
                     borderWidth: 1,
                     borderColor: "grey",
                     backgroundColor: "white",
                     alignItems: "center",
                     justifyContent: "center",
                     paddingHorizontal: 10,
-                    marginRight: 10,
                   }}
-
-                  onPress={()=>this.selectProductImage()}
-
+                  onPress={()=>this.selectProductImage(handleChange('image'))}
                 >
-                  {!this.state.image ? (
+                  {!values.image ? (
                                       <Ionicons
                                       name="ios-image"
-                                      size={99 * metrics}
+                                      size={60 * metrics}
                                       color="grey"
                                     />
                   ):(
                     <Image
-                    style={{width:100, height:100}}
-                    source={{uri: `data:${this.state.mime};base64,${this.state.image}`}}
+                    style={{width:80, height:80}}
+                    source={{uri: `data:${this.state.mime};base64,${values.image}`}}
                   />        
                   )}
                 </TouchableOpacity>
-                <TextInput
-                  style={{
-                    flex: 3,
-                    height: 100,
+                    {errors.image && touched.image ? (
+                    <Text style={styles.errorLabel}>{errors.image}</Text>
+                  ) : null}
+                </View>
+
+                <View style={{flex:1}}>
+                  <TextInput
+                    style={{
+                      flex: 3,
+                      height: 80,
+                      borderWidth: 1,
+                      borderColor: "grey",
+                      backgroundColor: "white",
+                      paddingHorizontal: 10,
+                      fontSize: 16,
+                      fontWeight: "bold",
+                    }}
+                    placeholder="Product Name"
+                    value={values.name}
+                    onChangeText={handleChange('name')}
+                    onFocus={() => setFieldTouched('name')}
+                  />
+                {errors.name && touched.name ? (
+                  <Text style={styles.errorLabel}>{errors.name}</Text>
+                ) : null}
+                </View>
+              </View>
+
+              <View>
+                <View                 
+                style={{
+                    width: "100%",
+                    height: 50,
+                    alignItems: "center",
+                    paddingHorizontal: 10,
                     borderWidth: 1,
                     borderColor: "grey",
                     backgroundColor: "white",
-                    paddingHorizontal: 10,
-                    fontSize: 16,
-                    fontWeight: "bold",
-                  }}
-                  placeholder="Product Name"
-                  onChangeText={(text) => {
-                    this.setState({ name: text });
-                    this.checkReady();
-                  }}
-                />
-              </View>
-
-              <View                 
-              style={{
-                  width: "100%",
-                  height: 50,
-                  alignItems: "center",
-                  marginBottom: 10,
-                  paddingHorizontal: 10,
-                  borderWidth: 1,
-                  borderColor: "grey",
-                  backgroundColor: "white",
-                }}>
-                  <RNPickerSelect
-                      onValueChange={(value) => this.setState({categ_id: value})}
-                      items={this.state.ProductCategory}
-                      placeholderTextColor={'grey'}
-                      style={{}}
-                      // placeholder={"Slect Category"}
-                      value={this.state.categ_id}
-                      textInputProps={{
-                        fontSize: 17 * metrics,
-                        fontFamily: Fonts.adobe_clean,
+                  }}>
+                    <RNPickerSelect
+                        onValueChange={(value) => {
+                          setFieldTouched('categ_id');
+                          setFieldValue('categ_id', value);
+                        }}
+                        items={this.state.ProductCategory}
+                        placeholderTextColor={'grey'}
+                        style={{fontWeight:'700'}}
+                        placeholder={{
+                          label: 'Select a Category...',
+                          value: null,
                       }}
-                    />
+                        value={values.categ_id}
+                        textInputProps={{
+                          fontSize: 17 * metrics,
+                          fontFamily: Fonts.adobe_clean,
+                        }}
+                      />
+                    </View>
+                    {errors.categ_id && touched.categ_id ? (
+                        <Text style={styles.errorLabel}>{errors.categ_id}</Text>
+                      ) : null}
                   </View>
 
-                  <View                 
-              style={{
-                  width: "100%",
-                  height: 50,
-                  alignItems: "center",
-                  marginBottom: 10,
-                  paddingHorizontal: 10,
-                  borderWidth: 1,
-                  borderColor: "grey",
-                  backgroundColor: "white",
-                }}>
-                  <RNPickerSelect
-                      onValueChange={(value) => this.setState({type: value})}
-                      items={[
-                        {label:"consumable", value:"consumable", key :1},
-                        {label:"salable", value:"salable", key :2},
-                        {label:"service", value:"service", key :3},
-                      ]}
-                      placeholderTextColor={'grey'}
-                      style={{}}
-                      // placeholder={"Slect Category"}
-                      value={this.state.type}
-                      textInputProps={{
-                        fontSize: 17 * metrics,
-                        fontFamily: Fonts.adobe_clean,
-                      }}
-                    />
-                  </View>
-
+                  <View>
+                      <View                 
+                          style={{
+                              width: "100%",
+                              height: 50,
+                              alignItems: "center",
+                              marginTop: 10,
+                              paddingHorizontal: 10,
+                              borderWidth: 1,
+                              borderColor: "grey",
+                              backgroundColor: "white",
+                            }}>
+                              <RNPickerSelect
+                                  onValueChange={(value) => {
+                                    setFieldTouched('type');
+                                    setFieldValue('type', value);
+                                  }}
+                                  items={[
+                                    {label:"consumable", value:"consumable", key :1},
+                                    {label:"salable", value:"salable", key :2},
+                                    {label:"service", value:"service", key :3},
+                                  ]}
+                                  placeholderTextColor={'grey'}
+                                  style={{}}
+                                  placeholder={{
+                                    label: 'Select Type...',
+                                    value: null,
+                                }}
+                                  value={values.type}
+                                  textInputProps={{
+                                    fontSize: 17 * metrics,
+                                    fontFamily: Fonts.adobe_clean,
+                                  }}
+                                />
+                              </View>
+                              {errors.type && touched.type ? (
+                                  <Text style={styles.errorLabel}>{errors.type}</Text>
+                                ) : null}
+                      </View>
               <View
                 style={{
                   width: "100%",
@@ -337,7 +418,7 @@ export default class AddAccountProduct extends Component {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginBottom: 10,
+                  marginTop: 10,
                   paddingHorizontal: 10,
                   borderWidth: 1,
                   borderColor: "grey",
@@ -354,14 +435,17 @@ export default class AddAccountProduct extends Component {
                     fontSize: 16,
                     fontWeight: "bold",
                   }}
+                  keyboardType='numeric'
                   placeholder="0.00"
-                  onChangeText={(text) => {
-                    this.setState({ lst_price: text });
-                    this.checkReady();
-                  }}
+                  value={values.lst_price}
+                  onChangeText={handleChange('lst_price')}
+                  onFocus={() => setFieldTouched('lst_price')}
                 />
               </View>
 
+              {errors.lst_price && touched.lst_price ? (
+                      <Text style={styles.errorLabel}>{errors.lst_price}</Text>
+              ) : null}
               <View
                 style={{
                   width: "100%",
@@ -369,7 +453,7 @@ export default class AddAccountProduct extends Component {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginBottom: 10,
+                  marginTop: 10,
                   paddingHorizontal: 10,
                   borderWidth: 1,
                   borderColor: "grey",
@@ -384,13 +468,16 @@ export default class AddAccountProduct extends Component {
                     fontSize: 16,
                     fontWeight: "bold",
                   }}
+                  keyboardType='numeric'
                   placeholder="0.00"
-                  onChangeText={(text) => {
-                    this.setState({ standard_price: text });
-                    this.checkReady();
-                  }}
+                  value={values.standard_price}
+                  onChangeText={handleChange('standard_price')}
+                  onFocus={() => setFieldTouched('standard_price')}
                 />
               </View>
+              {errors.standard_price && touched.standard_price ? (
+                  <Text style={styles.errorLabel}>{errors.standard_price}</Text>
+              ) : null}
 
               <View
                 style={{
@@ -399,6 +486,7 @@ export default class AddAccountProduct extends Component {
                   borderColor: "grey",
                   backgroundColor: "white",
                   paddingLeft: 10,
+                  marginTop: 10,
                 }}
               >
                 <TextInput
@@ -411,21 +499,23 @@ export default class AddAccountProduct extends Component {
                   multiline={true}
                   numberOfLines={3}
                   placeholder="Description"
-                  onChangeText={(text) => {
-                    this.setState({ description: text });
-                    this.checkReady();
-                  }}
+                  value={values.description}
+                  onChangeText={handleChange('description')}
+                  onFocus={() => setFieldTouched('description')}
                 />
               </View>
+              {errors.description && touched.description ? (
+                  <Text style={styles.errorLabel}>{errors.description}</Text>
+              ) : null}
 
               <View style={styles.bottom}>
               <TouchableOpacity
                 style={
-                  this.state.isReady
+                  isValid
                     ? global_style.bottom_active_btn
                     : global_style.bottom_btn
                 }
-                onPress={() => this.add()}
+                onPress={handleSubmit}
               >
                 <View style={global_style.btn_body}>
                   <Text style={global_style.left_text}>Save</Text>
@@ -437,6 +527,11 @@ export default class AddAccountProduct extends Component {
                 </View>
               </TouchableOpacity>
             </View>
+              </View>
+
+            )
+      }}
+      </Formik>   
 
             </View>
           
@@ -493,5 +588,10 @@ const styles = StyleSheet.create({
     fontSize: 14 * metrics,
     color: Colors.gray_color,
     marginLeft: 4 * metrics,
+  },
+  errorLabel: {
+    color: '#f00',
+    fontSize: 12,
+    marginTop:2
   },
 });

@@ -151,6 +151,19 @@ var InvoiceService = {
         })
     },
 
+    createCustomer : function(obj, token) {
+        var data = {
+            params : obj
+        }
+        return axios.post(WEB_API + 'customer', data, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            },
+        })
+    },
+
+
 }
 
 export default InvoiceService

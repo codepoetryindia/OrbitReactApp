@@ -70,7 +70,10 @@ export default class Products extends Component {
       }
 
     openDrawer = () => {
-        this.props.navigation.openDrawer();
+
+        console.log(this.props);
+
+        // this.props.navigation.openDrawer();
         // this.setState({ isShowSide: true });
         // this._drawer.open();
       };

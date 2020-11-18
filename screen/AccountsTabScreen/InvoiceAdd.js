@@ -34,6 +34,29 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { format } from "date-fns";
 import InvoiceService from "../../service/InvoiceService";
 import Toast from 'react-native-simple-toast';
+import {Formik, Form} from 'formik';
+import * as Yup from "yup";
+
+
+const ValidationSchema = Yup.object().shape({
+  partner_id: Yup.string()
+    .min(1, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
+    invoice_date : Yup.string(),
+    // .required('Required'),
+    due_date : Yup.string(),
+    // .min(2, 'Too Short!')
+    // .max(300, 'Too Long!')
+    // .required('Required'),
+    payment_term_id : Yup.string()
+    .required('Required'),
+    invoice_line_ids : Yup.string()
+    .required('Minimum One Product Required'),
+});
+
+
+
 
 export default class InvoiceAdd extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -83,6 +106,7 @@ export default class InvoiceAdd extends Component {
         this.hideDatepicker = this.hideDatepicker.bind(this);
         this.formatDate = this.formatDate.bind(this); 
         this.removeItem = this.removeItem.bind(this);
+        this.inputRef = React.createRef();
 
         this.state={
           isLoading : false,
@@ -122,6 +146,8 @@ export default class InvoiceAdd extends Component {
 
     setCustomer(data){
       this.setState({partner_id:data.id, partner_name:data.name});
+      this.inputRef.current.setFieldValue("partner_id",data.id);
+      this.inputRef.current.setFieldValue("partner_name",data.name);
     }
     
     
@@ -135,9 +161,9 @@ export default class InvoiceAdd extends Component {
         invoice_line_ids:[...prevState.invoice_line_ids, data]
       })
     );
-
+    this.inputRef.current.setFieldValue("invoice_line_ids","products");    
         let total = parseInt(data.price)* parseInt(data.quantity);
-    this.setState(prevState =>({subtotal: prevState.subtotal + total }));              
+    this.setState(prevState =>({subtotal: prevState.subtotal + total }));
   }
     
     
@@ -149,6 +175,9 @@ export default class InvoiceAdd extends Component {
 
     setTerms(data){
       this.setState({payment_term_id:data.id, payment_term_name:data.name});
+      this.inputRef.current.setFieldValue("payment_term_id",data.id);
+      this.inputRef.current.setFieldValue("payment_term_name",data.name);
+
     }
     
     
@@ -182,6 +211,12 @@ export default class InvoiceAdd extends Component {
       filteredArray.forEach(element => {
           total = total+  (parseInt(element.price)* parseInt(element.quantity));
       });
+
+      if(!filteredArray.length){
+        this.inputRef.current.setFieldValue("invoice_line_ids","");
+      }else{
+        console.log(filteredArray.length);
+      }
       this.setState({invoice_line_ids: filteredArray, subtotal: total});
     }
 
@@ -282,7 +317,25 @@ export default class InvoiceAdd extends Component {
               }}
             />
             <View style={{ flex: 1 }}>
-              <View />
+              <View/>
+
+              <Formik
+        initialValues={{
+          partner_id: "",
+          invoice_date: "",
+          due_date: "",
+          payment_term_id: "",
+          invoice_line_ids: "",
+          partner_name:'',
+          payment_term_name:'',
+        }}
+        validationSchema={ValidationSchema}
+        onSubmit={values => this.add()}
+        innerRef={this.inputRef}
+      >
+         {({ handleChange, handleBlur, handleSubmit, values, touched, errors, isSubmitting, setFieldTouched, isValid, setFieldValue}) => {
+          return (     
+            
               <View
                 style={{
                   flexDirection: "column",
@@ -297,7 +350,14 @@ export default class InvoiceAdd extends Component {
                   <View>
                     <Text style={{ fontSize: 16, fontWeight:'700' }}>Invoice Date: </Text>
                     <Text style={{ fontSize: 16 }}>{this.state.invoice_date}</Text>
+
+                    {errors.invoice_date && touched.invoice_date ? (
+                <Text style={styles.errorLabel}>{errors.invoice_date}</Text>
+              ) : null}
                   </View>
+
+
+
 
                   <View>
                     <TouchableOpacity onPress={()=>this.openDatePicker()} style={styles.smallBtn}>
@@ -319,6 +379,9 @@ export default class InvoiceAdd extends Component {
                   <View>
                     <Text style={{ fontSize: 16, fontWeight:'700' }}>Due Date: </Text>
                     <Text style={{ fontSize: 16 }}>{this.state.due_date}</Text>
+                    {errors.due_date && touched.due_date ? (
+                      <Text style={styles.errorLabel}>{errors.due_date}</Text>
+                    ) : null}
                   </View>
                 <View>
                   <TouchableOpacity onPress={()=>this.openDatePicker2()} style={styles.smallBtn}>
@@ -351,7 +414,7 @@ export default class InvoiceAdd extends Component {
                     alignItems: "center",
                     justifyContent: "space-between",
                     paddingHorizontal: 10,
-                    marginBottom: 10,
+                    marginTop: 10,
                   }}
                 >
                   <TouchableOpacity>
@@ -375,7 +438,11 @@ export default class InvoiceAdd extends Component {
 
                   {
                         this.state.partner_name ? (
-                          <TouchableOpacity onPress={()=>this.setState({partner_id:'', partner_name:''})}>
+                          <TouchableOpacity onPress={()=>{
+                            this.setState({partner_id:'', partner_name:''});
+                            setFieldValue("partner_name", '');
+                            setFieldValue("partner_id", '');
+                            }}>
                           <Ionicons
                             name="ios-close"
                             size={30 * metrics}
@@ -392,6 +459,11 @@ export default class InvoiceAdd extends Component {
                         )
                       }
                 </View>
+                {errors.partner_id && touched.partner_id ? (
+                <Text style={styles.errorLabel}>{errors.partner_id}</Text>
+              ) : null}
+
+                      
 
                 <View
                   style={{
@@ -405,7 +477,7 @@ export default class InvoiceAdd extends Component {
                     alignItems: "center",
                     justifyContent: "space-between",
                     paddingHorizontal: 10,
-                    marginBottom: 10,
+                    marginTop: 10,
                   }}
                 >
                   <View                       style={{
@@ -440,7 +512,12 @@ export default class InvoiceAdd extends Component {
 
                   {
                         this.state.payment_term_name ? (
-                          <TouchableOpacity onPress={()=>this.setState({payment_term:'', payment_term_name:''})}>
+                          <TouchableOpacity onPress={()=>{
+                            this.setState({payment_term:'', payment_term_name:''})
+                            setFieldValue("payment_term_id", '');
+                            setFieldValue("payment_term_name", '');
+                          }                            
+                            }>
                           <Ionicons
                             name="ios-close"
                             size={30 * metrics}
@@ -460,6 +537,10 @@ export default class InvoiceAdd extends Component {
                   </View>
                 </View>
 
+                {errors.payment_term_id && touched.payment_term_id ? (
+                  <Text style={styles.errorLabel}>{errors.payment_term_id}</Text>
+                ) : null}
+
                 <View>
                 <View
                       style={{
@@ -471,7 +552,8 @@ export default class InvoiceAdd extends Component {
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        paddingHorizontal: 10,                        
+                        paddingHorizontal: 10, 
+                        marginTop:10                       
                       }}
                     >
                       <Text style={{ fontSize: 16, color: "white" }}>
@@ -495,7 +577,6 @@ export default class InvoiceAdd extends Component {
                       borderColor: "grey",
                       borderRadius: 10,
                       backgroundColor: "white",
-                      marginBottom: 10,
                       borderTopLeftRadius: 0,
                       borderTopRightRadius: 0,
                       padding:10
@@ -589,16 +670,22 @@ export default class InvoiceAdd extends Component {
                   
                                          
                   </View>
+                  
+                  {errors.invoice_line_ids && touched.invoice_line_ids ? (
+                  <Text style={styles.errorLabel}>{errors.invoice_line_ids}</Text>
+                ) : null}
+
+
                 </View>
 
                 <View style={styles.bottom}>
                 <TouchableOpacity
                   style={
-                    this.state.isReady
+                    isValid
                       ? global_style.bottom_active_btn
                       : global_style.bottom_btn
                   }
-                  onPress={() => this.add()}
+                  onPress={handleSubmit}
                 >
                   <View style={global_style.btn_body}>
                     <Text style={global_style.left_text}>Save</Text>
@@ -743,6 +830,12 @@ export default class InvoiceAdd extends Component {
                   </View>
                 </TouchableOpacity> */}
               </View>
+        )
+      }}
+      </Formik>   
+
+
+
             </View>
           </View>
         </ScrollView>
@@ -770,6 +863,7 @@ const styles = StyleSheet.create({
   bottom: {
     width: "100%",
     alignSelf: "center",
+    marginTop:10
   },
   check_body: {
     marginTop: 50 * metrics,
@@ -821,5 +915,9 @@ const styles = StyleSheet.create({
     alignItems:'center',
     padding:5,
     borderRadius:5
+  },
+  errorLabel: {
+    color: '#f00',
+    fontSize: 14,
   }
 });
