@@ -204,7 +204,11 @@ export default class InvoicesTab extends Component {
         return (
             <View key={idx} style={{flex:1, flexDirection:'row', paddingVertical:5,         borderBottomWidth : 1 ,
             borderBottomColor : Colors.white_gray_color}}>
-                <TouchableOpacity style={styles.item}>
+                <TouchableOpacity style={styles.item} onPress = {()=>{
+                    // console.log(item);
+                    this.props.navigation.navigate('InvoiceEdit', {data:item});
+                    
+                }}>
                 {/* <View style={{flex : 0.2 , justifyContent : 'center', alignItems : 'center'}}>
                     {
                         !item.rb_beneficiary_icon ?

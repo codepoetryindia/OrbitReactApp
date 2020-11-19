@@ -88,6 +88,7 @@ import CategoryDetail from "../screen/TabScreen/DetailScreen/CategoryDetail";
 import BeneficiaryTransactions from "../screen/TabScreen/DetailScreen/BeneficiaryTransactions";
 
 import SaleInvoices from "../screen/DetailScreen/SaleInvoices";
+import InvoiceEdit from '../screen/AccountsTabScreen/InvoiceEdit'; 
 import DashboardTab from "../screen/AccountsTabScreen/DashboardTab";
 import InvoicesTab from "../screen/AccountsTabScreen/InvoicesTab";
 import CustomersTab from "../screen/AccountsTabScreen/CustomersTab";
@@ -104,6 +105,7 @@ import SideMenuComponentTab from "../components/SideMenuComponentTab";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import global_style, { metrics } from "../constants/GlobalStyle";
 import * as Colors from "../constants/Colors";
+
 
 
 
@@ -271,6 +273,9 @@ const AppNavigator = createStackNavigator(
     CustomersList:{screen:CustomersList},
     AddItem:{screen:AddItem},
     AddCustomers:{screen:AddCustomers},
+    InvoiceEdit:{screen:InvoiceEdit,navigationOptions:{
+      headerShown: false
+    }},
     Lolscreen : {
       screen : Drawer,
       navigationOptions: {
