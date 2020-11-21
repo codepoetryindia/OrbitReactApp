@@ -88,7 +88,8 @@ import CategoryDetail from "../screen/TabScreen/DetailScreen/CategoryDetail";
 import BeneficiaryTransactions from "../screen/TabScreen/DetailScreen/BeneficiaryTransactions";
 
 import SaleInvoices from "../screen/DetailScreen/SaleInvoices";
-import InvoiceEdit from '../screen/AccountsTabScreen/InvoiceEdit'; 
+import InvoiceEdit from '../screen/AccountsTabScreen/InvoiceEdit';
+import invoicePaid from '../screen/AccountsTabScreen/invoicePaid';
 import DashboardTab from "../screen/AccountsTabScreen/DashboardTab";
 import InvoicesTab from "../screen/AccountsTabScreen/InvoicesTab";
 import CustomersTab from "../screen/AccountsTabScreen/CustomersTab";
@@ -274,6 +275,9 @@ const AppNavigator = createStackNavigator(
     AddItem:{screen:AddItem},
     AddCustomers:{screen:AddCustomers},
     InvoiceEdit:{screen:InvoiceEdit,navigationOptions:{
+      headerShown: false
+    }},
+    invoicePaid:{screen:invoicePaid,navigationOptions:{
       headerShown: false
     }},
     Lolscreen : {

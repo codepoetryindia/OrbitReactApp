@@ -139,6 +139,46 @@ var InvoiceService = {
             },
         })
     },
+
+    InvoiceUpdate : function(obj, token) {
+        var data = {
+            params : obj
+        }
+        console.log(WEB_API + 'update/invoice/'+ obj.id);
+        return axios.post(WEB_API + 'update/invoice/'+ obj.id , data, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            },
+        })
+    },
+
+
+    MakeInvoiceOpen : function(obj, token) {
+        var data = {
+            params : obj
+        }
+        return axios.post(WEB_API + 'invoice/confirm/'+ obj.id, data, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            },
+        })
+    },
+
+
+    MakeInvoicePaid : function(obj, token) {
+        var data = {
+            params : obj
+        }
+        return axios.post(WEB_API + 'invoice/paid/'+ obj.id, data, {
+            headers : {
+                'Content-type': 'application/json',
+                'user-token' : token,
+            },
+        })
+    },
+
     getTaxes : function(obj, token) {
         var data = {
             params : obj

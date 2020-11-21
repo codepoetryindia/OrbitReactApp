@@ -16,8 +16,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
-  Alert, 
   Picker,
+  Alert
 } from "react-native";
 import * as Colors from "../../constants/Colors";
 import DetailHeaderComponent from "../../components/DetailHeaderComponent";
@@ -53,7 +53,7 @@ const ValidationSchema = Yup.object().shape({
   invoice_line_ids: Yup.string().required("Minimum One Product Required"),
 });
 
-export default class InvoiceEdit extends Component {
+export default class invoicePaid extends Component {
   static navigationOptions = ({ navigation }) => {
     const { state } = navigation;
     return {
@@ -100,7 +100,6 @@ export default class InvoiceEdit extends Component {
     this.removeItem = this.removeItem.bind(this);
     this.confirmInvoice = this.confirmInvoice.bind(this);
     this.ConfirmAction = this.ConfirmAction.bind(this);
-
     this.inputRef = React.createRef();
 
     this.state = {
@@ -136,7 +135,6 @@ export default class InvoiceEdit extends Component {
       recurring_end: "after",
       recurring_end_interval: 1,
       subtotal: 0,
-      invoiceID:0,
     };
   }
 
@@ -254,49 +252,10 @@ export default class InvoiceEdit extends Component {
     }
   };
 
-  add = () => {
-    if (global.user_info == "") {
-      return;
-    }
-    var obj = {
-      partner_id: this.state.partner_id,
-      invoice_date: this.state.invoice_date,
-      due_date: this.state.due_date,
-      payment_term_id: this.state.payment_term_id,
-      invoice_line_ids: this.state.invoice_line_ids,
-      id:this.state.invoiceID
-    };
-    console.log("obj = ", obj);
-    this.setState({ isLoading: true });
-    InvoiceService.InvoiceUpdate(obj, global.token)
-      .then((res) => {
-        console.log(res);
-        var data = res.data.result;
-        if (typeof data == "undefined") {
-          alertMessage("You must enter correct informations.");
-        } else {
-          if (data.success) {
-            Toast.show(data.messasge, Toast.LONG);
-            this.props.navigation.pop();
-          } else {
-            alertMessage(data.message);
-          }
-        }
-        this.setState({ isLoading: false });
-      })
-      .catch((error) => {
-        console.log(error);
-        alertMessage(error.message);
-        this.setState({ isLoading: false });
-      });
-  };
-
-
-
   ConfirmAction() {
     Alert.alert(
       "Are you sure?",
-      "Once confirmed invoice cannot Be edited",
+      "Once Paid cannot Be Reverted",
       [
         {
           text: "Cancel",
@@ -320,7 +279,7 @@ export default class InvoiceEdit extends Component {
 
     console.log("obj = ", obj);
     this.setState({ isLoading: true });
-    InvoiceService.MakeInvoiceOpen(obj, global.token)
+    InvoiceService.MakeInvoicePaid(obj, global.token)
       .then((res) => {
         console.log(res);
         var data = res.data.result;
@@ -343,9 +302,6 @@ export default class InvoiceEdit extends Component {
       });
   };
 
-
-
-
   getDataFromApi = this.props.navigation.state.params.data;
 
   render() {
@@ -356,7 +312,7 @@ export default class InvoiceEdit extends Component {
           <View style={styles.container}>
             <DetailHeaderComponent
               navigation={this.props.navigation}
-              title="Edit Invoice"
+              title="Pay Invoice"
               goBack={() => {
                 this.props.navigation.goBack();
               }}
@@ -392,7 +348,7 @@ export default class InvoiceEdit extends Component {
                     this.getDataFromApi.payment_term_id == null ? "" : [1],
                 }}
                 validationSchema={ValidationSchema}
-                onSubmit={(values) => this.add()}
+                onSubmit={(values) => this.ConfirmAction()}
                 innerRef={this.inputRef}
               >
                 {({
@@ -438,7 +394,6 @@ export default class InvoiceEdit extends Component {
 
                           <View>
                             <TouchableOpacity
-                              onPress={() => this.openDatePicker()}
                               style={styles.smallBtn}
                             >
                               <Text>Select Date</Text>
@@ -474,7 +429,6 @@ export default class InvoiceEdit extends Component {
                           </View>
                           <View>
                             <TouchableOpacity
-                              onPress={() => this.openDatePicker2()}
                               style={styles.smallBtn}
                             >
                               <Text>Select Date</Text>
@@ -528,32 +482,6 @@ export default class InvoiceEdit extends Component {
                             )}
                           </View>
                         </TouchableOpacity>
-
-                        {this.state.partner_name ? (
-                          <TouchableOpacity
-                            onPress={() => {
-                              this.setState({
-                                partner_id: "",
-                                partner_name: "",
-                              });
-                              setFieldValue("partner_name", "");
-                              setFieldValue("partner_id", "");
-                            }}
-                          >
-                            <Ionicons
-                              name="ios-close"
-                              size={30 * metrics}
-                              style={{ color: "#f00" }}
-                            />
-                          </TouchableOpacity>
-                        ) : (
-                          <TouchableOpacity onPress={this.SelectCustomer}>
-                            <Ionicons
-                              name="ios-add-circle-outline"
-                              size={30 * metrics}
-                            />
-                          </TouchableOpacity>
-                        )}
                       </View>
                       {errors.partner_id && touched.partner_id ? (
                         <Text style={styles.errorLabel}>
@@ -611,34 +539,6 @@ export default class InvoiceEdit extends Component {
                                 )}
                               </View>
                             </TouchableOpacity>
-
-                            {this.state.payment_term_name ? (
-                              <TouchableOpacity
-                                onPress={() => {
-                                  this.setState({
-                                    payment_term: "",
-                                    payment_term_name: "",
-                                  });
-                                  setFieldValue("payment_term_id", "");
-                                  setFieldValue("payment_term_name", "");
-                                }}
-                              >
-                                <Ionicons
-                                  name="ios-close"
-                                  size={30 * metrics}
-                                  style={{ color: "#f00" }}
-                                />
-                              </TouchableOpacity>
-                            ) : (
-                              <TouchableOpacity
-                                onPress={() => this.SelectTerms()}
-                              >
-                                <Ionicons
-                                  name="ios-add-circle-outline"
-                                  size={30 * metrics}
-                                />
-                              </TouchableOpacity>
-                            )}
                           </View>
                         </View>
                       </View>
@@ -667,17 +567,6 @@ export default class InvoiceEdit extends Component {
                           <Text style={{ fontSize: 16, color: "white" }}>
                             Add Products
                           </Text>
-                          <TouchableOpacity
-                            onPress={() => {
-                              this.SelectProduct();
-                            }}
-                          >
-                            <Ionicons
-                              name="ios-add-circle-outline"
-                              size={30 * metrics}
-                              style={{ color: "#fff" }}
-                            />
-                          </TouchableOpacity>
                         </View>
 
                         <View
@@ -726,17 +615,6 @@ export default class InvoiceEdit extends Component {
                                   >
                                     {item.quantity} * {item.price}
                                   </Text>
-
-                                  <TouchableOpacity
-                                    style={{ flex: 0.05 }}
-                                    onPress={() => this.removeItem(item)}
-                                  >
-                                    <Ionicons
-                                      name="ios-close"
-                                      size={30 * metrics}
-                                      style={{ color: "#f00" }}
-                                    />
-                                  </TouchableOpacity>
                                 </View>
                               );
                             })
@@ -813,7 +691,7 @@ export default class InvoiceEdit extends Component {
                           onPress={handleSubmit}
                         >
                           <View style={global_style.btn_body}>
-                            <Text style={global_style.left_text}>Update</Text>
+                            <Text style={global_style.left_text}>Pay Invoice</Text>
                             <MaterialIcon
                               style={global_style.right_icon}
                               name="arrow-right"
@@ -822,30 +700,6 @@ export default class InvoiceEdit extends Component {
                           </View>
                         </TouchableOpacity>
                       </View>
-
-                      <View style={styles.bottom}>
-                        <TouchableOpacity
-                          style={
-                            isValid
-                              ? global_style.bottom_active_btn
-                              : global_style.bottom_btn
-                          }
-                          onPress={()=>{
-                            this.ConfirmAction();
-                          }}
-                        >
-                          <View style={global_style.btn_body}>
-                            <Text style={global_style.left_text}>Confirm Invoice </Text>
-                            <MaterialIcon
-                              style={global_style.right_icon}
-                              name="arrow-right"
-                              size={25 * metrics}
-                            />
-                          </View>
-                        </TouchableOpacity>
-                      </View>
-
-
 
                       {/* <TouchableOpacity>
                   <View

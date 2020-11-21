@@ -24,6 +24,10 @@ import TabHeaderScreen from '../../components/TabHeaderScreen';
 import {ListItem, Avatar, SearchBar} from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RNPickerSelect from 'react-native-picker-select';
+import { BorderlessButton } from 'react-native-gesture-handler';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+
+
 
 
 
@@ -32,10 +36,18 @@ import RNPickerSelect from 'react-native-picker-select';
 export default class Products extends Component {
     static navigationOptions = ({ navigation }) => {
 		const { state } = navigation;
-		return {
-			header: null,
-		}
+        return {
+            headerRight: () => (                
+                    <TouchableOpacity style={[styles.icon_btn, {paddingRight:30}]} onPress={() => navigation.navigate("AddAccountProduct")}>
+                        <SimpleLineIcons name="plus" size={26 * metrics} style={styles.icon}></SimpleLineIcons>
+                    </TouchableOpacity>                        
+            ),
+          };
     };
+
+    // navigation.navigate("AddAccountProduct")
+
+    
 
     constructor(props) {
         super(props);
@@ -301,7 +313,7 @@ export default class Products extends Component {
         return (
             <SafeAreaView style={{flex:1, height:'100%', width:"100%", position:'relative', flexDirection:'column'}}>
                 <View style={styles.container}>
-                <TabHeaderScreen headerTitle="Products" navigation = {this.props.navigation} showDrawer={() => this.openDrawer()} navigate={this.navigateProductAdd}></TabHeaderScreen>
+                {/* <TabHeaderScreen headerTitle="Products" navigation = {this.props.navigation} showDrawer={() => this.openDrawer()} navigate={this.navigateProductAdd}></TabHeaderScreen> */}
                    
                     <View style={{flex : 1}}>            
                         <ScrollView style={{flexDirection : 'column', width : '100%' , alignSelf : 'center'}}>

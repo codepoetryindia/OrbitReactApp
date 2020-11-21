@@ -205,9 +205,11 @@ export default class InvoicesTab extends Component {
             <View key={idx} style={{flex:1, flexDirection:'row', paddingVertical:5,         borderBottomWidth : 1 ,
             borderBottomColor : Colors.white_gray_color}}>
                 <TouchableOpacity style={styles.item} onPress = {()=>{
-                    // console.log(item);
-                    this.props.navigation.navigate('InvoiceEdit', {data:item});
-                    
+                    if(item.state == "draft"){
+                        this.props.navigation.navigate('InvoiceEdit', {data:item});
+                    }else{
+                        this.props.navigation.navigate('invoicePaid', {data:item});
+                    }                    
                 }}>
                 {/* <View style={{flex : 0.2 , justifyContent : 'center', alignItems : 'center'}}>
                     {
@@ -220,7 +222,8 @@ export default class InvoicesTab extends Component {
                 <View style={{flex : 1,flexDirection : 'column', justifyContent : 'center'}}>
                     <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 18 * metrics , color : 'black'}}>{item.partner_id[1]}</Text>
                     <View style={{marginTop : 5 * metrics}}></View>
-                    <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.number}</Text>                                                
+                    <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.number}</Text>
+                    <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 14 * metrics, color : Colors.gray_color}}>{item.state}</Text>                                                
                 </View>
                 <View style={{flex : 0.6,flexDirection : 'column', justifyContent : 'center'}}>
                     <Text style={{fontFamily : Fonts.adobe_clean,fontSize : 16 * metrics , color : 'black', textAlign:'right'}}>{item.amount_total}</Text>
