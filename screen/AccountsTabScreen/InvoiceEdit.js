@@ -224,8 +224,8 @@ export default class InvoiceEdit extends Component {
       });
   
     this.setState({
-      invoice_date: this.props.navigation.state.params.data.date_invoice,
-      due_date: this.getDataFromApi.date_due,
+      invoice_date: this.formatDate(new Date(this.props.navigation.state.params.data.date_invoice)),
+      due_date: this.formatDate(new Date(this.getDataFromApi.date_due)),
       partner_name: this.getDataFromApi.partner_id[1],
       payment_term_name: this.getDataFromApi.payment_term_id[1],
       invoice_line_ids:this.getDataFromApi.invoice_line_ids,

@@ -144,8 +144,9 @@ var InvoiceService = {
         var data = {
             params : obj
         }
-        console.log(WEB_API + 'update/invoice/'+ obj.id);
-        return axios.post(WEB_API + 'update/invoice/'+ obj.id , data, {
+
+        console.log(JSON.stringify(data));
+        return axios.post(WEB_API + 'update/customer/invoice/'+ obj.id , data, {
             headers : {
                 'Content-type': 'application/json',
                 'user-token' : token,
@@ -158,6 +159,8 @@ var InvoiceService = {
         var data = {
             params : obj
         }
+
+        console.log(JSON.stringify(data));
         return axios.post(WEB_API + 'invoice/confirm/'+ obj.id, data, {
             headers : {
                 'Content-type': 'application/json',
@@ -171,6 +174,7 @@ var InvoiceService = {
         var data = {
             params : obj
         }
+        console.log(JSON.stringify(data));
         return axios.post(WEB_API + 'invoice/paid/'+ obj.id, data, {
             headers : {
                 'Content-type': 'application/json',

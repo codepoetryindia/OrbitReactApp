@@ -680,26 +680,32 @@ export default class invoicePaid extends Component {
                           </Text>
                         ) : null}
                       </View>
-
+                      
+                      {this.props.navigation.state.params.data.state.toLowerCase() != 'paid' &&
+                      
                       <View style={styles.bottom}>
-                        <TouchableOpacity
-                          style={
-                            isValid
-                              ? global_style.bottom_active_btn
-                              : global_style.bottom_btn
-                          }
-                          onPress={handleSubmit}
-                        >
-                          <View style={global_style.btn_body}>
-                            <Text style={global_style.left_text}>Pay Invoice</Text>
-                            <MaterialIcon
-                              style={global_style.right_icon}
-                              name="arrow-right"
-                              size={25 * metrics}
-                            />
-                          </View>
-                        </TouchableOpacity>
-                      </View>
+                      <TouchableOpacity
+                        style={
+                          isValid
+                            ? global_style.bottom_active_btn
+                            : global_style.bottom_btn
+                        }
+                        onPress={handleSubmit}
+                      >
+
+                        
+                        <View style={global_style.btn_body}>
+                          <Text style={global_style.left_text}>Pay Invoice</Text>
+                          <MaterialIcon
+                            style={global_style.right_icon}
+                            name="arrow-right"
+                            size={25 * metrics}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                      
+                      }
 
                       {/* <TouchableOpacity>
                   <View
