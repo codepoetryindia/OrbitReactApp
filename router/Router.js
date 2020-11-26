@@ -1,8 +1,8 @@
 import React from "react";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createBottomTabNavigator } from "react-navigation-tabs";
+import { createDrawerNavigator } from "react-navigation-drawer";
 
 import LoginScreen from "../screen/LoginScreen";
 //import FingerScreen from '../screen/FingerScreen'
@@ -81,15 +81,14 @@ import AddMoney from "../screen/DetailScreen/AddMoney";
 
 // import BillPayment from '../screen/Accounts/Component/BillPayment'
 
-
 // Details Screens added to fix back button issue
 import CardDetail from "../screen/TabScreen/DetailScreen/CardDetail";
 import CategoryDetail from "../screen/TabScreen/DetailScreen/CategoryDetail";
 import BeneficiaryTransactions from "../screen/TabScreen/DetailScreen/BeneficiaryTransactions";
 
 import SaleInvoices from "../screen/DetailScreen/SaleInvoices";
-import InvoiceEdit from '../screen/AccountsTabScreen/InvoiceEdit';
-import invoicePaid from '../screen/AccountsTabScreen/invoicePaid';
+import InvoiceEdit from "../screen/AccountsTabScreen/InvoiceEdit";
+import invoicePaid from "../screen/AccountsTabScreen/invoicePaid";
 import DashboardTab from "../screen/AccountsTabScreen/DashboardTab";
 import InvoicesTab from "../screen/AccountsTabScreen/InvoicesTab";
 import CustomersTab from "../screen/AccountsTabScreen/CustomersTab";
@@ -103,93 +102,105 @@ import CustomersList from "../screen/AccountsTabScreen/CustomersList";
 import AddItem from "../screen/AccountsTabScreen/AddItem";
 import AddCustomers from "../screen/AccountsTabScreen/AddCustomers";
 import SideMenuComponentTab from "../components/SideMenuComponentTab";
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import CRMList from "../screen/AccountsTabScreen/CRMTabs";
+import AddCRM from "../screen/AccountsTabScreen/AddCRM";
+import CRMEdit from '../screen/AccountsTabScreen/CRMEdit';
+import Ionicons from "react-native-vector-icons/Ionicons";
 import global_style, { metrics } from "../constants/GlobalStyle";
 import * as Colors from "../constants/Colors";
 
+/*Added for invoice upgrade*/
 
-
-
-
-
-    /*Added for invoice upgrade*/      
-    const AccountsNavigator = createBottomTabNavigator({
-      DashboardTab:{
-        screen:DashboardTab,         navigationOptions: {
-          tabBarLabel: 'Dashboard', 
-          tabBarIcon: ({ tintColor }) => (
-              <Ionicons name="ios-apps" color={tintColor} size={25*metrics} />
-          )
-      }
-     },
-      SaleInvoices:{
-        screen:InvoicesTab,         
-        navigationOptions: {
-          tabBarLabel: 'Sale Invoice', 
-          tabBarIcon: ({ tintColor }) => (
-              <Ionicons name="ios-clipboard" color={tintColor} size={25*metrics} />
-          )
-      }
-     },
-     CustomersTab:{
-          screen:CustomersTab,         navigationOptions: {
-            tabBarLabel: 'Customers', 
-            tabBarIcon: ({ tintColor }) => (
-                <Ionicons name="ios-people" color={tintColor} size={25*metrics} />
-            )
+const AccountsNavigator = createBottomTabNavigator(
+  {
+    DashboardTab: {
+      screen: DashboardTab,
+      navigationOptions: {
+        tabBarLabel: "Dashboard",
+        tabBarIcon: ({ tintColor }) => (
+          <Ionicons name="ios-apps" color={tintColor} size={25 * metrics} />
+        ),
+      },
+    },
+    SaleInvoices: {
+      screen: InvoicesTab,
+      navigationOptions: {
+        tabBarLabel: "Sale Invoice",
+        tabBarIcon: ({ tintColor }) => (
+          <Ionicons
+            name="ios-clipboard"
+            color={tintColor}
+            size={25 * metrics}
+          />
+        ),
+      },
+    },
+    CustomersTab: {
+      screen: CustomersTab,
+      navigationOptions: {
+        tabBarLabel: "Customers",
+        tabBarIcon: ({ tintColor }) => (
+          <Ionicons name="ios-people" color={tintColor} size={25 * metrics} />
+        ),
+      },
+    },
+    BillsTab: {
+      screen: BillsTab,
+      navigationOptions: {
+        tabBarLabel: "Bills",
+        tabBarIcon: ({ tintColor }) => (
+          <Ionicons name="ios-document" color={tintColor} size={25 * metrics} />
+        ),
+      },
+    },
+    SettingTab: {
+      screen: SettingTab,
+      navigationOptions: {
+        tabBarLabel: "Settings",
+        tabBarIcon: ({ tintColor }) => (
+          <Ionicons name="ios-settings" color={tintColor} size={25 * metrics} />
+        ),
+      },
+    },
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, horizontal, tintColor }) => {
+        const { routeName } = navigation.state;
+        let IconComponent = Ionicons;
+        let iconName;
+        if (routeName === "Home") {
+          iconName = focused
+            ? "ios-information-circle"
+            : "ios-information-circle-outline";
+          // Sometimes we want to add badges to some icons.
+          // You can check the implementation below.
+          IconComponent = HomeIconWithBadge;
+        } else if (routeName === "Settings") {
+          iconName = focused ? "ios-list-box" : "ios-list";
         }
-      },
-      BillsTab:{
-          screen:BillsTab,         navigationOptions: {
-            tabBarLabel: 'Bills', 
-            tabBarIcon: ({ tintColor }) => (
-                <Ionicons name="ios-document" color={tintColor} size={25*metrics} />
-            )
-        }
-      },
-      SettingTab:{
-        screen:SettingTab,         navigationOptions: {
-          tabBarLabel: 'Settings', 
-          tabBarIcon: ({ tintColor }) => (
-              <Ionicons name="ios-settings" color={tintColor} size={25*metrics} />
-          )
-      }
-      }     
-    },  {
-      defaultNavigationOptions: ({ navigation }) => ({
-        tabBarIcon: ({ focused, horizontal, tintColor }) => {
-          const { routeName } = navigation.state;
-          let IconComponent = Ionicons;
-          let iconName;
-          if (routeName === 'Home') {
-            iconName = focused
-              ? 'ios-information-circle'
-              : 'ios-information-circle-outline';
-            // Sometimes we want to add badges to some icons.
-            // You can check the implementation below.
-            IconComponent = HomeIconWithBadge;
-          } else if (routeName === 'Settings') {
-            iconName = focused ? 'ios-list-box' : 'ios-list';
-          }
-  
-          // You can return any component that you like here!
-          return <IconComponent name={iconName} size={25} color={tintColor} />;
-        },
-      }),
-      tabBarOptions: {
-        activeTintColor: Colors.main_color,
-        inactiveTintColor: 'gray',
-      },
-    });
 
-    const Drawer = createDrawerNavigator({
-      home: AccountsNavigator
-    }, {
-      initialRouteName: 'home',
-      contentComponent: SideMenuComponentTab,
-      // drawerWidth: 300    
-    });
+        // You can return any component that you like here!
+        return <IconComponent name={iconName} size={25} color={tintColor} />;
+      },
+    }),
+    tabBarOptions: {
+      activeTintColor: Colors.main_color,
+      inactiveTintColor: "gray",
+    },
+  }
+);
 
+const Drawer = createDrawerNavigator(
+  {
+    home: AccountsNavigator,
+  },
+  {
+    initialRouteName: "home",
+    contentComponent: SideMenuComponentTab,
+    // drawerWidth: 300
+  }
+);
 
 const AppNavigator = createStackNavigator(
   {
@@ -264,28 +275,40 @@ const AppNavigator = createStackNavigator(
 
     CompanyDetail: { screen: CompanyDetail },
     /*Added Later to fix back button issue*/
-    CardDetail:{screen:CardDetail},
-    CategoryDetail:{screen:CategoryDetail},
-    BeneficiaryTransactions:{screen:BeneficiaryTransactions},
-    InvoiceAdd:{screen:InvoiceAdd},
-    PaymentTerms:{screen:PaymentTerms},
-    Products:{screen:Products},
-    AddAccountProduct:{screen:AddAccountProduct},
-    CustomersList:{screen:CustomersList},
-    AddItem:{screen:AddItem},
-    AddCustomers:{screen:AddCustomers},
-    InvoiceEdit:{screen:InvoiceEdit,navigationOptions:{
-      headerShown: false
-    }},
-    invoicePaid:{screen:invoicePaid,navigationOptions:{
-      headerShown: false
-    }},
-    Lolscreen : {
-      screen : Drawer,
+    CardDetail: { screen: CardDetail },
+    CategoryDetail: { screen: CategoryDetail },
+    BeneficiaryTransactions: { screen: BeneficiaryTransactions },
+    InvoiceAdd: { screen: InvoiceAdd },
+    PaymentTerms: { screen: PaymentTerms },
+    Products: { screen: Products },
+    AddAccountProduct: { screen: AddAccountProduct },
+    CustomersList: { screen: CustomersList },
+    AddItem: { screen: AddItem },
+    AddCustomers: { screen: AddCustomers },
+    CRMList: {
+      screen: CRMList,
+    },
+    AddCRM: { screen: AddCRM },
+    CRMEdit:{screen:CRMEdit},
+
+    InvoiceEdit: {
+      screen: InvoiceEdit,
       navigationOptions: {
-        header: null
-     }
-   },
+        headerShown: false,
+      },
+    },
+    invoicePaid: {
+      screen: invoicePaid,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
+    Lolscreen: {
+      screen: Drawer,
+      navigationOptions: {
+        header: null,
+      },
+    },
   },
   {
     initialRouteName: "SplashScreen",
@@ -294,7 +317,6 @@ const AppNavigator = createStackNavigator(
     },
   }
 );
-
 
 const AppContainer = createAppContainer(AppNavigator);
 export default AppContainer;
