@@ -76,7 +76,7 @@ export default class SideMenuComponent extends Component {
   onCRM() {
     //this.props.navigation.navigate('CRMListScreen')
     this.props.navigation.navigate(
-      "CRMList"
+      "CRMSCREEN"
       //  {
       //   msg:"Your mobile CRM experience is coming soon.  In the meantime, experience CRM features on our website at orbit.money.  Login in with your usual mobile login credentials."
       // }

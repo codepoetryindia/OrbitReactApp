@@ -179,13 +179,13 @@ var InvoiceService = {
   },
 
 
-  CRMUpdate: function(obj, token) {
+  CRMUpdate: function(obj, token, id) {
     var data = {
       params: obj,
     };
 
     console.log(JSON.stringify(data));
-    return axios.post(WEB_API + `crm/lead/${obj.id}/write`, data, {
+    return axios.post(WEB_API + `crm/lead/${id}/write`, data, {
       headers: {
         "Content-type": "application/json",
         "user-token": token,

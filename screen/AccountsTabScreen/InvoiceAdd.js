@@ -339,7 +339,7 @@ export default class InvoiceAdd extends Component {
               <View
                 style={{
                   flexDirection: "column",
-                  width: "85%",
+                  width: "95%",
                   height: "100%",
                   alignSelf: "center",
                 }}
@@ -361,7 +361,7 @@ export default class InvoiceAdd extends Component {
 
                   <View>
                     <TouchableOpacity onPress={()=>this.openDatePicker()} style={styles.smallBtn}>
-                      <Text>Select Date</Text>
+                      <Text style={{color:'#fff', padding:0}}>Select Date</Text>
                     </TouchableOpacity>
 
                     <DateTimePickerModal
@@ -385,7 +385,7 @@ export default class InvoiceAdd extends Component {
                   </View>
                 <View>
                   <TouchableOpacity onPress={()=>this.openDatePicker2()} style={styles.smallBtn}>
-                    <Text>Select Date</Text>
+                    <Text style={{color:'#fff', padding:0}}>Select Date</Text>
                   </TouchableOpacity>
                   <DateTimePickerModal
                       isVisible={this.state.datePickerVisible2}
@@ -911,9 +911,10 @@ const styles = StyleSheet.create({
     alignItems:'center'
   },
   smallBtn:{
-    backgroundColor:'#0f0',
+    backgroundColor:'gray',
     alignItems:'center',
-    padding:5,
+    paddingVertical:3,
+    paddingHorizontal:5,
     borderRadius:5
   },
   errorLabel: {

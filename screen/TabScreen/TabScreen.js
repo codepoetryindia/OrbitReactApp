@@ -325,6 +325,7 @@ export default class TabScreen extends Component {
                   goInit={() => console.log("1")}
                   navigation={this.props.navigation}
                   closeDrawer={() => this.closeDrawer()}
+                  openDrawer={()=> this.openDrawer()}
                 />
               }
               tapToClose={true}

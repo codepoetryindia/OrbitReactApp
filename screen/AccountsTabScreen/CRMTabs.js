@@ -133,7 +133,7 @@ export default class CRMList extends Component {
                 />
             </View>
 
-            <TouchableOpacity style={{
+            {/* <TouchableOpacity style={{
                 padding:8, backgroundColor:'#cacaca',
                 marginRight:5,
                 borderRadius:2, 
@@ -147,7 +147,7 @@ export default class CRMList extends Component {
                 elevation: 5,
             }} onPress={()=>this.openModal()}>
                 <Ionicons name="ios-list" size={40}></Ionicons>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         );
       };

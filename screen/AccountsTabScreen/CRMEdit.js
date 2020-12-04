@@ -61,13 +61,12 @@ export class CRMEdit extends Component {
       }
       console.log("obj = ", obj);
       let data = {
-        id:this.props.navigation.state.params.data.id,
         name: obj.name,
         planned_revenue: obj.planned_Revenue,
         probability: obj.probability,
       };
       this.setState({ isLoading: true });
-      InvoiceService.CRMUpdate(data, global.token)
+      InvoiceService.CRMUpdate(data, global.token, this.props.navigation.state.params.data.id)
         .then((res) => {
           console.log(res);
           var data = res.data.result;
@@ -107,9 +106,9 @@ export class CRMEdit extends Component {
 
         <Formik
           initialValues={{
-            name: this.dataFetched.name == null ? "" : this.dataFetched.name,
-            planned_Revenue: "",
-            probability: "",
+            name: this.dataFetched.name  ? this.dataFetched.name : "",
+            planned_Revenue: this.dataFetched.planned_revenue ? this.dataFetched.planned_revenue.toString() : ""  ,
+            probability: this.dataFetched.probability ?this.dataFetched.probability.toString() : "" ,
           }}
           validationSchema={ValidationSchema}
           onSubmit={(values) => {

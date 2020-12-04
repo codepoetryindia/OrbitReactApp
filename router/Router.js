@@ -202,6 +202,19 @@ const Drawer = createDrawerNavigator(
   }
 );
 
+const CRMDrawer = createDrawerNavigator(
+  {
+    CRMList: CRMList,
+  },
+  {
+    initialRouteName: "CRMList",
+    contentComponent: SideMenuComponentTab,
+    // drawerWidth: 300
+  }
+);
+
+
+
 const AppNavigator = createStackNavigator(
   {
     LoginScreen: { screen: LoginScreen },
@@ -285,11 +298,6 @@ const AppNavigator = createStackNavigator(
     CustomersList: { screen: CustomersList },
     AddItem: { screen: AddItem },
     AddCustomers: { screen: AddCustomers },
-    CRMList: {
-      screen: CRMList,
-    },
-    AddCRM: { screen: AddCRM },
-    CRMEdit:{screen:CRMEdit},
 
     InvoiceEdit: {
       screen: InvoiceEdit,
@@ -309,6 +317,16 @@ const AppNavigator = createStackNavigator(
         header: null,
       },
     },
+    CRMSCREEN: {
+      screen: CRMDrawer,
+      navigationOptions: {
+        header: null,
+      },
+    },
+
+    AddCRM: { screen: AddCRM },
+    CRMEdit:{screen:CRMEdit},
+
   },
   {
     initialRouteName: "SplashScreen",
