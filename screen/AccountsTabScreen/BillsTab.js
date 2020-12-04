@@ -57,6 +57,10 @@ export default class BillsTab extends Component {
           isDraft:false,
           isOpen:false,
           isPaid:false,
+          limit:20,
+          offset:0,
+          pagenation:false,
+          Invoices : [],   
         };
       }
 
@@ -82,8 +86,12 @@ export default class BillsTab extends Component {
         if (global.is_accounting) {
             this.setState({show_select : true})
         }
-        this.getBills();
+
+        this.setState({offset:0},()=>{
+            this.getBills();
+        })              
     }
+
     componentWillReceiveProps () {
         this.componentDidMount()
     }
@@ -133,7 +141,11 @@ export default class BillsTab extends Component {
         if(this.state.state){
             obj.state = this.state.state;
         }
-        this.getBills(text, obj);
+
+        this.setState({offset:0}, ()=>{
+            this.getBills(text, obj);
+        })
+    
         // const newData = this.arrayholder.filter((item) => {
         //   const itemData = `${item.PainterName.toUpperCase()}`;
         //   const textData = text.toUpperCase();
@@ -147,8 +159,18 @@ export default class BillsTab extends Component {
 
 
     getBills(text = '', data={}){
+
+
+        if(this.state.Invoices.length == 0){
+            this.setState({isLoading : true})
+        }else{
+            this.setState({pagination : true})
+        }
+
         let obj = {
-            "number":text,
+            // "number":text,
+            limit:this.state.limit,
+            offset:this.state.offset,
             ...data
         };
         this.setState({isLoading : true})
@@ -157,16 +179,21 @@ export default class BillsTab extends Component {
             console.log('data = ' , data)
             if (data.success) {
                 var data_arr = data.response.records
-                this.setState({Invoices : data_arr})
+                if(this.state.offset > 0){
+                    console.log("no");
+                    this.setState((prev)=> ({Invoices : [ ...prev.Invoices, ...data_arr]}))
+                }else{
+                    console.log("yes");
+                    this.setState({Invoices : data_arr})
+                }
             } else {
                 this.setState({Invoices : []})
             }
-            this.setState({isLoading : false})
+            this.setState({isLoading : false, pagination : false})
             this.setState({isRefresh:false});
-
         }).catch(error => {
             console.log('error = ' , error.message)
-            this.setState({isLoading : false})
+            this.setState({isLoading : false, pagination : false})
             this.setState({isRefresh:false});
 
         })
@@ -179,8 +206,10 @@ export default class BillsTab extends Component {
             obj.state = this.state.state;
         }
 
-        this.getBills(this.state.searchText, obj);
-        this.closeModal();
+        this.setState({offset:0}, ()=>{
+            this.getBills(this.state.searchText, obj);
+            this.closeModal();
+        })
     }
 
 
@@ -246,7 +275,7 @@ export default class BillsTab extends Component {
                 <TabHeaderScreen headerTitle="Bills" navigation = {this.props.navigation} showDrawer={() => this.openDrawer()}></TabHeaderScreen>
                    
                     <View style={{flex : 1}}>            
-                        <ScrollView style={{flexDirection : 'column', width : '100%' , alignSelf : 'center'}}>
+                        <View style={{flexDirection : 'column', width : '100%' , alignSelf : 'center'}}>
                             <FlatList
                                 data={this.state.Invoices}
                                 renderItem={this.renderItem}
@@ -261,8 +290,31 @@ export default class BillsTab extends Component {
                                             this.onRefresh();
                                         }}
                                     />}
+
+                                    onEndReached={({distanceFromEnd }) => {
+                                        // if (distanceFromEnd < 0) return;
+
+                                        this.setState((prevState, props) => ({ offset : prevState.offset + prevState.limit}), () => {
+                                            this.getBills();
+                                        })
+                                        
+                                    }}
+                                    onEndReachedThreshold={0.7}
+                                    ListFooterComponent={ () => {
+                                        return(
+                                            
+                                                this.state.pagination ? (
+                                                <View>
+                                                    <View style={{marginTop : 20 * metrics}}></View>
+                                                    <ActivityIndicator size={30} color={Colors.main_color} style={global_style.activityIndicator}></ActivityIndicator>
+                                                    <View style={{marginBottom : 20 * metrics}}></View>
+                                                </View>): null
+                                            
+                                        )
+                                    }
+                                    }
                             />
-                        </ScrollView>
+                        </View>
                     </View>
                     <Modal
                         animationType="slide"

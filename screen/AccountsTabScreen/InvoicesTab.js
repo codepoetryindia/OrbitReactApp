@@ -60,6 +60,10 @@ export default class InvoicesTab extends Component {
           isDraft:false,
           isOpen:false,
           isPaid:false,
+          limit:20,
+          offset:0,
+          Invoices : [],
+          pagenation:false
         };
       }
 
@@ -89,7 +93,10 @@ export default class InvoicesTab extends Component {
         this.props.navigation.addListener(
             'willFocus',
             () => {
-                this.getInvoices();
+
+                this.setState({offset:0, Invoices:[]},()=>{
+                    this.getInvoices();
+                })                
             }
           );
 
@@ -149,8 +156,11 @@ export default class InvoicesTab extends Component {
         if(this.state.state){
             obj.state = this.state.state;
         }
+        this.setState({offset:0}, ()=>{
+            this.getInvoices(text, obj);
+        })
 
-        this.getInvoices(text, obj);
+
         // const newData = this.arrayholder.filter((item) => {
         //   const itemData = `${item.PainterName.toUpperCase()}`;
         //   const textData = text.toUpperCase();
@@ -164,26 +174,41 @@ export default class InvoicesTab extends Component {
 
 
     getInvoices(text = '', data={}){
+
+        if(this.state.Invoices.length == 0){
+            this.setState({isLoading : true})
+        }else{
+            this.setState({pagination : true})
+        }
+
         let obj = {
-            "number":text,
+            // "number":text,
+            limit:this.state.limit,
+            offset:this.state.offset,
             ...data
         };
-        this.setState({isLoading : true})
         InvoiceService.getInvoices(obj, global.token).then(res => {
             var data = res.data.result
             console.log('data = ' , data)
             if (data.success) {
                 var data_arr = data.response.records
-                this.setState({Invoices : data_arr})
+
+                if(this.state.offset > 0){
+                    console.log("no");
+                    this.setState((prev)=> ({Invoices : [ ...prev.Invoices, ...data_arr]}))
+                }else{
+                    console.log("yes");
+                    this.setState({Invoices : data_arr})
+                }
             } else {
                 this.setState({Invoices : []})
             }
-            this.setState({isLoading : false})
+            this.setState({isLoading : false, pagination : false})
             this.setState({isRefresh:false});
 
         }).catch(error => {
             console.log('error = ' , error.message)
-            this.setState({isLoading : false})
+            this.setState({isLoading : false, pagination : false})
             this.setState({isRefresh:false});
 
         })
@@ -195,8 +220,11 @@ export default class InvoicesTab extends Component {
         if(this.state.state){
             obj.state = this.state.state;
         }
-        this.getInvoices(this.state.searchText, obj);
-        this.closeModal();
+
+        this.setState({offset:0}, ()=>{
+            this.getInvoices(this.state.searchText, obj);
+            this.closeModal();
+        })
     }
 
 
@@ -268,7 +296,7 @@ export default class InvoicesTab extends Component {
                 <TabHeaderScreen headerTitle="Invoices" navigation = {this.props.navigation} showDrawer={() => this.openDrawer()} navigate={this.navigateAdd}></TabHeaderScreen>
                    
                     <View style={{flex : 1}}>            
-                        <ScrollView style={{flexDirection : 'column', width : '100%' , alignSelf : 'center'}}>
+                        <View style={{flexDirection : 'column', width : '100%' , alignSelf : 'center'}}>
                             <FlatList
                                 data={this.state.Invoices}
                                 renderItem={this.renderItem}
@@ -280,11 +308,36 @@ export default class InvoicesTab extends Component {
                                         //refresh control used for the Pull to Refresh
                                         refreshing={this.state.isRefresh}
                                         onRefresh={()=>{
-                                            this.onRefresh();
+                                            this.setState((prevState, props) => ({ offset : 0}), () => {
+                                                this.onRefresh();
+                                            })                                            
                                         }}
                                     />}
+                                    onEndReached={({distanceFromEnd }) => {
+                                        // if (distanceFromEnd < 0) return;
+
+                                        this.setState((prevState, props) => ({ offset : prevState.offset + prevState.limit}), () => {
+                                            this.getInvoices();
+                                        })
+                                        
+                                    }}
+                                    onEndReachedThreshold={0.7}
+                                    ListFooterComponent={ () => {
+                                        return(
+                                            
+                                                this.state.pagination ? (
+                                                <View>
+                                                    <View style={{marginTop : 20 * metrics}}></View>
+                                                    <ActivityIndicator size={30} color={Colors.main_color} style={global_style.activityIndicator}></ActivityIndicator>
+                                                    <View style={{marginBottom : 20 * metrics}}></View>
+                                                </View>): null
+                                            
+                                        )
+                                    }
+                                    }
+
                             />
-                        </ScrollView>
+                        </View>
                     </View>
 
                     <Modal

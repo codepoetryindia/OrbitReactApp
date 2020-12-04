@@ -9,7 +9,7 @@
 import analytics from '@react-native-firebase/analytics';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Linking } from 'react-native';
+import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Linking, FlatList } from 'react-native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import TabHeaderScreen from '../../components/TabHeaderScreen';
 import TransactionItem from '../../components/TransactionItem';
@@ -409,7 +409,7 @@ export default class AccountScreen extends Component {
                                 {global.user_info.state && global.user_info.state == "approved" ? 
                                 (
                                     <View>
-                                                                        {
+                                    {
                                     this.state.transaction_arr.map((item, idx) => {
                                         return (
                                             <TransactionItem
@@ -423,6 +423,24 @@ export default class AccountScreen extends Component {
                                         )
                                     })
                                 }
+{/* 
+                                <FlatList
+                                        data={this.state.transaction_arr}
+                                        renderItem={(item)=>{
+                                            return(
+                                                <TransactionItem
+                                                key={item.index}
+                                                date = {item.item.time}
+                                                items = {item.item.arr}
+                                                showDetail = {this.showDetail}
+                                                showType={this.state.show_type}
+                                            ></TransactionItem>
+                                        )                                            
+                                        }}
+                                        keyExtractor={item => item.id}
+                                    /> */}
+
+
                                     </View>
                                 ):(
                                     <View>
